@@ -59,13 +59,13 @@ export default function FeaturesSection() {
   }
 
   return (
-    <section id='features' className='py-20 bg-white dark:bg-gray-950'>
+    <section id='features' className='py-20 bg-white'>
       <div className='container mx-auto px-4 md:px-6'>
         <div className='text-center mb-16'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-gray-900 dark:text-white'>
+          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-indigo-600'>
             Our Features
           </h2>
-          <p className='mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto'>
+          <p className='mt-4 text-xl text-gray-600 max-w-2xl mx-auto'>
             Comprehensive tools and services for your sexual and reproductive health
           </p>
         </div>
@@ -81,11 +81,11 @@ export default function FeaturesSection() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className='bg-gray-50 dark:bg-gray-900 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow'
+              className='bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow'
             >
-              <div className='mb-4'>{feature.icon}</div>
-              <h3 className='text-xl font-semibold mb-3 text-gray-900 dark:text-white'>{feature.title}</h3>
-              <p className='text-gray-600 dark:text-gray-400'>{feature.description}</p>
+              <div className='mb-4 '>{feature.icon}</div>
+              <h3 className='text-xl font-semibold mb-3 text-gray-900'>{feature.title}</h3>
+              <p className='text-gray-600'>{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>

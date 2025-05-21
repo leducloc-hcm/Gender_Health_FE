@@ -36,7 +36,7 @@ export default function AboutSection() {
           className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'
         >
           <motion.div variants={itemVariants} className='order-2 lg:order-1'>
-            <h2 className='text-3xl text-center font-bold tracking-tight sm:text-4xl text-gray-900  mb-6'>
+            <h2 className='text-3xl text-center font-bold tracking-tight sm:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-indigo-600  mb-6'>
               About Our Healthcare Facility
             </h2>
             <p className='text-lg text-gray-600  mb-6'>
@@ -79,7 +79,7 @@ export default function AboutSection() {
             <div className='relative'>
               <div className=''></div>
               <img
-                src='https://www.lakemeadhospital.com/wp-content/uploads/2022/03/Health-Care1.jpg'
+                src='https://ncnewsline.com/wp-content/uploads/2023/11/GettyImages_Transgender_Healthcare.jpg'
                 alt='Healthcare professionals'
                 className='relative rounded-xl w-full h-auto shadow-lg'
               />
