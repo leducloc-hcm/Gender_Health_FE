@@ -6,18 +6,18 @@ import Login from '../pages/Auth/Login/Login'
 import Register from '../pages/Auth/Register/Register'
 import Consultant from '../pages/Consultant/Consultant'
 import Customer from '../pages/Customer/Customer'
-import Homepage from '../pages/Homepage'
 import Staff from '../pages/Staff/Staff'
 import authPath from './paths/authPath'
 import customerPath from './paths/customerPath'
 import Dashboard from '../pages/Customer/Dashboard/Dashboard'
 import DashboardAdmin from '../pages/Admin/Dashboard/Dashboard'
 import adminPath from './paths/adminPath'
+import HomePage from '../pages/HomePage/Homepage'
 
 export default function MainRoutes() {
   return (
     <Routes>
-      <Route path='/' element={<Homepage />} />
+      <Route path='/' element={<HomePage />} />
       <Route path={authPath.login} element={<Login />} />
       <Route path={authPath.register} element={<Register />} />
       <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
