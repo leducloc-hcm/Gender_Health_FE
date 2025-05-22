@@ -13,26 +13,41 @@ import Dashboard from '../pages/Customer/Dashboard/Dashboard'
 import DashboardAdmin from '../pages/Admin/Dashboard/Dashboard'
 import adminPath from './paths/adminPath'
 import HomePage from '../pages/HomePage/Homepage'
+import { ToastContainer } from 'react-toastify'
 
 export default function MainRoutes() {
   return (
-    <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path={authPath.login} element={<Login />} />
-      <Route path={authPath.register} element={<Register />} />
-      <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
+    <>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='light'
+      />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path={authPath.login} element={<Login />} />
+        <Route path={authPath.register} element={<Register />} />
+        <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
 
-      <Route path='/customer' element={<Customer />}>
-        <Route path={customerPath.dashboard} element={<Dashboard />} />
-      </Route>
+        <Route path='/customer' element={<Customer />}>
+          <Route path={customerPath.dashboard} element={<Dashboard />} />
+        </Route>
 
-      <Route path='/admin' element={<Admin />}>
-        <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
-      </Route>
+        <Route path='/admin' element={<Admin />}>
+          <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
+        </Route>
 
-      <Route path='/consultant' element={<Consultant />}></Route>
+        <Route path='/consultant' element={<Consultant />}></Route>
 
-      <Route path='/staff' element={<Staff />}></Route>
-    </Routes>
+        <Route path='/staff' element={<Staff />}></Route>
+      </Routes>
+    </>
   )
 }

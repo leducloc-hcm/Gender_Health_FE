@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FiMenu, FiHeart, FiX } from 'react-icons/fi'
 import { Button } from '@/app/components/ui/button'
 
 export default function Header() {
+  const nav = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
@@ -48,10 +49,14 @@ export default function Header() {
               <Button
                 variant='ghost'
                 className='text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50'
+                onClick={() => nav('/login')}
               >
                 Login
               </Button>
-              <Button className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'>
+              <Button
+                onClick={() => nav('/register')}
+                className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'
+              >
                 Register
               </Button>
             </div>
@@ -92,10 +97,17 @@ export default function Header() {
             Contact
           </a>
           <div className='flex flex-col gap-2 mt-4'>
-            <Button variant='outline' className='w-full border-pink-200 text-pink-600 hover:bg-pink-50'>
+            <Button
+              variant='outline'
+              onClick={() => nav('/login')}
+              className='w-full border-pink-200 text-pink-600 hover:bg-pink-50'
+            >
               Login
             </Button>
-            <Button className='w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'>
+            <Button
+              onClick={() => nav('/register')}
+              className='w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'
+            >
               Register
             </Button>
           </div>
