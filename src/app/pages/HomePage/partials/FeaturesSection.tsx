@@ -8,34 +8,34 @@ export default function FeaturesSection() {
 
   const features = [
     {
-      icon: <FiCalendar className='h-10 w-10 text-rose-500' />,
+      icon: <FiCalendar className='h-10 w-10 text-pink-600' />,
       title: 'Menstrual Cycle Tracking',
-      description: 'Track your menstrual cycle, ovulation periods, and receive reminders for birth control.'
+      description: 'Advanced cycle tracking with personalized insights, ovulation predictions, and fertility awareness.'
     },
     {
-      icon: <FiMessageSquare className='h-10 w-10 text-rose-500' />,
+      icon: <FiMessageSquare className='h-10 w-10 text-pink-600' />,
       title: 'Online Consultation',
-      description: 'Schedule online consultations with healthcare professionals at your convenience.'
+      description: 'Private video consultations with female healthcare specialists from the comfort of your home.'
     },
     {
-      icon: <FiActivity className='h-10 w-10 text-rose-500' />,
-      title: 'STI Testing Services',
-      description: 'Comprehensive testing services for sexually transmitted infections with confidential results.'
+      icon: <FiActivity className='h-10 w-10 text-pink-600' />,
+      title: 'Comprehensive Testing',
+      description: "Full range of women's health screenings and STI testing with fast, confidential results."
     },
     {
-      icon: <FiClipboard className='h-10 w-10 text-rose-500' />,
-      title: 'Q&A with Experts',
-      description: 'Ask questions and receive expert answers about sexual and reproductive health.'
+      icon: <FiClipboard className='h-10 w-10 text-pink-600' />,
+      title: 'Expert Q&A',
+      description: "Get answers from certified gynecologists and women's health specialists anytime."
     },
     {
-      icon: <FiShield className='h-10 w-10 text-rose-500' />,
-      title: 'Confidential Care',
-      description: 'Your privacy is our priority with secure and confidential health services.'
+      icon: <FiShield className='h-10 w-10 text-pink-600' />,
+      title: 'Complete Privacy',
+      description: 'Your health information is protected with military-grade security and confidentiality.'
     },
     {
-      icon: <FiClock className='h-10 w-10 text-rose-500' />,
-      title: 'Test Result Tracking',
-      description: 'Track your test results and medical history in one secure location.'
+      icon: <FiClock className='h-10 w-10 text-pink-600' />,
+      title: 'Health History Tracking',
+      description: 'Comprehensive health records and test result management in one secure platform.'
     }
   ]
 
@@ -62,11 +62,11 @@ export default function FeaturesSection() {
     <section id='features' className='py-20 bg-white'>
       <div className='container mx-auto px-4 md:px-6'>
         <div className='text-center mb-16'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-indigo-600'>
-            Our Features
+          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent'>
+            Our Women's Health Features
           </h2>
           <p className='mt-4 text-xl text-gray-600 max-w-2xl mx-auto'>
-            Comprehensive tools and services for your sexual and reproductive health
+            Comprehensive tools and services designed specifically for women's health and wellness
           </p>
         </div>
 
@@ -81,11 +81,11 @@ export default function FeaturesSection() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className='bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow'
+              className='bg-gradient-to-br from-pink-25 to-rose-25 p-8 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-pink-100 hover:border-pink-200 group'
             >
-              <div className='mb-4 '>{feature.icon}</div>
+              <div className='mb-4 group-hover:scale-110 transition-transform duration-300'>{feature.icon}</div>
               <h3 className='text-xl font-semibold mb-3 text-gray-900'>{feature.title}</h3>
-              <p className='text-gray-600'>{feature.description}</p>
+              <p className='text-gray-600 leading-relaxed'>{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>
