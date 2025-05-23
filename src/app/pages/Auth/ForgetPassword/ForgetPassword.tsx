@@ -1,4 +1,4 @@
-import { userApi } from '@/app/apis/user.api'
+import { userApi } from '@/app/apis/auth.api'
 import { Button } from '@/app/components/ui/button'
 import authPath from '@/app/routes/paths/authPath'
 import axios, { type AxiosResponse } from 'axios'

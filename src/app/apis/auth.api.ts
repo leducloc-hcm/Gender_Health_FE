@@ -12,5 +12,6 @@ export const userApi = {
       const axiosError = error as AxiosError
       throw axiosError
     }
-  }
+  },
+
 }
