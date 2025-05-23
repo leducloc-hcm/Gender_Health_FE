@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
 import { api } from '@/app/pages/Auth/Login/services/login.api'
 import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
+import authPath from '@/app/routes/paths/authPath'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
