@@ -7,9 +7,9 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
-import { api } from '@/app/pages/Auth/Login/services/login.api'
 import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
 import authPath from '@/app/routes/paths/authPath'
+import { fetcher } from '@/app/apis/fetcher'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -33,7 +33,7 @@ export default function LoginPage() {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      const response = await api.post<LoginResponse>('/users/login', {
+      const response = await fetcher.post<LoginResponse>('/users/login', {
         email: data.email,
         password: data.password
       })

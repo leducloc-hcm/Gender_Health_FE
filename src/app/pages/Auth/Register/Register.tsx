@@ -19,7 +19,7 @@ import {
   nameValidation,
   passwordValidation
 } from '@/app/modules/AuthValidation/AuthValidation'
-import { api } from '@/app/pages/Auth/Login/services/login.api'
+import { fetcher } from '@/app/apis/fetcher'
 
 export default function Register() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -64,7 +64,7 @@ export default function Register() {
     })
     setIsLoading(true)
     try {
-      const response = await api.post<RegisterFormData>('/users/register', {
+      const response = await fetcher.post<RegisterFormData>('/users/register', {
         ...data,
         confirm_password: data.confirmPassword,
         date_of_birth: data.dateOfBirth ? format(data.dateOfBirth, 'yyyy-MM-dd') : undefined
