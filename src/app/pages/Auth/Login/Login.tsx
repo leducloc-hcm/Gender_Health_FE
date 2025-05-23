@@ -7,7 +7,8 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
-import { apiLogin } from '@/app/pages/Auth/Login/services/login.api'
+import { api } from '@/app/pages/Auth/Login/services/login.api'
+import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -23,32 +24,15 @@ export default function LoginPage() {
     mode: 'onBlur',
     defaultValues: {
       email: '',
-      password: '',
-      rememberMe: false
+      password: ''
     }
   })
-
-  const passwordValidation = {
-    required: 'Password is required',
-    minLength: {
-      value: 6,
-      message: 'Password must be at least 6 characters long 1 uppercase 1 lowercase 1 number and 1 symbol'
-    }
-  }
-
-  const emailValidation = {
-    required: 'Email is required',
-    pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: 'Please enter a valid email address'
-    }
-  }
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      const response = await apiLogin.post<LoginResponse>('/users/login', {
+      const response = await api.post<LoginResponse>('/users/login', {
         email: data.email,
         password: data.password
       })
@@ -169,7 +153,7 @@ export default function LoginPage() {
                 </div>
                 {errors.password && (
                   <div className='absolute left-0 top-full mt-1 z-10'>
-                    <p className='text-xs text-red-600 bg-white px-2 py-1 max-w-xs'>{errors.password.message}</p>
+                    <p className='text-xs text-red-600 bg-white px-2 py-1 '>{errors.password.message}</p>
                   </div>
                 )}
               </div>
