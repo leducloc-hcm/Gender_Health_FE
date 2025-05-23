@@ -6,33 +6,13 @@ import { Button } from '@/app/components/ui/button'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import authPath from '@/app/routes/paths/authPath'
-
-interface LoginFormData {
-  email: string
-  password: string
-  rememberMe?: boolean
-}
-
-interface LoginResponse {
-  message?: string
-  result?: {
-    access_token?: string
-    refresh_token?: string
-  }
-}
-
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
+import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
+import { api } from '@/app/pages/Auth/Login/services/login.api'
+import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   const navigate = useNavigate()
 
   const {
@@ -44,32 +24,14 @@ export default function LoginPage() {
     mode: 'onBlur',
     defaultValues: {
       email: '',
-      password: '',
-      rememberMe: false
+      password: ''
     }
   })
-
-  const passwordValidation = {
-    required: 'Password is required',
-    minLength: {
-      value: 6,
-      message: 'Password must be at least 6 characters long'
-    }
-  }
-
-  const emailValidation = {
-    required: 'Email is required',
-    pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: 'Please enter a valid email address'
-    }
-  }
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      console.log('Sending request to:', 'http://52.221.179.12:4000/users/login')
       const response = await api.post<LoginResponse>('/users/login', {
         email: data.email,
         password: data.password
@@ -191,7 +153,7 @@ export default function LoginPage() {
                 </div>
                 {errors.password && (
                   <div className='absolute left-0 top-full mt-1 z-10'>
-                    <p className='text-xs text-red-600 bg-white px-2 py-1 max-w-xs'>{errors.password.message}</p>
+                    <p className='text-xs text-red-600 bg-white px-2 py-1 '>{errors.password.message}</p>
                   </div>
                 )}
               </div>
