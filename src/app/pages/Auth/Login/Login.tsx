@@ -6,6 +6,7 @@ import { Button } from '@/app/components/ui/button'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import authPath from '@/app/routes/paths/authPath'
 
 interface LoginFormData {
   email: string
@@ -208,7 +209,7 @@ export default function LoginPage() {
                   </label>
                 </div>
 
-                <Link to='/forgot-password' className='text-sm text-pink-600 hover:text-pink-500 font-medium'>
+                <Link to={authPath.forgotPassword} className='text-sm text-pink-600 hover:text-pink-500 font-medium'>
                   Forgot password?
                 </Link>
               </div>
