@@ -6,32 +6,12 @@ import { Button } from '@/app/components/ui/button'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
-interface LoginFormData {
-  email: string
-  password: string
-  rememberMe?: boolean
-}
-
-interface LoginResponse {
-  message?: string
-  result?: {
-    access_token?: string
-    refresh_token?: string
-  }
-}
-
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
+import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
+import { apiLogin } from '@/app/pages/Auth/Login/services/login.api'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   const navigate = useNavigate()
 
   const {
@@ -52,7 +32,7 @@ export default function LoginPage() {
     required: 'Password is required',
     minLength: {
       value: 6,
-      message: 'Password must be at least 6 characters long'
+      message: 'Password must be at least 6 characters long 1 uppercase 1 lowercase 1 number and 1 symbol'
     }
   }
 
@@ -68,8 +48,7 @@ export default function LoginPage() {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      console.log('Sending request to:', 'http://52.221.179.12:4000/users/login')
-      const response = await api.post<LoginResponse>('/users/login', {
+      const response = await apiLogin.post<LoginResponse>('/users/login', {
         email: data.email,
         password: data.password
       })
