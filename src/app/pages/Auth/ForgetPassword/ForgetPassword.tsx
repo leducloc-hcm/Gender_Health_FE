@@ -1,4 +1,4 @@
-import { userApi } from '@/app/apis/auth.api'
+import { authApi } from '@/app/apis/auth.api'
 import { Button } from '@/app/components/ui/button'
 import authPath from '@/app/routes/paths/authPath'
 import axios, { type AxiosResponse } from 'axios'
@@ -54,7 +54,7 @@ export default function ForgetPassword() {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      const response = await userApi.forgotPassword(data)
+      const response = await authApi.forgotPassword(data)
       console.log('Response received:', response)
 
       toast.success('Send successful! Please check your email...', {
