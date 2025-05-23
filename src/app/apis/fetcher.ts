@@ -1,8 +1,7 @@
-import axios, { type AxiosInstance } from 'axios'
-import { BASE_URL } from '../constants/index.js'
+import axios from 'axios'
 
-const fetcher: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+export const fetcher = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -16,6 +15,3 @@ const fetcher: AxiosInstance = axios.create({
 
 //   return config;
 // })
-
-export default fetcher;
-

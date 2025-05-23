@@ -64,11 +64,11 @@ export default function ForgetPassword() {
       setTimeout(() => {
         navigate('/')
       }, 2000)
-
     } catch (error: any) {
       console.error('Login error:', error)
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.errors?.email?.msg || error.message || 'Login failed. Please try again.'
+        const errorMessage =
+          error.response?.data?.errors?.email?.msg || error.message || 'Login failed. Please try again.'
         toast.error(errorMessage)
       } else {
         toast.error('An unexpected error occurred. Please try again.')

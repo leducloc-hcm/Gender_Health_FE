@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosResponse } from 'axios'
 import type { ForgotPasswordFormData, ForgotPasswordResponse } from '../pages/Auth/ForgetPassword/ForgetPassword'
-import fetcher from './fetcher'
+import { fetcher } from '@/app/apis/fetcher'
 
 export const userApi = {
   forgotPassword: async (data: ForgotPasswordFormData): Promise<ForgotPasswordResponse> => {
