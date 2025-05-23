@@ -1,6 +1,6 @@
 const customerPath = {
-  dashboard: '/customer/dashboard',
-  profile: '/customer/profile'
+  dashboard: 'dashboard',
+  profile: 'profile'
 }
 
 export default customerPath

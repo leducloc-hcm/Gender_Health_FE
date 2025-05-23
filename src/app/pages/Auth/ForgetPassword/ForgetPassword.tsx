@@ -146,7 +146,7 @@ export default function ForgetPassword() {
             <div className='mt-6 text-center'>
               <p className='text-sm text-gray-600'>
                 Already have an account?{' '}
-                <Link to={authPath.login} className='font-medium text-pink-600 hover:text-pink-500'>
+                <Link to='/auth/login' className='font-medium text-pink-600 hover:text-pink-500'>
                   Log in here
                 </Link>
               </p>

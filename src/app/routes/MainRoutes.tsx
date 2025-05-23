@@ -14,6 +14,7 @@ import DashboardAdmin from '../pages/Admin/Dashboard/Dashboard'
 import adminPath from './paths/adminPath'
 import HomePage from '../pages/HomePage/Homepage'
 import { ToastContainer } from 'react-toastify'
+import Auth from '@/app/pages/Auth/Auth'
 
 export default function MainRoutes() {
   return (
@@ -32,9 +33,11 @@ export default function MainRoutes() {
       />
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path={authPath.login} element={<Login />} />
-        <Route path={authPath.register} element={<Register />} />
-        <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
+        <Route path='/auth' element={<Auth />}>
+          <Route path={authPath.login} element={<Login />} />
+          <Route path={authPath.register} element={<Register />} />
+          <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
+        </Route>
 
         <Route path='/customer' element={<Customer />}>
           <Route path={customerPath.dashboard} element={<Dashboard />} />

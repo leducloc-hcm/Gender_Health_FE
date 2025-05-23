@@ -49,12 +49,12 @@ export default function Header() {
               <Button
                 variant='ghost'
                 className='text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50'
-                onClick={() => nav('/login')}
+                onClick={() => nav('auth/login')}
               >
                 Login
               </Button>
               <Button
-                onClick={() => nav('/register')}
+                onClick={() => nav('auth/register')}
                 className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'
               >
                 Register
@@ -99,13 +99,13 @@ export default function Header() {
           <div className='flex flex-col gap-2 mt-4'>
             <Button
               variant='outline'
-              onClick={() => nav('/login')}
+              onClick={() => nav('auth/login')}
               className='w-full border-pink-200 text-pink-600 hover:bg-pink-50'
             >
               Login
             </Button>
             <Button
-              onClick={() => nav('/register')}
+              onClick={() => nav('auth/register')}
               className='w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'
             >
               Register

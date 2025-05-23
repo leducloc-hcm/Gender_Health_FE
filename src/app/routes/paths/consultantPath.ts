@@ -1,5 +1,5 @@
 const consultantPath = {
-  dashboard: '/consultant/dashboard'
+  dashboard: 'dashboard'
 }
 
 export default consultantPath
