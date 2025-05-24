@@ -62,7 +62,7 @@ export default function FeaturesSection() {
     <section id='features' className='py-20 bg-white'>
       <div className='container mx-auto px-4 md:px-6'>
         <div className='text-center mb-16'>
-          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent'>
+          <h2 className='text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 bg-clip-text text-transparent'>
             Our Women's Health Features
           </h2>
           <p className='mt-4 text-xl text-gray-600 max-w-2xl mx-auto'>

@@ -18,3 +18,17 @@ export const getLocalStorage = (key: string) => {
 export const removeLocalStorage = (key: string) => {
   localStorage.removeItem(key)
 }
+
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}
+
+export const truncateContent = (content: string, maxLength = 150) => {
+  if (content.length <= maxLength) return content
+  return content.substring(0, maxLength) + '...'
+}
