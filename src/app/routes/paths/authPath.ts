@@ -1,7 +1,8 @@
 const authPath = {
   login: 'login',
   register: 'register',
-  forgotPassword: 'forgotPassword'
+  forgotPassword: 'forgotPassword',
+  verifyEmail: 'verify-email'
 }
 
 export default authPath

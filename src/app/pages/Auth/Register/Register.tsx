@@ -56,12 +56,6 @@ export default function Register() {
   }
 
   const onSubmit = async (data: RegisterFormData) => {
-    console.log('data: ', data)
-    console.log('Form submitted with data:', {
-      ...data,
-
-      dateOfBirth: data.dateOfBirth ? format(data.dateOfBirth, 'yyyy-MM-dd') : undefined
-    })
     setIsLoading(true)
     try {
       const response = await fetcher.post<RegisterFormData>('/users/register', {
@@ -69,8 +63,6 @@ export default function Register() {
         confirm_password: data.confirmPassword,
         date_of_birth: data.dateOfBirth ? format(data.dateOfBirth, 'yyyy-MM-dd') : undefined
       })
-      console.log('Response received:', response)
-      const responseData = response.data
       setIsLoading(false)
       if (response.status === 200 || response.status === 201) {
         toast.success('Registration successful!', {
@@ -78,17 +70,13 @@ export default function Register() {
           autoClose: 1000
         })
       }
-      console.log('responseData: ', responseData)
     } catch (error) {
-      console.error('Registration error:', error)
       setIsLoading(false)
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data as RegisterResponse
-        console.error('Error response:', errorResponse)
         toast.error(errorResponse.message)
       } else {
-        console.error('Unexpected error:', error)
-        toast.error('An unexpected error occurred. Please try again later.')
+        toast.error('An unexpected error occurred. Please try again.')
       }
     }
   }
@@ -98,43 +86,51 @@ export default function Register() {
   }
 
   return (
-    <div className='w-full max-w-lg'>
-      <div className='bg-white rounded-3xl shadow-2xl border border-pink-200 overflow-hidden'>
-        <div className='bg-gradient-to-r from-pink-500 to-rose-500 p-2 text-center'>
-          <div className='inline-flex items-center justify-center w-11 h-11 bg-white rounded-full mb-4'>
-            <FiHeart className='w-7 h-7 text-pink-600' />
+    <div className='w-full max-w-md'>
+      <div className='bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden'>
+        <div className='bg-gradient-to-r from-pink-500 to-rose-500 p-6 text-center'>
+          <div className='inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-3'>
+            <FiHeart className='w-6 h-6 text-pink-500' />
           </div>
-          <h1 className='text-2xl font-bold text-white mb-2'>Join GenderCare</h1>
+          <h1 className='text-xl font-bold text-white mb-1'>Join GenderCare</h1>
           <p className='text-pink-100 text-sm'>Create your account to get started</p>
         </div>
 
-        <div className='pl-10 pr-10 pt-2.5 pb-2.5'>
+        <div className='p-6'>
           <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-1'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
               <FormField
                 control={control}
                 name='name'
                 rules={nameValidation}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-sm font-medium text-gray-700'>Full Name</FormLabel>
+                  <FormItem className='relative'>
+                    {/* <FormLabel ='text-sm font-medium text-gray-700'>Full Name</FormLabel> */}
+                    <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-1'>
+                      Full Name
+                    </label>
+
                     <FormControl>
                       <div className='relative'>
                         <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                          <FiUser className='h-5 w-5 text-gray-400' />
+                          <FiUser className='h-4 w-4 text-gray-400' />
                         </div>
                         <Input
                           type='text'
                           {...field}
                           onFocus={() => handleInputFocus('name')}
-                          className={`w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
-                            errors.name ? 'border-red-300' : 'border-gray-200'
+                          className={`w-full pl-9 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
+                            errors.name ? 'border-red-300' : 'border-gray-300'
                           }`}
                           placeholder='Enter your full name'
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    {errors.name && (
+                      <div className='absolute left-0 top-[93%] mt-1 z-10'>
+                        <p className='text-xs text-red-600 px-2 py-1'>{errors.name.message}</p>
+                      </div>
+                    )}
                   </FormItem>
                 )}
               />
@@ -173,21 +169,23 @@ export default function Register() {
                   }
 
                   return (
-                    <FormItem>
-                      <FormLabel className='text-sm font-medium text-gray-700'>Date of Birth</FormLabel>
+                    <FormItem className='relative'>
+                      <label htmlFor='dateOfBirth' className='block text-sm font-medium text-gray-700 mb-1'>
+                        Date of Birth
+                      </label>
                       <FormControl>
                         <div className='flex items-center space-x-2'>
                           <div className='relative flex-1'>
                             <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                              <CalendarIcon className='h-5 w-5 text-gray-400' />
+                              <CalendarIcon className='h-4 w-4 text-gray-400' />
                             </div>
                             <Input
                               placeholder='DD/MM/YYYY'
                               value={inputValue}
                               onChange={handleInputChange}
                               onFocus={() => handleInputFocus('dateOfBirth')}
-                              className={`w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
-                                errors.dateOfBirth ? 'border-red-300' : 'border-gray-200'
+                              className={`w-full pl-9 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
+                                errors.dateOfBirth ? 'border-red-300' : 'border-gray-300'
                               }`}
                             />
                           </div>
@@ -196,11 +194,11 @@ export default function Register() {
                               <Button
                                 variant='outline'
                                 className={cn(
-                                  'p-3 h-12 border rounded-xl',
-                                  errors.dateOfBirth ? 'border-red-300' : 'border-gray-200'
+                                  'p-2 h-10 border rounded-lg',
+                                  errors.dateOfBirth ? 'border-red-300' : 'border-gray-300'
                                 )}
                               >
-                                <CalendarIcon className='h-5 w-5 text-gray-400' />
+                                <CalendarIcon className='h-4 w-4 text-gray-400' />
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className='w-auto p-0'>
@@ -215,7 +213,11 @@ export default function Register() {
                           </Popover>
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      {errors.dateOfBirth && (
+                        <div className='absolute left-0 top-[93%] mt-1 z-10'>
+                          <p className='text-xs text-red-600 px-2 py-1'>{errors.dateOfBirth.message}</p>
+                        </div>
+                      )}
                     </FormItem>
                   )
                 }}
@@ -226,25 +228,31 @@ export default function Register() {
                 name='email'
                 rules={emailValidation}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-sm font-medium text-gray-700'>Email Address</FormLabel>
+                  <FormItem className='relative'>
+                    <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+                      Email Address
+                    </label>
                     <FormControl>
                       <div className='relative'>
                         <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                          <FiMail className='h-5 w-5 text-gray-400' />
+                          <FiMail className='h-4 w-4 text-gray-400' />
                         </div>
                         <input
                           type='email'
                           {...field}
                           onFocus={() => handleInputFocus('email')}
-                          className={`w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
-                            errors.email ? 'border-red-300' : 'border-gray-200'
+                          className={`w-full pl-9 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
+                            errors.email ? 'border-red-300' : 'border-gray-300'
                           }`}
                           placeholder='Enter your email'
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    {errors.email && (
+                      <div className='absolute left-0 top-[93%] mt-1 z-10'>
+                        <p className='text-xs text-red-600 px-2 py-1'>{errors.email.message}</p>
+                      </div>
+                    )}
                   </FormItem>
                 )}
               />
@@ -254,19 +262,21 @@ export default function Register() {
                 name='password'
                 rules={passwordValidation}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-sm font-medium text-gray-700'>Password</FormLabel>
+                  <FormItem className='relative'>
+                    <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
+                      Password
+                    </label>
                     <FormControl>
                       <div className='relative'>
                         <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                          <FiLock className='h-5 w-5 text-gray-400' />
+                          <FiLock className='h-4 w-4 text-gray-400' />
                         </div>
                         <input
                           type={showPassword ? 'text' : 'password'}
                           {...field}
                           onFocus={() => handleInputFocus('password')}
-                          className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
-                            errors.password ? 'border-red-300' : 'border-gray-200'
+                          className={`w-full pl-9 pr-10 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
+                            errors.password ? 'border-red-300' : 'border-gray-300'
                           }`}
                           placeholder='Enter your password'
                         />
@@ -276,14 +286,18 @@ export default function Register() {
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
-                            <FiEyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                            <FiEyeOff className='h-4 w-4 text-gray-400 hover:text-gray-600' />
                           ) : (
-                            <FiEye className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                            <FiEye className='h-4 w-4 text-gray-400 hover:text-gray-600' />
                           )}
                         </button>
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    {errors.password && (
+                      <div className='absolute left-0 top-[93%] mt-1 z-10'>
+                        <p className='text-xs text-red-600 px-2 py-1'>{errors.password.message}</p>
+                      </div>
+                    )}
                   </FormItem>
                 )}
               />
@@ -293,19 +307,21 @@ export default function Register() {
                 name='confirmPassword'
                 rules={confirmPasswordValidation}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-sm font-medium text-gray-700'>Confirm Password</FormLabel>
+                  <FormItem className='relative'>
+                    <label htmlFor='confirmPassword' className='block text-sm font-medium text-gray-700 mb-1'>
+                      Confirm Password
+                    </label>
                     <FormControl>
                       <div className='relative'>
                         <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                          <FiLock className='h-5 w-5 text-gray-400' />
+                          <FiLock className='h-4 w-4 text-gray-400' />
                         </div>
                         <input
                           type={showConfirmPassword ? 'text' : 'password'}
                           {...field}
                           onFocus={() => handleInputFocus('confirmPassword')}
-                          className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
-                            errors.confirmPassword ? 'border-red-300' : 'border-gray-200'
+                          className={`w-full pl-9 pr-10 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
+                            errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
                           }`}
                           placeholder='Confirm your password'
                         />
@@ -315,14 +331,18 @@ export default function Register() {
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
                           {showConfirmPassword ? (
-                            <FiEyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                            <FiEyeOff className='h-4 w-4 text-gray-400 hover:text-gray-600' />
                           ) : (
-                            <FiEye className='h-5 w-5 text-gray-400 hover:text-gray-600' />
+                            <FiEye className='h-4 w-4 text-gray-400 hover:text-gray-600' />
                           )}
                         </button>
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    {errors.confirmPassword && (
+                      <div className='absolute left-0 top-[93%] mt-1 z-10'>
+                        <p className='text-xs text-red-600 px-2 py-1'>{errors.confirmPassword.message}</p>
+                      </div>
+                    )}
                   </FormItem>
                 )}
               />
@@ -330,11 +350,11 @@ export default function Register() {
               <Button
                 type='submit'
                 disabled={isLoading}
-                className='w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white py-3 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-6'
+                className='w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-2.5 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 {isLoading ? (
                   <div className='flex items-center justify-center'>
-                    <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
+                    <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
                     Registering...
                   </div>
                 ) : (
@@ -344,6 +364,16 @@ export default function Register() {
             </form>
           </Form>
 
+          <div className='mt-6 relative'>
+            <div className='absolute inset-0 flex items-center'>
+              <div className='w-full border-t border-gray-300' />
+            </div>
+            <div className='relative flex justify-center text-sm'>
+              <span className='px-2 bg-white text-gray-500'>Or continue with</span>
+            </div>
+          </div>
+
+          {/* Sign In Link */}
           <div className='mt-6 text-center'>
             <p className='text-sm text-gray-600'>
               Have an account?{' '}
