@@ -1,5 +1,5 @@
 const adminPath = {
-  dashboard: '/admin/dashboard'
+  dashboard: 'dashboard'
 }
 
 export default adminPath

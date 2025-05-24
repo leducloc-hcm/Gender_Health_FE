@@ -1,5 +1,5 @@
 const staffPath = {
-  dashboard: '/staff/dashboard'
+  dashboard: 'dashboard'
 }
 
 export default staffPath
