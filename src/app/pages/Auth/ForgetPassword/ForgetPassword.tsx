@@ -1,29 +1,14 @@
 import { authApi } from '@/app/apis/auth.api'
 import { Button } from '@/app/components/ui/button'
-import authPath from '@/app/routes/paths/authPath'
-import axios, { type AxiosResponse } from 'axios'
+import axios from 'axios'
 import { useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { FiHeart, FiMail } from 'react-icons/fi'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import type { ForgotPasswordFormData } from './models/ForgetPassword'
+import { setLocalStorage } from '@/app/lib/utils'
 
-export interface ForgotPasswordFormData {
-  email: string
-}
-
-export interface ForgotPasswordResponse extends Partial<AxiosResponse> {
-  message?: string
-  errors?: {
-    email?: {
-      type?: string
-      value?: string
-      msg?: string
-      path?: string
-      location?: string
-    }
-  }
-}
 
 export default function ForgetPassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -54,6 +39,7 @@ export default function ForgetPassword() {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
+      setLocalStorage('forgot-email', data.email);
       const response = await authApi.forgotPassword(data)
       console.log('Response received:', response)
 

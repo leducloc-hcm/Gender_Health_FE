@@ -15,6 +15,7 @@ import adminPath from './paths/adminPath'
 import HomePage from '../pages/HomePage/Homepage'
 import { ToastContainer } from 'react-toastify'
 import Auth from '@/app/pages/Auth/Auth'
+import ResetPassword from '../pages/Auth/ResetPassword/ResetPassword'
 
 export default function MainRoutes() {
   return (
@@ -33,6 +34,9 @@ export default function MainRoutes() {
       />
       <Routes>
         <Route path='/' element={<HomePage />} />
+
+        {/* Route for verify/reset user click from email */}
+        <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/auth' element={<Auth />}>
           <Route path={authPath.login} element={<Login />} />
           <Route path={authPath.register} element={<Register />} />
