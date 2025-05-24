@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { FiEye, FiEyeOff, FiHeart, FiMail, FiLock } from 'react-icons/fi'
 import { Button } from '@/app/components/ui/button'
@@ -8,8 +8,25 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import type { LoginFormData } from '@/app/pages/Auth/Login/models/login'
 import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
-import authPath from '@/app/routes/paths/authPath'
 import { authApi } from '@/app/apis/auth.api'
+
+const getGoogleAuthUrl = () => {
+  const { VITE_GOOGLE_CLIENT_ID, VITE_GOOGLE_REDIRECT_URI } = import.meta.env
+  const url = `https://accounts.google.com/o/oauth2/v2/auth`
+  const query = {
+    client_id: VITE_GOOGLE_CLIENT_ID,
+    redirect_uri: VITE_GOOGLE_REDIRECT_URI,
+    response_type: 'code',
+    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'].join(
+      ' '
+    ),
+    prompt: 'consent',
+    access_type: 'offline'
+  }
+  const queryString = new URLSearchParams(query).toString()
+  return `${url}?${queryString}`
+}
+const googleOAuthUrl = getGoogleAuthUrl()
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -182,9 +199,12 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Google  */}
+          {/* Google Login Button */}
           <div className='mt-4'>
-            <Button type='button' variant='outline' className='w-full border-gray-300 hover:bg-gray-50'>
+            <a
+              href={googleOAuthUrl}
+              className='w-full inline-flex justify-center items-center px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors'
+            >
               <svg className='w-4 h-4 mr-2' viewBox='0 0 24 24'>
                 <path
                   fill='#4285F4'
@@ -204,7 +224,7 @@ export default function LoginPage() {
                 />
               </svg>
               Continue with Google
-            </Button>
+            </a>
           </div>
 
           {/* Sign Up*/}

@@ -15,6 +15,7 @@ import adminPath from './paths/adminPath'
 import HomePage from '../pages/HomePage/Homepage'
 import { ToastContainer } from 'react-toastify'
 import Auth from '@/app/pages/Auth/Auth'
+import OauthLogin from '@/app/pages/Auth/OauthLogin/OauthLogin'
 
 export default function MainRoutes() {
   return (
@@ -33,6 +34,8 @@ export default function MainRoutes() {
       />
       <Routes>
         <Route path='/' element={<HomePage />} />
+        <Route path='/login/oauth' element={<OauthLogin />} />
+
         <Route path='/auth' element={<Auth />}>
           <Route path={authPath.login} element={<Login />} />
           <Route path={authPath.register} element={<Register />} />
