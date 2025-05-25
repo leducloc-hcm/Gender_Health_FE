@@ -68,7 +68,7 @@ export default function LoginPage() {
         autoClose: 500
       })
       setTimeout(() => {
-        navigate('/customer/dashboard')
+        navigate('/customer')
       }, 1000)
     } catch (error) {
       if (axios.isAxiosError(error)) {

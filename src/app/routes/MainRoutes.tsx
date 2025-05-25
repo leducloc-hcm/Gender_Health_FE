@@ -17,6 +17,11 @@ import { ToastContainer } from 'react-toastify'
 import Auth from '@/app/pages/Auth/Auth'
 import OauthLogin from '@/app/pages/Auth/OauthLogin/OauthLogin'
 import VerifyEmail from '../pages/Auth/VerfiEmail/VerifyEmail'
+import Profile from '@/app/pages/Customer/Profile/Profile'
+import MenstrualCycle from '@/app/pages/Customer/Menstrual Cycle/MenstrualCycle'
+import TestPackages from '@/app/pages/Customer/TestPackages/TestPackages'
+import Blog from '@/app/pages/Customer/Blog/Blog'
+import Order from '@/app/pages/Customer/Order/Order'
 
 export default function MainRoutes() {
   return (
@@ -46,6 +51,11 @@ export default function MainRoutes() {
 
         <Route path='/customer' element={<Customer />}>
           <Route path={customerPath.dashboard} element={<Dashboard />} />
+          <Route path={customerPath.profile} element={<Profile />} />
+          <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
+          <Route path={customerPath.testPackages} element={<TestPackages />} />
+          <Route path={customerPath.blog} element={<Blog />} />
+          <Route path={customerPath.orders} element={<Order />} />
         </Route>
 
         <Route path='/admin' element={<Admin />}>
