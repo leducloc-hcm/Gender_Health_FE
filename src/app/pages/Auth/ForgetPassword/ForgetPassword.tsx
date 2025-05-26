@@ -7,7 +7,7 @@ import { FiHeart, FiMail } from 'react-icons/fi'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import type { ForgotPasswordFormData } from './models/ForgetPassword'
-import { setLocalStorage } from '@/app/lib/utils'
+import { emailValidation } from '@/app/modules/AuthValidation/AuthValidation'
 
 
 export default function ForgetPassword() {
@@ -27,34 +27,24 @@ export default function ForgetPassword() {
     }
   })
 
-  const emailValidation = {
-    required: 'Email is required',
-    pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: 'Please enter a valid email address'
-    }
-  }
 
   const onSubmit: SubmitHandler<ForgotPasswordFormData> = async (data) => {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      setLocalStorage('forgot-email', data.email);
       const response = await authApi.forgotPassword(data)
       console.log('Response received:', response)
 
       toast.success('Send successful! Please check your email...', {
         position: 'top-right',
-        autoClose: 2000
+        autoClose: 1500
       })
-      setTimeout(() => {
-        navigate('/')
-      }, 2000)
+      navigate('/')
     } catch (error: any) {
-      console.error('Login error:', error)
+      console.log("🚀 ~ ForgotPassword ~ error:", error)
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data?.errors?.email?.msg || error.message || 'Login failed. Please try again.'
+          error.response?.data?.errors?.email?.msg || error.message || 'Failed. Please try again!'
         toast.error(errorMessage)
       } else {
         toast.error('An unexpected error occurred. Please try again.')
@@ -74,13 +64,13 @@ export default function ForgetPassword() {
       <div className='absolute bottom-20 right-16 w-12 h-12 bg-rose-200 rounded-full opacity-40 animate-bounce'></div>
       <div className='absolute top-1/3 right-20 w-10 h-10 bg-pink-300 rounded-full opacity-25'></div>
 
-      <div className='w-full max-w-md'>
+      <div className='w-full max-w-md min-w-sm'>
         <div className='bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden'>
           <div className='bg-gradient-to-r from-pink-500 to-rose-500 p-6 text-center'>
             <div className='inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-3'>
               <FiHeart className='w-6 h-6 text-pink-500' />
             </div>
-            <h1 className='text-xl font-bold text-white mb-1'>Forgot your password !?</h1>
+            <h1 className='text-xl font-bold text-white mb-1'>Forgot your password?</h1>
             <p className='text-pink-100 text-sm'>Enter your email and we'll send you a link to reset password</p>
           </div>
 

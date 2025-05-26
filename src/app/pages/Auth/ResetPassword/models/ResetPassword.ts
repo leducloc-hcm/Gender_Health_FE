@@ -1,19 +1,9 @@
-import type { AxiosResponse } from 'axios'
-
 export interface VerifyForgotPasswordRequest {
-  email: string
-  code: string
+  forgot_password_token: string
 }
 
-export interface VerifyForgotPasswordResponse extends Partial<AxiosResponse> {
-  message?: string
-  errors?: {
-    email?: {
-      type?: string
-      value?: string
-      msg?: string
-      path?: string
-      location?: string
-    }
-  }
+export interface ResetPasswordRequest {
+  forgot_password_token: string
+  password: string
+  confirm_password: string
 }

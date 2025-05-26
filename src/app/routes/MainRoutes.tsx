@@ -42,14 +42,14 @@ export default function MainRoutes() {
       <Routes>
         <Route path='/' element={<HomePage />} />
 
-        {/* Route for verify/reset user click from email */}
-        <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/login/oauth' element={<OauthLogin />} />
 
         <Route path='/auth' element={<Auth />}>
           <Route path={authPath.login} element={<Login />} />
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
+          {/* Route for verify/reset user click from email */}
+          <Route path={authPath.resetPassword} element={<ResetPassword />} />
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
         </Route>
 
