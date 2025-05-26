@@ -16,6 +16,13 @@ import HomePage from '../pages/HomePage/Homepage'
 import { ToastContainer } from 'react-toastify'
 import Auth from '@/app/pages/Auth/Auth'
 import ResetPassword from '../pages/Auth/ResetPassword/ResetPassword'
+import OauthLogin from '@/app/pages/Auth/OauthLogin/OauthLogin'
+import VerifyEmail from '../pages/Auth/VerfiEmail/VerifyEmail'
+import Profile from '@/app/pages/Customer/Profile/Profile'
+import MenstrualCycle from '@/app/pages/Customer/Menstrual Cycle/MenstrualCycle'
+import TestPackages from '@/app/pages/Customer/TestPackages/TestPackages'
+import Blog from '@/app/pages/Customer/Blog/Blog'
+import Order from '@/app/pages/Customer/Order/Order'
 
 export default function MainRoutes() {
   return (
@@ -37,14 +44,22 @@ export default function MainRoutes() {
 
         {/* Route for verify/reset user click from email */}
         <Route path='/reset-password' element={<ResetPassword />} />
+        <Route path='/login/oauth' element={<OauthLogin />} />
+
         <Route path='/auth' element={<Auth />}>
           <Route path={authPath.login} element={<Login />} />
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
+          <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
         </Route>
 
         <Route path='/customer' element={<Customer />}>
           <Route path={customerPath.dashboard} element={<Dashboard />} />
+          <Route path={customerPath.profile} element={<Profile />} />
+          <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
+          <Route path={customerPath.testPackages} element={<TestPackages />} />
+          <Route path={customerPath.blog} element={<Blog />} />
+          <Route path={customerPath.orders} element={<Order />} />
         </Route>
 
         <Route path='/admin' element={<Admin />}>

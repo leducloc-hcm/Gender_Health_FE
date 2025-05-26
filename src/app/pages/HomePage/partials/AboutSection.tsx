@@ -26,7 +26,7 @@ export default function AboutSection() {
   }
 
   return (
-    <section id='about' className='py-20 bg-gradient-to-br from-pink-25 to-rose-25'>
+    <section id='about' className='py-20 bg-gradient-to-br from-pink-50 to-rose-50'>
       <div className='container mx-auto px-4 md:px-8'>
         <motion.div
           ref={ref}
@@ -36,7 +36,7 @@ export default function AboutSection() {
           className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'
         >
           <motion.div variants={itemVariants} className='order-2 lg:order-1'>
-            <h2 className='text-3xl text-center lg:text-left font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-6'>
+            <h2 className='text-3xl py-2 text-center lg:text-left font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 bg-clip-text text-transparent mb-6'>
               About Our Healthcare Facility
             </h2>
             <p className='text-lg text-gray-600 mb-6 leading-relaxed'>

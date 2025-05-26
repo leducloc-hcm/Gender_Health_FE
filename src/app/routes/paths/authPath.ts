@@ -1,7 +1,9 @@
 const authPath = {
   login: 'login',
   register: 'register',
-  forgotPassword: 'forgotPassword'
+  forgotPassword: 'forgotPassword',
+  loginGoogle: '/login/oauth',
+  verifyEmail: 'verify-email'
 }
 
 export default authPath
