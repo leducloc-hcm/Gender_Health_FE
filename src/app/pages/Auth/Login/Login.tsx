@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useForm, type SubmitHandler } from 'react-hook-form'
-import { FiEye, FiEyeOff, FiHeart, FiMail, FiLock } from 'react-icons/fi'
+import { authApi } from '@/app/apis/auth.api'
 import { Button } from '@/app/components/ui/button'
+import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
+import type { LoginFormData } from '@/app/pages/Auth/Login/models/login'
 import axios from 'axios'
+import { useState } from 'react'
+import { useForm, type SubmitHandler } from 'react-hook-form'
+import { FiEye, FiEyeOff, FiHeart, FiLock, FiMail } from 'react-icons/fi'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import type { LoginFormData } from '@/app/pages/Auth/Login/models/login'
-import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
-import { authApi } from '@/app/apis/auth.api'
 
 const getGoogleAuthUrl = () => {
   const { VITE_GOOGLE_CLIENT_ID, VITE_GOOGLE_REDIRECT_URI } = import.meta.env
@@ -68,7 +68,7 @@ export default function LoginPage() {
         autoClose: 500
       })
       setTimeout(() => {
-        navigate('/customer/dashboard')
+        navigate('/customer')
       }, 1000)
     } catch (error) {
       if (axios.isAxiosError(error)) {
