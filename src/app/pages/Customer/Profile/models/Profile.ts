@@ -7,8 +7,11 @@ export interface UserProfile {
   location: string
   username: string
   avatar: string
-  cover_photo: string
+  cover_photo?: string
   email?: string
+  bio?: string
+  website?: string
+  coverPhoto?: string
 }
 export interface getProfileResult {
   id: number
@@ -18,21 +21,20 @@ export interface getProfileResult {
   created_at: string
   updated_at: string
   name: string
-  bio?: any
-  location?: any
+  bio?: string
+  location?: string
   username: string
-  avatar?: any
-  cover_photo?: any
+  avatar?: string
+  cover_photo?: string
   date_of_birth: string
-  website?: any
-  phone_number?: any
-  description?: any
+  website?: string
+  phone_number?: string
+  description?: string
 }
-
-export interface UserProfile {
-  name: string
-  location: string
-  username: string
-  avatar: string
-  cover_photo: string
+export interface UpdateProfileInput {
+  name?: string
+  location?: string
+  username?: string
+  avatar?: string
+  coverPhoto?: string
 }

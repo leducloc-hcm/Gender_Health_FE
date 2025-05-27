@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { profileResponse, UserProfile } from '../pages/Customer/Profile/models/Profile'
+import type { profileResponse, UpdateProfileInput, UserProfile } from '../pages/Customer/Profile/models/Profile'
 import { fetcher } from './fetcher'
 
 export const profileApi = {
@@ -19,7 +19,7 @@ export const profileApi = {
       throw error
     }
   },
-  updateProfile: async (data: UserProfile): Promise<profileResponse> => {
+  updateProfile: async (data: Partial<UpdateProfileInput>): Promise<profileResponse> => {
     try {
       const accessToken = localStorage.getItem('access_token')
       if (!accessToken) throw new Error('Access token not found')

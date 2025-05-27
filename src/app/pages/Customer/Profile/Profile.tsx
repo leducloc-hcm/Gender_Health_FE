@@ -8,22 +8,31 @@ import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { MapPin, Edit3, Save, X, Heart, Upload } from 'lucide-react'
 import { profileApi } from '@/app/apis/profile.api'
-import type { UserProfile } from './models/Profile'
+import type { getProfileResult, UpdateProfileInput, UserProfile } from './models/Profile'
 import { toast } from 'react-toastify'
 
 export default function Profile() {
-  const [userProfile, setUserProfile] = useState<UserProfile>({
+  const [userProfile, setUserProfile] = useState<getProfileResult>({
+    id: 0,
+    email: '',
+    role: '',
+    status: '',
+    created_at: '',
+    updated_at: '',
     name: '',
+    bio: '',
     location: '',
     username: '',
     avatar: '',
-    cover_photo: ''
+    cover_photo: '',
+    date_of_birth: ''
   })
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [coverFile, setCoverFile] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string>('')
   const [coverPreview, setCoverPreview] = useState<string>('')
+
   const [isEditing, setIsEditing] = useState(false)
 
   const {
@@ -39,11 +48,13 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await profileApi.getProfile()
-        const profile = response.result as UserProfile
+        const profile = response.result
         setUserProfile(profile)
+        setCoverPreview(profile.cover_photo || '') // Khởi tạo coverPreview
         reset(profile)
       } catch (error) {
         console.error('Failed to fetch profile:', error)
+        toast.error('Failed to load profile.')
       }
     }
     fetchProfile()
@@ -51,25 +62,27 @@ export default function Profile() {
 
   const onSubmit = async (data: UserProfile) => {
     try {
-      console.log('data: ', data)
-      const finalData = {
-        name: data?.name,
-        bio: '1312',
-        location: data.location,
-        website: 'https://johndoe.dev',
-        username: data.username,
-        avatar: data.avatar,
-        cover_photo: data.cover_photo
+      const updatedFields: Partial<UpdateProfileInput> = {}
+      if (data.name !== userProfile.name) updatedFields.name = data.name
+      if (data.location !== userProfile.location) updatedFields.location = data.location
+      if (data.avatar !== userProfile.avatar) updatedFields.avatar = data.avatar
+      if (data.cover_photo !== userProfile.cover_photo) updatedFields.coverPhoto = data.cover_photo
+
+      if (Object.keys(updatedFields).length > 0) {
+        await profileApi.updateProfile(updatedFields)
+        // Lấy lại dữ liệu mới nhất từ API
+        const response = await profileApi.getProfile()
+        const profile = response.result
+        setUserProfile(profile)
+        setCoverPreview(profile.cover_photo || '')
+        reset(profile)
+        toast.success('Profile updated successfully!')
       }
-      const response = await profileApi.updateProfile(finalData)
-      toast.success('Profile updated successfully!')
-      setUserProfile(data)
       setIsEditing(false)
     } catch (error) {
       console.error('Failed to update profile:', error)
       toast.error('Failed to update profile. Please try again.')
     } finally {
-      setUserProfile(data)
       setIsEditing(false)
     }
   }
@@ -78,7 +91,7 @@ export default function Profile() {
     setAvatarFile(null)
     setCoverFile(null)
     setAvatarPreview('')
-    setCoverPreview('')
+    setCoverPreview(userProfile.cover_photo || '') // Giữ lại ảnh bìa hiện tại
     reset(userProfile)
     setIsEditing(false)
   }
@@ -108,7 +121,7 @@ export default function Profile() {
         const result = e.target?.result
         if (typeof result === 'string') {
           setCoverPreview(result)
-          reset({ ...userProfile, cover_photo: result }) // Update form with new cover
+          reset({ ...userProfile, cover_photo: result })
         }
       }
       reader.readAsDataURL(file)
@@ -124,7 +137,7 @@ export default function Profile() {
               isEditing ? 'cursor-pointer group' : ''
             }`}
             style={{
-              backgroundImage: `url(${coverPreview || userProfile.cover_photo || ''})`,
+              backgroundImage: `url(${coverPreview || userProfile.cover_photo || '/placeholder.svg'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
@@ -240,20 +253,7 @@ export default function Profile() {
                       />
                       {errors.name && <p className='text-red-500 text-xs mt-1'>{errors.name.message}</p>}
                     </div>
-
                     <div className='space-y-2'>
-                      <Label htmlFor='username' className='text-sm font-medium text-gray-700'>
-                        Tên người dùng
-                      </Label>
-                      <Input
-                        id='username'
-                        {...register('username', { required: 'Tên người dùng là bắt buộc' })}
-                        className='border-rose-200 focus:border-rose-400 focus:ring-rose-400'
-                      />
-                      {errors.username && <p className='text-red-500 text-xs mt-1'>{errors.username.message}</p>}
-                    </div>
-
-                    <div className='space-y-2 md:col-span-2'>
                       <Label htmlFor='location' className='text-sm font-medium text-gray-700'>
                         Địa chỉ
                       </Label>
@@ -264,7 +264,6 @@ export default function Profile() {
                       />
                       {errors.location && <p className='text-red-500 text-xs mt-1'>{errors.location.message}</p>}
                     </div>
-
                     <div className='space-y-2 md:col-span-2'>
                       <Label htmlFor='avatar' className='text-sm font-medium text-gray-700'>
                         Ảnh đại diện
@@ -296,7 +295,6 @@ export default function Profile() {
                         className='hidden'
                       />
                     </div>
-
                     <div className='space-y-2 md:col-span-2'>
                       <Label htmlFor='cover_photo' className='text-sm font-medium text-gray-700'>
                         Ảnh bìa
@@ -310,15 +308,6 @@ export default function Profile() {
                             className='border-rose-200 focus:border-rose-400 focus:ring-rose-400'
                           />
                         </div>
-                        {coverPreview && (
-                          <div className='w-24 h-16 rounded-lg overflow-hidden border-2 border-rose-200'>
-                            <img
-                              src={coverPreview || '/placeholder.svg'}
-                              alt='Preview'
-                              className='w-full h-full object-cover'
-                            />
-                          </div>
-                        )}
                       </div>
                       <input
                         id='cover-upload'
@@ -337,7 +326,7 @@ export default function Profile() {
             </CardContent>
           </Card>
 
-          <Card className='mt-6 bg-white/90 backdrop-blur-smclerotic border-rose-200 shadow-lg'>
+          <Card className='mt-6 bg-white/90 backdrop-blur-sm border-rose-200 shadow-lg'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between mb-4'>
                 <h3 className='text-lg font-semibold text-gray-900 flex items-center gap-2'>
