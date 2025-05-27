@@ -9,6 +9,7 @@ import {
 } from '@/app/components/ui/dropdown-menu'
 import { SidebarTrigger } from '@/app/components/ui/sidebar'
 import { Bell, LogOut, Settings, ShoppingBag, User } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function CustomerHeader() {
   return (
@@ -53,10 +54,12 @@ export default function CustomerHeader() {
               </div>
             </div>
             <DropdownMenuSeparator className='bg-pink-100' />
-            <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
-              <User className='mr-3 h-4 w-4 text-pink-500' />
-              <span>Profile</span>
-            </DropdownMenuItem>
+            <Link to={`profile`}>
+              <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
+                <User className='mr-3 h-4 w-4 text-pink-500' />
+                <span>Profile</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
               <ShoppingBag className='mr-3 h-4 w-4 text-pink-500' />
               <span>Orders</span>
