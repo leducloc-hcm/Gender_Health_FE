@@ -1,16 +1,32 @@
-#Step 1: Build the frontend
-FROM node:alpine3.18 AS build
+# Step 1: Build the React-Vite application
+FROM node:18-alpine AS build
+
+# Set working directory
 WORKDIR /app
-COPY package.json .
-RUN npm install -f
-RUN npm rebuild esbuild
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
 COPY . .
+
+# Build the application
 RUN npm run build
 
-#Step 2: Serve the frontend
-FROM nginx:1.23-alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf *
-COPY --from=build /app/dist .
+# Step 2: Serve with Nginx
+FROM nginx:1.25-alpine AS production
+
+# Copy built assets from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy custom nginx configuration (optional)
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80
 EXPOSE 80
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
