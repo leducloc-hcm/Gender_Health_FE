@@ -76,12 +76,14 @@ export default function CustomerSidebar() {
   const location = useLocation()
 
   return (
-    <Sidebar collapsible='icon' className='border-r-0 '>
-      <SidebarHeader className='border-b border-pink-100 bg-gradient-to-r from-pink-50 to-rose-50'>
-        <div className='flex items-center gap-2 px-3 py-3 group-data-[collapsible=icon]:justify-center'>
-          <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 via-rose-500 to-pink-600 shadow-lg'>
-            <Heart className='h-5 w-5 text-white' />
-          </div>
+    <Sidebar collapsible='icon' className=''>
+      <SidebarHeader className=''>
+        <div className='flex items-center gap-2 px-3 py-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-3'>
+          <img
+            className='w-6 h-6'
+            src='https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA1L2pvYjk2My1iLTExMy1wLnBuZw.png'
+            alt=''
+          />
 
           <span className='truncate font-bold text-gray-900 text-lg group-data-[collapsible=icon]:hidden'>
             GenderCare
@@ -89,7 +91,7 @@ export default function CustomerSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className='bg-gradient-to-b from-white to-pink-50/30 custom-scrollbar overflow-y-auto'>
+      <SidebarContent className=' custom-scrollbar overflow-y-auto'>
         <SidebarGroup>
           <SidebarGroupContent className=''>
             <SidebarMenu className='space-y-1'>
@@ -108,7 +110,7 @@ export default function CustomerSidebar() {
                         className='flex items-center gap-3 px-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center'
                       >
                         <div className='relative flex items-center justify-center'>
-                          <item.icon className='h-5 w-5 transition-transform group-hover:scale-110' />
+                          <item.icon className='h-5 w-5 transition-transform ' />
                           {item.badge && (
                             <Badge className='absolute -top-2 -right-2 h-5 w-5 rounded-full bg-red-500 text-[10px] font-bold text-white flex items-center justify-center p-0 group-data-[collapsible=icon]:scale-75 group-data-[collapsible=icon]:-top-1 group-data-[collapsible=icon]:-right-1'>
                               {item.badge}
