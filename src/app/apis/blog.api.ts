@@ -1,5 +1,4 @@
 import { fetcher } from '@/app/apis/fetcher'
-import axios from 'axios'
 
 export interface BlogPost {
   id: number

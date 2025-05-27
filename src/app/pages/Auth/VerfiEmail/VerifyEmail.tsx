@@ -1,12 +1,11 @@
 import { fetcher } from '@/app/apis/fetcher'
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [status, setStatus] = useState('verifying')
 
   useEffect(() => {
     const token = searchParams.get('token')
@@ -22,14 +21,12 @@ const VerifyEmail = () => {
       try {
         const response = await fetcher.post('/users/verify-email', data)
         if (response.status === 200) {
-          setStatus('verified')
           navigate('/auth/login', { replace: true })
           toast.success('Email verified successfully!', {
             position: 'top-right',
             autoClose: 5000
           })
         } else {
-          setStatus('failed')
           navigate('/auth/login', { replace: true })
           toast.error('Email verification failed. Please try again.', {
             position: 'top-right',
@@ -37,7 +34,6 @@ const VerifyEmail = () => {
           })
         }
       } catch (error) {
-        setStatus('failed')
         navigate('/auth/login', { replace: true })
         if (error instanceof Error) {
           toast.error(error.message, {

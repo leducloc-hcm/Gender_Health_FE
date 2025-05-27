@@ -1,6 +1,5 @@
 import { authApi } from '@/app/apis/auth.api'
 import { Button } from '@/app/components/ui/button'
-import authPath from '@/app/routes/paths/authPath'
 import axios, { type AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
