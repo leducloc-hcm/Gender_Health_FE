@@ -1,4 +1,4 @@
-import { fetchBlogs, type BlogPost } from '@/app/apis/blog.api'
+import { fetchBlog, type BlogPost } from '@/app/apis/blog.api'
 import { formatDate, truncateContent } from '@/app/lib/utils'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
@@ -12,7 +12,7 @@ export default function BlogSection() {
   useEffect(() => {
     const loadBlogs = async () => {
       try {
-        const blogs = await fetchBlogs()
+        const blogs = await fetchBlog()
         setBlogPosts(blogs)
         console.log('Blogs:', blogs)
       } catch (err: any) {
