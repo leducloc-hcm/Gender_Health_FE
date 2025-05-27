@@ -19,20 +19,20 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -t react-app/reactjs-app .
+        run: docker build -t kienptjk123/react-app .
 
       - name: Push Docker Image
-        run: docker push react-app/reactjs-app:latest
+        run: docker push kienptjk123/react-app:latest
 
   deploy:
     needs: build
     runs-on: aws-ec2
     steps:
       - name: Pull image from Docker Hub
-        run: docker pull react-app/reactjs-app:latest
+        run: docker pull kienptjk123/react-app:latest
 
       - name: Delete Old Container
         run: docker rm -f reactContainer || true
 
       - name: Run docker container
-        run: docker run -d -p 3000:80 --name reactContainer react-app/reactjs-app:latest
+        run: docker run -d -p 3000:80 --name reactContainer kienptjk123/react-app:latest
