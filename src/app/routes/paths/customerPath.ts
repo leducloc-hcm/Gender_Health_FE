@@ -4,7 +4,8 @@ const customerPath = {
   menstrualCycle: 'cycle',
   testPackages: 'test-packages',
   blog: 'blog',
-  orders: 'orders'
+  orders: 'orders',
+  blogDetail: 'blog/:id'
 }
 
 export default customerPath

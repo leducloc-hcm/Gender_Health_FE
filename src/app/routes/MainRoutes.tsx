@@ -15,6 +15,7 @@ import adminPath from './paths/adminPath'
 import HomePage from '../pages/HomePage/Homepage'
 import { ToastContainer } from 'react-toastify'
 import Auth from '@/app/pages/Auth/Auth'
+import ResetPassword from '../pages/Auth/ResetPassword/ResetPassword'
 import OauthLogin from '@/app/pages/Auth/OauthLogin/OauthLogin'
 import VerifyEmail from '../pages/Auth/VerfiEmail/VerifyEmail'
 import Profile from '@/app/pages/Customer/Profile/Profile'
@@ -22,6 +23,7 @@ import TestPackages from '@/app/pages/Customer/TestPackages/TestPackages'
 import Blog from '@/app/pages/Customer/Blog/Blog'
 import Order from '@/app/pages/Customer/Order/Order'
 import MenstrualCycle from '@/app/pages/HomePage/MenstrualCycle/MenstrualCycle'
+import BlogDetail from '../pages/Customer/Blog/BlogDetail'
 
 export default function MainRoutes() {
   return (
@@ -40,6 +42,7 @@ export default function MainRoutes() {
       />
       <Routes>
         <Route path='/' element={<HomePage />} />
+
         <Route path='/login/oauth' element={<OauthLogin />} />
         <Route path='/menstrual-cycle' element={<MenstrualCycle />} />
 
@@ -47,6 +50,8 @@ export default function MainRoutes() {
           <Route path={authPath.login} element={<Login />} />
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
+          {/* Route for verify/reset user click from email */}
+          <Route path={authPath.resetPassword} element={<ResetPassword />} />
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
         </Route>
 
@@ -56,6 +61,7 @@ export default function MainRoutes() {
           <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
           <Route path={customerPath.testPackages} element={<TestPackages />} />
           <Route path={customerPath.blog} element={<Blog />} />
+          <Route path={customerPath.blogDetail} element={<BlogDetail />} />
           <Route path={customerPath.orders} element={<Order />} />
         </Route>
 

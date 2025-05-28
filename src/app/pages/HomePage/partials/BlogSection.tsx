@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { FiUser, FiArrowUpRight, FiCalendar } from 'react-icons/fi'
 import { formatDate, truncateContent } from '@/app/lib/utils'
-import { fetchBlogs, type BlogPost } from '@/app/apis/blog.api'
+import { fetchBlog, type BlogPost } from '@/app/apis/blog.api'
 
 export default function BlogSection() {
   const ref = useRef(null)
@@ -14,7 +14,7 @@ export default function BlogSection() {
   useEffect(() => {
     const loadBlogs = async () => {
       try {
-        const blogs = await fetchBlogs()
+        const blogs = await fetchBlog()
         setBlogPosts(blogs)
         console.log('Blogs:', blogs)
       } catch (err: any) {
