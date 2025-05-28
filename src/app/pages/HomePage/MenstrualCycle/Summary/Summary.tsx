@@ -483,7 +483,7 @@ export default function Summary({ onFinish }: SummaryProps) {
       <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center'>
         <Card className='w-full max-w-md mx-auto shadow-2xl border-0 bg-white/90 backdrop-blur-sm'>
           <CardContent className='p-8'>
-            <div className='text-center space-y-4'>
+            <div className='text-center space-y-4 '>
               <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto'>
                 <TrendingUp className='w-8 h-8 text-red-500' />
               </div>
@@ -507,11 +507,11 @@ export default function Summary({ onFinish }: SummaryProps) {
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100'>
       <div className='w-full max-w-7xl mx-auto p-6 space-y-10'>
         {/* Large Cycle Visualization - Full Width */}
-        <Card className='shadow-2xl border-0 bg-white/90 backdrop-blur-sm'>
+        <Card className='shadow-2xl border-0 bg-white/90 backdrop-blur-sm mt-4 pt-4'>
           <CardHeader className=' rounded-t-lg'>
             <CardTitle className='flex items-center justify-center gap-3 text-3xl'>
               <div className='w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500  rounded-full flex items-center justify-center'>
-                <Activity className='w-6 h-6 text-white' />
+                <Activity className='w-6 h-6 text-white ' />
               </div>
               Your Cycle Visualization
             </CardTitle>
@@ -583,7 +583,7 @@ export default function Summary({ onFinish }: SummaryProps) {
         {predictionData && (
           <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
             <Card className='shadow-xl border-0 bg-white/90 backdrop-blur-sm'>
-              <CardHeader className=' rounded-t-lg'>
+              <CardHeader className=' rounded-t-lg mt-4 pt-4'>
                 <CardTitle className='flex items-center gap-2 text-pink-800 text-xl'>
                   <Droplets className='w-6 h-6' />
                   Next Period Details
@@ -608,7 +608,7 @@ export default function Summary({ onFinish }: SummaryProps) {
             </Card>
 
             <Card className='shadow-xl border-0 bg-white/90 backdrop-blur-sm'>
-              <CardHeader className=' rounded-t-lg'>
+              <CardHeader className=' rounded-t-lg mt-4 pt-4'>
                 <CardTitle className='flex items-center gap-2 text-pink-800 text-xl'>
                   <Target className='w-6 h-6' />
                   Fertile Window

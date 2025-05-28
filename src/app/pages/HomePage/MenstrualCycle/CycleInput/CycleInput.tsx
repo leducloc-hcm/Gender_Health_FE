@@ -3,6 +3,7 @@ import { Calendar, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { Button } from '@/app/components/ui/button'
 
 interface CycleInputProps {
   onNext?: (cycleId: number) => void // Changed to pass cycleId
@@ -220,7 +221,7 @@ export default function CycleInput({ onNext }: CycleInputProps) {
           </div>
 
           <div className='pt-4'>
-            <button
+            <Button
               type='submit'
               disabled={isSubmitting}
               className='w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-50 flex items-center justify-center'
@@ -233,7 +234,7 @@ export default function CycleInput({ onNext }: CycleInputProps) {
               ) : (
                 'Continue'
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </form>

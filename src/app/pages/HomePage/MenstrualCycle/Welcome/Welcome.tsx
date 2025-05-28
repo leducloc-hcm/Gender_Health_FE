@@ -114,7 +114,7 @@ export default function Welcome({ onNext }: WelcomeProps) {
 
         <button
           onClick={onNext}
-          className='w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-lg'
+          className='w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-lg hover:cursor-pointer'
         >
           Get Started
           <ChevronRight className='w-4 h-4 ml-2' />

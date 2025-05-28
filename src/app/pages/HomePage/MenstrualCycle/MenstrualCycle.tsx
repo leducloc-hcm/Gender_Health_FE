@@ -63,7 +63,6 @@ export default function MenstrualCycle() {
         <div className='max-w-6xl mx-auto'>
           {renderCurrentStep()}
 
-          {/* Progress indicator - only show if not on summary page */}
           {currentStep < 6 && (
             <div className='flex justify-center mt-8'>
               <div className='flex space-x-2'>

@@ -110,7 +110,7 @@ export default function Symptoms({ menstrualCycleId, onNext, onSkipAll }: Sympto
   }
 
   return (
-    <Card className='w-full max-w-2xl mx-auto'>
+    <Card className='w-full max-w-2xl mx-auto mt-4 pt-4'>
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <Heart className='w-5 h-5' />
