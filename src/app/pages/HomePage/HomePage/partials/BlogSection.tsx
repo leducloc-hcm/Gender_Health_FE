@@ -1,12 +1,10 @@
-import { useRef, useState, useEffect } from 'react'
-import { motion, useInView } from 'framer-motion'
-import { FiUser, FiArrowUpRight, FiCalendar } from 'react-icons/fi'
-import { formatDate, truncateContent } from '@/app/lib/utils'
 import { fetchBlog, type BlogPost } from '@/app/apis/blog.api'
+import { formatDate, truncateContent } from '@/app/lib/utils'
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { FiArrowUpRight, FiCalendar, FiUser } from 'react-icons/fi'
 
 export default function BlogSection() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,16 +24,6 @@ export default function BlogSection() {
 
     loadBlogs()
   }, [])
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
 
   const itemVariants = {
     hidden: { y: -20, opacity: 0 },

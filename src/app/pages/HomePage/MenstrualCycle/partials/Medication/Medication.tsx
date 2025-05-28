@@ -1,52 +1,22 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import { api } from '@/app/apis/fetcherToken'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select'
 import { Textarea } from '@/app/components/ui/textarea'
-import { Pill, Loader2, SkipForward } from 'lucide-react'
-
-interface MedicationProps {
-  menstrualCycleId: number | null
-  onNext?: () => void
-  onSkipAll?: () => void
-}
-
-interface MedicationData {
-  menstrual_cycle_id: number
-  name: string
-  dosage: string
-  frequency: string
-  startDate: string
-  endDate: string
-  notes: string
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+import type {
+  MedicationData,
+  MedicationProps
+} from '@/app/pages/HomePage/MenstrualCycle/partials/Medication/models/medication.type'
+import { Loader2, Pill, SkipForward } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 export default function Medication({ menstrualCycleId, onNext, onSkipAll }: MedicationProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,

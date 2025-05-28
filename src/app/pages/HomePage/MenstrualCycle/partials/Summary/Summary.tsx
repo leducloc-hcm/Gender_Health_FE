@@ -1,72 +1,14 @@
-import { useState, useEffect } from 'react'
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import { api } from '@/app/apis/fetcherToken'
+import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
-import { Badge } from '@/app/components/ui/badge'
-import { Progress } from '@/app/components/ui/progress'
-import {
-  CheckCircle,
-  Calendar,
-  TrendingUp,
-  Heart,
-  Loader2,
-  Droplets,
-  Target,
-  Activity,
-  Moon,
-  Sun,
-  Sparkles,
-  Clock,
-  Baby
-} from 'lucide-react'
-import { format, differenceInDays, addDays, isWithinInterval } from 'date-fns'
+import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
+import type { PredictionData } from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/models/summary.type'
+import { addDays, differenceInDays, format, isWithinInterval } from 'date-fns'
+import { Activity, Baby, Calendar, Clock, Droplets, Loader2, Sparkles, Target, TrendingUp } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
-interface SummaryProps {
-  onFinish?: () => void
-}
-
-interface UserProfile {
-  id: number
-  customer_profile_id: number
-  email: string
-  name: string
-}
-
-interface PredictionData {
-  prediction: {
-    id: number
-    predictedStartDate: string
-    predictedEndDate: string
-    cycleLength: number
-    createdAt: string
-    customerProfileId: number
-  }
-  pregnancyAbility: {
-    fertileWindowStart: string
-    fertileWindowEnd: string
-    pregnancyPercent: number
-  }
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
-
-// Enhanced Cycle Chart Component
 const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
   const [hoveredDay, setHoveredDay] = useState<number | null>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -411,7 +353,7 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
   )
 }
 
-export default function Summary({ onFinish }: SummaryProps) {
+export default function Summary() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [predictionData, setPredictionData] = useState<PredictionData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -422,14 +364,12 @@ export default function Summary({ onFinish }: SummaryProps) {
       try {
         setIsLoading(true)
 
-        // Get user profile first
         const userResponse = await api.get('/users/me')
         console.log('User profile response:', userResponse.data)
+        console.log(userProfile)
+
         setUserProfile(userResponse.data.result)
-
         const customerProfileId = userResponse.data.result.customer_profile_id
-
-        // Get prediction data
         const predictionResponse = await api.get(`/prediction/${customerProfileId}`)
         console.log('Prediction response:', predictionResponse.data)
         setPredictionData(predictionResponse.data.data)
@@ -441,11 +381,9 @@ export default function Summary({ onFinish }: SummaryProps) {
         setIsLoading(false)
       }
     }
-
     fetchData()
   }, [])
 
-  // Calculate days until next period
   const getDaysUntilNextPeriod = () => {
     if (!predictionData) return 0
     const today = new Date()

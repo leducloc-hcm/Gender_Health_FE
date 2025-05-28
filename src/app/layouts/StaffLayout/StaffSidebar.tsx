@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import { Badge } from '@/app/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { BookOpen, Settings, User, ShoppingBag, LogOut, ChevronDown, Home } from 'lucide-react'
+import { BookOpen, ChevronDown, Home, LogOut, Settings, ShoppingBag, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [

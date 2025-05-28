@@ -1,6 +1,3 @@
-import { Button } from '@/app/components/ui/button'
-import { BookOpen, Heart, MessageCircle } from 'lucide-react'
-
 export default function Dashboard() {
   return (
     <div>Dashboard</div>

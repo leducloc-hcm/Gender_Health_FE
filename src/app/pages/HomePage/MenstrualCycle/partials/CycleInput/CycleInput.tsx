@@ -1,63 +1,20 @@
-import { useState, useEffect } from 'react'
+import { api } from '@/app/apis/fetcherToken'
+import { Button } from '@/app/components/ui/button'
+import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
+import type {
+  CycleInputProps,
+  FormData
+} from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/models/cycleinput.type'
 import { Calendar, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import axios from 'axios'
-import { Button } from '@/app/components/ui/button'
-
-interface CycleInputProps {
-  onNext?: (cycleId: number) => void // Changed to pass cycleId
-}
-
-interface FormData {
-  startDate: string
-  cycleLength: number
-  periodLength: number
-}
-
-interface UserProfile {
-  id: number
-  customer_profile_id: number
-  email: string
-  name: string
-  role: string
-  status: string
-  created_at: string
-  updated_at: string
-  bio: string | null
-  location: string | null
-  username: string
-  avatar: string | null
-  cover_photo: string | null
-  date_of_birth: string
-  website: string | null
-  phone_number: string | null
-  description: string | null
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
 
 export default function CycleInput({ onNext }: CycleInputProps) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -70,7 +27,6 @@ export default function CycleInput({ onNext }: CycleInputProps) {
     }
   })
 
-  // Get user profile on component mount
   useEffect(() => {
     const getUserProfile = async () => {
       try {

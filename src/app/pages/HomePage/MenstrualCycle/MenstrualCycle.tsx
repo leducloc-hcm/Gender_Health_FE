@@ -1,11 +1,11 @@
-import Welcome from '@/app/pages/HomePage/MenstrualCycle/Welcome/Welcome'
-import CycleInput from '@/app/pages/HomePage/MenstrualCycle/CycleInput/CycleInput'
-import Symptoms from '@/app/pages/HomePage/MenstrualCycle/Symtomps/Symtomps'
-import Fertility from '@/app/pages/HomePage/MenstrualCycle/Fertility/Fertility'
-import Medication from '@/app/pages/HomePage/MenstrualCycle/Medication/Medication'
-import Mood from '@/app/pages/HomePage/MenstrualCycle/Mood/Mood'
-import Summary from '@/app/pages/HomePage/MenstrualCycle/Summary/Summary'
-import Header from '@/app/pages/HomePage/partials/Header'
+import Header from '@/app/pages/HomePage/HomePage/partials/Header'
+import CycleInput from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/CycleInput'
+import Fertility from '@/app/pages/HomePage/MenstrualCycle/partials/Fertility/Fertility'
+import Medication from '@/app/pages/HomePage/MenstrualCycle/partials/Medication/Medication'
+import Mood from '@/app/pages/HomePage/MenstrualCycle/partials/Mood/Mood'
+import Summary from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/Summary'
+import Symptoms from '@/app/pages/HomePage/MenstrualCycle/partials/Symtomps/Symtomps'
+import Welcome from '@/app/pages/HomePage/MenstrualCycle/partials/Welcome/Welcome'
 import { useState } from 'react'
 
 export default function MenstrualCycle() {
@@ -19,20 +19,12 @@ export default function MenstrualCycle() {
   }
 
   const skipToEnd = () => {
-    setCurrentStep(6) // Jump to final step (Summary)
+    setCurrentStep(6)
   }
 
   const handleCycleCreated = (cycleId: number) => {
     setMenstrualCycleId(cycleId)
     nextStep()
-  }
-
-  const handleFinish = () => {
-    // Navigate to dashboard or main page
-    console.log('Setup completed, navigating to dashboard...')
-    // You can add navigation logic here
-    // window.location.href = '/dashboard'
-    // or use router.push('/dashboard') if using Next.js router
   }
 
   const renderCurrentStep = () => {
@@ -50,7 +42,7 @@ export default function MenstrualCycle() {
       case 5:
         return <Mood menstrualCycleId={menstrualCycleId} onNext={nextStep} onSkipAll={skipToEnd} />
       case 6:
-        return <Summary onFinish={handleFinish} />
+        return <Summary />
       default:
         return <Welcome onNext={nextStep} />
     }

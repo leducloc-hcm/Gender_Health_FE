@@ -1,49 +1,21 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import { api } from '@/app/apis/fetcherToken'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group'
 import { Textarea } from '@/app/components/ui/textarea'
+import type {
+  SymptomData,
+  SymptomsProps
+} from '@/app/pages/HomePage/MenstrualCycle/partials/Symtomps/models/symtomps.type'
 import { Heart, Loader2, SkipForward } from 'lucide-react'
-
-interface SymptomsProps {
-  menstrualCycleId: number | null
-  onNext?: () => void
-  onSkipAll?: () => void
-}
-
-interface SymptomData {
-  menstrual_cycle_id: number
-  date: string
-  symptomType: string
-  description: string
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 export default function Symptoms({ menstrualCycleId, onNext, onSkipAll }: SymptomsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -53,7 +25,7 @@ export default function Symptoms({ menstrualCycleId, onNext, onSkipAll }: Sympto
   } = useForm<SymptomData>({
     defaultValues: {
       menstrual_cycle_id: menstrualCycleId || 0,
-      date: new Date().toISOString().split('T')[0], // Today's date
+      date: new Date().toISOString().split('T')[0],
       symptomType: '',
       description: ''
     }
@@ -69,23 +41,15 @@ export default function Symptoms({ menstrualCycleId, onNext, onSkipAll }: Sympto
 
     try {
       setIsSubmitting(true)
-
       const requestData = {
         menstrual_cycle_id: menstrualCycleId,
         date: data.date,
         symptomType: data.symptomType,
         description: data.description
       }
-
-      console.log('Sending symptom data:', requestData)
-
       const response = await api.post('/daily-symptoms/create', requestData)
-
       console.log('Symptom created:', response.data)
-
       toast.success('Symptom data saved successfully!')
-
-      // Move to next step after successful submission
       if (onNext) {
         onNext()
       }

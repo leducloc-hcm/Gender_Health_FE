@@ -1,5 +1,5 @@
 import { fetcher } from '@/app/apis/fetcher'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
@@ -21,6 +21,8 @@ const VerifyEmail = () => {
     const verifyTokenEmail = async () => {
       try {
         const response = await fetcher.post('/users/verify-email', data)
+        console.log(status)
+
         if (response.status === 200) {
           setStatus('verified')
           navigate('/auth/login', { replace: true })

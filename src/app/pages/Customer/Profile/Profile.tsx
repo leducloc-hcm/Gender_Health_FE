@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { profileApi } from '@/app/apis/profile.api'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import { Card, CardContent } from '@/app/components/ui/card'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
+import { Card, CardContent } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
-import { MapPin, Edit3, Save, X, Heart, Upload } from 'lucide-react'
-import { profileApi } from '@/app/apis/profile.api'
-import type { getProfileResult, UpdateProfileInput, UserProfile } from './models/Profile'
+import { Edit3, Heart, MapPin, Save, Upload, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import type { getProfileResult, UpdateProfileInput, UserProfile } from './models/Profile'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -52,6 +52,8 @@ export default function Profile() {
         setUserProfile(profile)
         setCoverPreview(profile.cover_photo || '')
         reset(profile)
+        console.log(avatarFile)
+        console.log(coverFile)
       } catch (error) {
         console.error('Failed to fetch profile:', error)
         toast.error('Failed to load profile.')

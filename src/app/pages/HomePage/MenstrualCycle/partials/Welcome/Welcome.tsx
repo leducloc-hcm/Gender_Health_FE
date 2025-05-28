@@ -1,61 +1,18 @@
-import { useState, useEffect } from 'react'
-import { Heart, Calendar, TrendingUp, ChevronRight, Loader2 } from 'lucide-react'
+import { api } from '@/app/apis/fetcherToken'
+import type { UserProfile, WelcomeProps } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
+import { Calendar, ChevronRight, Heart, Loader2, TrendingUp } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import axios from 'axios'
-
-interface WelcomeProps {
-  onNext?: () => void
-}
-
-interface UserProfile {
-  id: number
-  customer_profile_id: number
-  email: string
-  name: string
-  role: string
-  status: string
-  created_at: string
-  updated_at: string
-  bio: string | null
-  location: string | null
-  username: string
-  avatar: string | null
-  cover_photo: string | null
-  date_of_birth: string
-  website: string | null
-  phone_number: string | null
-  description: string | null
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
 
 export default function Welcome({ onNext }: WelcomeProps) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
 
-  // Get user profile on component mount
   useEffect(() => {
     const getUserProfile = async () => {
       try {
         setIsLoadingProfile(true)
         const response = await api.get('/users/me')
-
-        console.log('User profile response:', response.data)
         setUserProfile(response.data.result)
       } catch (error: any) {
         console.error('Failed to fetch user profile:', error)
@@ -64,7 +21,6 @@ export default function Welcome({ onNext }: WelcomeProps) {
         setIsLoadingProfile(false)
       }
     }
-
     getUserProfile()
   }, [])
 

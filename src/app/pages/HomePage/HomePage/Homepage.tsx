@@ -1,5 +1,5 @@
 // import ServicesSection from '@/app/pages/HomePage/partials/ServiceSection'
-import BlogSection from '@/app/pages/HomePage/partials/BlogSection'
+import BlogSection from '@/app/pages/HomePage/HomePage/partials/BlogSection'
 import AboutSection from './partials/AboutSection'
 import FeaturesSection from './partials/FeaturesSection'
 import Header from './partials/Header'

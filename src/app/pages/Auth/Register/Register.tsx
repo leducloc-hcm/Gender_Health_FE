@@ -1,25 +1,25 @@
+import { fetcher } from '@/app/apis/fetcher'
 import { Button } from '@/app/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/components/ui/form'
-import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
 import { Calendar } from '@/app/components/ui/calendar'
-import { CalendarIcon } from 'lucide-react'
-import axios from 'axios'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { FiEye, FiEyeOff, FiHeart, FiLock, FiMail, FiUser } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
-import { format, parse } from 'date-fns'
-import { cn } from '@/app/lib/utils'
+import { Form, FormControl, FormField, FormItem } from '@/app/components/ui/form'
 import { Input } from '@/app/components/ui/input'
-import { toast } from 'react-toastify'
-import type { RegisterFormData, RegisterResponse } from '@/app/pages/Auth/Register/models/register'
+import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
+import { cn } from '@/app/lib/utils'
 import {
   dateOfBirthValidation,
   emailValidation,
   nameValidation,
   passwordValidation
 } from '@/app/modules/AuthValidation/AuthValidation'
-import { fetcher } from '@/app/apis/fetcher'
+import type { RegisterFormData, RegisterResponse } from '@/app/pages/Auth/Register/models/register'
+import axios from 'axios'
+import { format, parse } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { FiEye, FiEyeOff, FiHeart, FiLock, FiMail, FiUser } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function Register() {
   const [isLoading, setIsLoading] = useState<boolean>(false)

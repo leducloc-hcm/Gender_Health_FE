@@ -1,45 +1,18 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import { api } from '@/app/apis/fetcherToken'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select'
 import { Textarea } from '@/app/components/ui/textarea'
-import { TrendingUp, Loader2, SkipForward } from 'lucide-react'
-
-interface FertilityProps {
-  menstrualCycleId: number | null
-  onNext?: () => void
-  onSkipAll?: () => void
-}
-
-interface FertilityData {
-  menstrual_cycle_id: number
-  temperature: number
-  weight: number
-  description: string
-  cervicalMucus: string
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+import type {
+  FertilityData,
+  FertilityProps
+} from '@/app/pages/HomePage/MenstrualCycle/partials/Fertility/models/fertility.type'
+import { Loader2, SkipForward, TrendingUp } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 export default function Fertility({ menstrualCycleId, onNext, onSkipAll }: FertilityProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)

@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { profileResponse, UpdateProfileInput, UserProfile } from '../pages/Customer/Profile/models/Profile'
+import type { profileResponse, UpdateProfileInput } from '../pages/Customer/Profile/models/Profile'
 import { fetcher } from './fetcher'
 
 export const profileApi = {

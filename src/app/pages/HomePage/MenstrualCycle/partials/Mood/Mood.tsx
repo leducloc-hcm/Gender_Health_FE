@@ -1,47 +1,18 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import { api } from '@/app/apis/fetcherToken'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Label } from '@/app/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group'
 import { Textarea } from '@/app/components/ui/textarea'
-import { Smile, Loader2, SkipForward } from 'lucide-react'
-
-interface MoodProps {
-  menstrualCycleId: number | null
-  onNext?: () => void
-  onSkipAll?: () => void
-}
-
-interface MoodData {
-  menstrual_cycle_id: number
-  moodType: string
-  description: string
-}
-
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://52.221.179.12:4000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+import type { MoodData, MoodProps } from '@/app/pages/HomePage/MenstrualCycle/partials/Mood/models/mood.type'
+import { Loader2, SkipForward, Smile } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 export default function Mood({ menstrualCycleId, onNext, onSkipAll }: MoodProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -81,7 +52,6 @@ export default function Mood({ menstrualCycleId, onNext, onSkipAll }: MoodProps)
 
       toast.success('Mood data saved successfully!')
 
-      // Move to next step after successful submission
       if (onNext) {
         onNext()
       }

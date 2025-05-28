@@ -49,9 +49,9 @@ export default function BlogDetail() {
       try {
         const res = await fetchBlogs(1, 100)
         const related = res.data.filter(
-          (item) => item.id !== blog.id && item.tags.some((t) => blog.tags.some((bt) => bt.tag.id === t.tag.id))
+          (item) => item.id !== blog.id && item.tags?.some((t) => blog.tags.some((bt) => bt.tag.id === t.tag.id))
         )
-        setRelatedPosts(related)
+        setRelatedPosts(related as any)
       } catch (err) {
         console.error('Failed to load related blogs:', err)
       }
