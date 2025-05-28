@@ -20,6 +20,8 @@ const VerifyEmail = () => {
     const verifyTokenEmail = async () => {
       try {
         const response = await fetcher.post('/users/verify-email', data)
+        console.log(status)
+
         if (response.status === 200) {
           navigate('/auth/login', { replace: true })
           toast.success('Email verified successfully!', {
