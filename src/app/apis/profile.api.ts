@@ -26,7 +26,8 @@ export const profileApi = {
 
       const response: AxiosResponse<profileResponse> = await fetcher.put('/users/update/me', data, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
         }
       })
       return response.data

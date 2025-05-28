@@ -50,7 +50,7 @@ export default function Profile() {
         const response = await profileApi.getProfile()
         const profile = response.result
         setUserProfile(profile)
-        setCoverPreview(profile.cover_photo || '') // Khởi tạo coverPreview
+        setCoverPreview(profile.cover_photo || '')
         reset(profile)
       } catch (error) {
         console.error('Failed to fetch profile:', error)
@@ -70,7 +70,6 @@ export default function Profile() {
 
       if (Object.keys(updatedFields).length > 0) {
         await profileApi.updateProfile(updatedFields)
-        // Lấy lại dữ liệu mới nhất từ API
         const response = await profileApi.getProfile()
         const profile = response.result
         setUserProfile(profile)
@@ -91,7 +90,7 @@ export default function Profile() {
     setAvatarFile(null)
     setCoverFile(null)
     setAvatarPreview('')
-    setCoverPreview(userProfile.cover_photo || '') // Giữ lại ảnh bìa hiện tại
+    setCoverPreview(userProfile.cover_photo || '')
     reset(userProfile)
     setIsEditing(false)
   }
@@ -259,68 +258,29 @@ export default function Profile() {
                       </Label>
                       <Input
                         id='location'
-                        {...register('location', { required: 'Địa chỉ là bắt buộc' })}
+                        {...register('location')}
                         className='border-rose-200 focus:border-rose-400 focus:ring-rose-400'
                       />
                       {errors.location && <p className='text-red-500 text-xs mt-1'>{errors.location.message}</p>}
-                    </div>
-                    <div className='space-y-2 md:col-span-2'>
-                      <Label htmlFor='avatar' className='text-sm font-medium text-gray-700'>
-                        Ảnh đại diện
-                      </Label>
-                      <div className='flex gap-4 items-start'>
-                        <div className='flex-1'>
-                          <Input
-                            id='avatar'
-                            {...register('avatar')}
-                            placeholder='https://example.com/avatar.jpg hoặc click vào avatar để tải ảnh lên'
-                            className='border-rose-200 focus:border-rose-400 focus:ring-rose-400'
-                          />
-                        </div>
-                        {avatarPreview && (
-                          <div className='w-16 h-16 rounded-full overflow-hidden border-2 border-rose-200'>
-                            <img
-                              src={avatarPreview || '/placeholder.svg'}
-                              alt='Preview'
-                              className='w-full h-full object-cover'
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <input
-                        id='avatar-upload'
-                        type='file'
-                        accept='image/*'
-                        onChange={handleAvatarUpload}
-                        className='hidden'
-                      />
-                    </div>
-                    <div className='space-y-2 md:col-span-2'>
-                      <Label htmlFor='cover_photo' className='text-sm font-medium text-gray-700'>
-                        Ảnh bìa
-                      </Label>
-                      <div className='flex gap-4 items-start'>
-                        <div className='flex-1'>
-                          <Input
-                            id='cover_photo'
-                            {...register('cover_photo')}
-                            placeholder='https://example.com/cover.jpg hoặc click vào ảnh bìa để tải ảnh lên'
-                            className='border-rose-200 focus:border-rose-400 focus:ring-rose-400'
-                          />
-                        </div>
-                      </div>
-                      <input
-                        id='cover-upload'
-                        type='file'
-                        accept='image/*'
-                        onChange={handleCoverUpload}
-                        className='hidden'
-                      />
                     </div>
                   </div>
                   <div className='pt-4 border-t border-rose-100'>
                     <p className='text-sm text-gray-500'>Vui lòng điền đầy đủ thông tin để cập nhật hồ sơ của bạn.</p>
                   </div>
+                  <input
+                    id='avatar-upload'
+                    type='file'
+                    accept='image/*'
+                    onChange={handleAvatarUpload}
+                    className='hidden'
+                  />
+                  <input
+                    id='cover-upload'
+                    type='file'
+                    accept='image/*'
+                    onChange={handleCoverUpload}
+                    className='hidden'
+                  />
                 </form>
               )}
             </CardContent>
