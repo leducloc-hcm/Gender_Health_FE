@@ -36,9 +36,15 @@ export default function Header() {
             >
               Cycle Tracking
             </Link>
-            <a href='#blog' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+            <Link to='/blog' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Blog
-            </a>
+            </Link>
+            <Link
+              to='/test-packages'
+              className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
+            >
+              Test Packages
+            </Link>
             <a href='#contact' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Contact
             </a>

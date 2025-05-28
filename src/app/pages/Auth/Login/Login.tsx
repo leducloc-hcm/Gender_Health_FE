@@ -28,6 +28,15 @@ const getGoogleAuthUrl = () => {
 }
 const googleOAuthUrl = getGoogleAuthUrl()
 
+const ROLE_ROUTES = {
+  CUSTOMER: '/customer',
+  ADMIN: '/admin',
+  STAFF: '/staff',
+  CONSULTANT: '/consultant'
+} as const
+
+type UserRole = keyof typeof ROLE_ROUTES
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -63,12 +72,24 @@ export default function LoginPage() {
         console.log('Refresh token stored:', responseData.result.refresh_token)
       }
 
+      const userRole = responseData.result?.role?.toUpperCase() as UserRole
+      console.log('User role from API:', userRole)
+
+      if (userRole) {
+        localStorage.setItem('user_role', userRole)
+      }
+
       toast.success('Login successful!', {
         position: 'top-right',
         autoClose: 500
       })
       setTimeout(() => {
-        navigate('/customer')
+        if (userRole && ROLE_ROUTES[userRole]) {
+          navigate(ROLE_ROUTES[userRole])
+        } else {
+          console.warn('Unknown role:', userRole, 'Redirecting to customer dashboard')
+          navigate(ROLE_ROUTES.CUSTOMER)
+        }
       }, 1000)
     } catch (error) {
       if (axios.isAxiosError(error)) {

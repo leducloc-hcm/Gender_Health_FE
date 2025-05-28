@@ -1,5 +1,6 @@
 const staffPath = {
-  dashboard: 'dashboard'
+  dashboard: 'dashboard',
+  blog: 'blog'
 }
 
 export default staffPath

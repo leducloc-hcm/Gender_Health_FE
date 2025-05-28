@@ -19,11 +19,14 @@ import ResetPassword from '../pages/Auth/ResetPassword/ResetPassword'
 import OauthLogin from '@/app/pages/Auth/OauthLogin/OauthLogin'
 import VerifyEmail from '../pages/Auth/VerfiEmail/VerifyEmail'
 import Profile from '@/app/pages/Customer/Profile/Profile'
-import TestPackages from '@/app/pages/Customer/TestPackages/TestPackages'
 import Blog from '@/app/pages/Customer/Blog/Blog'
 import Order from '@/app/pages/Customer/Order/Order'
 import MenstrualCycle from '@/app/pages/HomePage/MenstrualCycle/MenstrualCycle'
 import BlogDetail from '../pages/Customer/Blog/BlogDetail'
+import staffPath from '@/app/routes/paths/staffPath'
+import DashboardStaff from '@/app/pages/Staff/DashboardStaff/DashboardStaff'
+import BlogStaff from '@/app/pages/Staff/BlogStaff/BlogStaff'
+import TestPackages from '@/app/pages/HomePage/TestPackages/TestPackages'
 
 export default function MainRoutes() {
   return (
@@ -45,6 +48,7 @@ export default function MainRoutes() {
 
         <Route path='/login/oauth' element={<OauthLogin />} />
         <Route path='/menstrual-cycle' element={<MenstrualCycle />} />
+        <Route path='/test-packages' element={<TestPackages />} />
 
         <Route path='/auth' element={<Auth />}>
           <Route path={authPath.login} element={<Login />} />
@@ -59,7 +63,6 @@ export default function MainRoutes() {
           <Route path={customerPath.dashboard} element={<Dashboard />} />
           <Route path={customerPath.profile} element={<Profile />} />
           <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
-          <Route path={customerPath.testPackages} element={<TestPackages />} />
           <Route path={customerPath.blog} element={<Blog />} />
           <Route path={customerPath.blogDetail} element={<BlogDetail />} />
           <Route path={customerPath.orders} element={<Order />} />
@@ -71,7 +74,10 @@ export default function MainRoutes() {
 
         <Route path='/consultant' element={<Consultant />}></Route>
 
-        <Route path='/staff' element={<Staff />}></Route>
+        <Route path='/staff' element={<Staff />}>
+          <Route path={staffPath.dashboard} element={<DashboardStaff />} />
+          <Route path={staffPath.blog} element={<BlogStaff />} />
+        </Route>
       </Routes>
     </>
   )
