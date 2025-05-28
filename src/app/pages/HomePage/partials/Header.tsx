@@ -30,12 +30,12 @@ export default function Header() {
             <a href='#services' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Services
             </a>
-            <a
-              href='#cycle-tracking'
+            <Link
+              to='/menstrual-cycle'
               className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
             >
               Cycle Tracking
-            </a>
+            </Link>
             <a href='#blog' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Blog
             </a>
@@ -49,12 +49,12 @@ export default function Header() {
               <Button
                 variant='ghost'
                 className='text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50'
-                onClick={() => nav('auth/login')}
+                onClick={() => nav('/auth/login')}
               >
                 Login
               </Button>
               <Button
-                onClick={() => nav('auth/register')}
+                onClick={() => nav('/auth/register')}
                 className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'
               >
                 Register
