@@ -27,6 +27,7 @@ import staffPath from '@/app/routes/paths/staffPath'
 import DashboardStaff from '@/app/pages/Staff/DashboardStaff/DashboardStaff'
 import BlogStaff from '@/app/pages/Staff/BlogStaff/BlogStaff'
 import TestPackages from '@/app/pages/HomePage/TestPackages/TestPackages'
+import ChatFlow from '../pages/TestChat/ChatFlow'
 
 export default function MainRoutes() {
   return (
@@ -58,7 +59,7 @@ export default function MainRoutes() {
           <Route path={authPath.resetPassword} element={<ResetPassword />} />
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
         </Route>
-
+        <Route path='/chat' element={<ChatFlow />} />
         <Route path='/customer' element={<Customer />}>
           <Route path={customerPath.dashboard} element={<Dashboard />} />
           <Route path={customerPath.profile} element={<Profile />} />
