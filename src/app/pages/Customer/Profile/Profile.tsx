@@ -1,5 +1,3 @@
-import type React from 'react'
-
 import { profileApi } from '@/app/apis/profile.api'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Badge } from '@/app/components/ui/badge'
@@ -16,17 +14,11 @@ import {
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Progress } from '@/app/components/ui/progress'
-import { Edit3, Eye, EyeOff, Heart, KeyRound, MapPin, Save, Shield, Upload, X } from 'lucide-react'
+import { Edit3, Eye, EyeOff, Heart, MapPin, Save, Upload, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import type { getProfileResult, UserProfile } from './models/Profile'
-
-interface PasswordForm {
-  oldPassword: string
-  newPassword: string
-  confirmPassword: string
-}
+import type { getProfileResult, PasswordForm, UpdateProfileInput, UserProfile } from './models/Profile'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -47,6 +39,8 @@ export default function Profile() {
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [coverFile, setCoverFile] = useState<File | null>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [showOldPassword, setShowOldPassword] = useState(false)
@@ -70,17 +64,15 @@ export default function Profile() {
     reset: resetPassword
   } = useForm<PasswordForm>()
 
-  const newPassword = watch('newPassword')
+  const password = watch('password', '')
 
   const calculatePasswordStrength = (password: string) => {
-    if (!password) return { score: 0, label: '', color: '' }
-
     let score = 0
     if (password.length >= 8) score += 25
-    if (password.match(/[a-z]/)) score += 25
-    if (password.match(/[A-Z]/)) score += 25
-    if (password.match(/[0-9]/)) score += 25
-    if (password.match(/[^a-zA-Z0-9]/)) score += 25
+    if (/[a-z]/.test(password)) score += 25
+    if (/[A-Z]/.test(password)) score += 25
+    if (/[0-9]/.test(password)) score += 25
+    if (/[^a-zA-Z0-9]/.test(password)) score += 25
 
     if (score <= 25) return { score, label: 'Yếu', color: 'bg-red-500' }
     if (score <= 50) return { score, label: 'Trung bình', color: 'bg-yellow-500' }
@@ -88,7 +80,7 @@ export default function Profile() {
     return { score, label: 'Rất mạnh', color: 'bg-green-500' }
   }
 
-  const passwordStrength = calculatePasswordStrength(newPassword || '')
+  const passwordStrength = calculatePasswordStrength(password)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -98,24 +90,43 @@ export default function Profile() {
         setUserProfile(profile)
         reset(profile)
       } catch (error) {
-        console.error('Failed to fetch profile:', error)
         toast.error('Failed to load profile.')
       }
     }
     fetchProfile()
   }, [reset])
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview)
+      if (coverPreview) URL.revokeObjectURL(coverPreview)
+    }
+  }, [avatarPreview, coverPreview])
+
   const onSubmit = async (data: UserProfile) => {
     try {
-      const formData = new FormData()
-      if (data.name !== userProfile.name) formData.append('name', data.name)
-      if (data.location !== userProfile.location) formData.append('location', data.location)
-      if (avatarFile) formData.append('avatar', avatarFile)
-      if (coverFile) formData.append('coverPhoto', coverFile)
+      const updateData: Partial<UpdateProfileInput> = {}
+      let hasChanges = false
 
-      if (formData.entries().next().done === false) {
-        await profileApi.updateProfile(formData)
-        const response = await profileApi.getProfile()
+      if (data.name && data.name !== userProfile.name) {
+        updateData.name = data.name
+        hasChanges = true
+      }
+      if (data.location && data.location !== userProfile.location) {
+        updateData.location = data.location
+        hasChanges = true
+      }
+      if (avatarFile) {
+        updateData.avatar = avatarFile
+        hasChanges = true
+      }
+      if (coverFile) {
+        updateData.coverPhoto = coverFile
+        hasChanges = true
+      }
+
+      if (hasChanges) {
+        const response = await profileApi.updateProfile(updateData)
         const profile = response.result
         setUserProfile(profile)
         reset(profile)
@@ -123,30 +134,34 @@ export default function Profile() {
       } else {
         toast.info('No changes to update.')
       }
+
       setAvatarFile(null)
       setCoverFile(null)
+      setAvatarPreview(null)
+      setCoverPreview(null)
       setIsEditing(false)
-    } catch (error) {
-      console.error('Failed to update profile:', error)
-      toast.error('Failed to update profile. Please try again.')
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update profile. Please try again.')
     }
   }
 
   const handleCancel = () => {
     setAvatarFile(null)
     setCoverFile(null)
+    setAvatarPreview(null)
+    setCoverPreview(null)
     reset(userProfile)
     setIsEditing(false)
   }
 
   const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    console.log('file: ', file)
     if (file && file.type.startsWith('image/')) {
       setAvatarFile(file)
-      toast.info('Avatar selected. Save to apply changes.')
+      setAvatarPreview(URL.createObjectURL(file))
     } else {
-      toast.error('Please select a valid image file.')
+      setAvatarFile(null)
+      setAvatarPreview(null)
     }
   }
 
@@ -154,28 +169,24 @@ export default function Profile() {
     const file = event.target.files?.[0]
     if (file && file.type.startsWith('image/')) {
       setCoverFile(file)
+      setCoverPreview(URL.createObjectURL(file))
       toast.info('Cover photo selected. Save to apply changes.')
     } else {
+      setCoverFile(null)
+      setCoverPreview(null)
       toast.error('Please select a valid image file.')
     }
   }
 
   const handlePasswordChange = async (data: PasswordForm) => {
-    if (data.newPassword !== data.confirmPassword) {
-      toast.error('New passwords do not match.')
-      return
-    }
+    console.log('data: ', data)
     try {
-      await profileApi.changePassword({
-        oldPassword: data.oldPassword,
-        newPassword: data.newPassword
-      })
-      toast.success('Password changed successfully!')
-      setIsPasswordModalOpen(false)
+      const response = await profileApi.updatePassword(data)
       resetPassword()
-    } catch (error) {
-      console.error('Failed to change password:', error)
-      toast.error('Failed to change password. Please try again.')
+      setIsPasswordModalOpen(false)
+      toast.success('Password changed successfully!')
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to change password. Please try again.')
     }
   }
 
@@ -188,7 +199,7 @@ export default function Profile() {
               isEditing ? 'cursor-pointer group' : ''
             }`}
             style={{
-              backgroundImage: `url(${userProfile.coverPhoto || '/placeholder.svg'})`,
+              backgroundImage: `url(${coverPreview || userProfile.coverPhoto || '/placeholder.svg'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
@@ -218,7 +229,7 @@ export default function Profile() {
                 onClick={isEditing ? () => document.getElementById('avatar-upload')?.click() : undefined}
               >
                 <Avatar className='w-32 h-32 border-4 border-white shadow-xl'>
-                  <AvatarImage src={userProfile.avatar || '/placeholder.svg'} alt={userProfile.name} />
+                  <AvatarImage src={avatarPreview || userProfile.avatar || '/placeholder.svg'} alt={userProfile.name} />
                   <AvatarFallback className='bg-rose-200 text-rose-800 text-2xl font-bold'>
                     {userProfile.name
                       .split(' ')
@@ -248,28 +259,28 @@ export default function Profile() {
                       variant='outline'
                       className='bg-white/90 hover:bg-white text-purple-700 border border-purple-200'
                     >
-                      <KeyRound className='w-4 h-4 mr-2' />
+                      <Edit3 className='w-4 h-4 mr-2' />
                       Đổi mật khẩu
                     </Button>
                   </DialogTrigger>
                   <DialogContent className='sm:max-w-md'>
                     <DialogHeader>
                       <DialogTitle className='flex items-center gap-2 text-gray-900'>
-                        <Shield className='w-5 h-5 text-purple-600' />
+                        <Edit3 className='w-5 h-5 text-purple-600' />
                         Đổi mật khẩu
                       </DialogTitle>
                       <DialogDescription>Vui lòng nhập mật khẩu cũ và mật khẩu mới để thay đổi.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleSubmitPassword(handlePasswordChange)} className='space-y-4'>
                       <div className='space-y-2'>
-                        <Label htmlFor='oldPassword' className='text-sm font-medium text-gray-700'>
+                        <Label htmlFor='old_password' className='text-sm font-medium text-gray-700'>
                           Mật khẩu cũ
                         </Label>
                         <div className='relative'>
                           <Input
-                            id='oldPassword'
+                            id='old_password'
                             type={showOldPassword ? 'text' : 'password'}
-                            {...registerPassword('oldPassword', { required: 'Mật khẩu cũ là bắt buộc' })}
+                            {...registerPassword('old_password', { required: 'Mật khẩu cũ là bắt buộc' })}
                             className='border-purple-200 focus:border-purple-400 focus:ring-purple-400 pr-10'
                           />
                           <Button
@@ -286,20 +297,20 @@ export default function Profile() {
                             )}
                           </Button>
                         </div>
-                        {passwordErrors.oldPassword && (
-                          <p className='text-red-500 text-xs mt-1'>{passwordErrors.oldPassword.message}</p>
+                        {passwordErrors.old_password && (
+                          <p className='text-red-500 text-xs mt-1'>{passwordErrors.old_password.message}</p>
                         )}
                       </div>
 
                       <div className='space-y-2'>
-                        <Label htmlFor='newPassword' className='text-sm font-medium text-gray-700'>
+                        <Label htmlFor='password' className='text-sm font-medium text-gray-700'>
                           Mật khẩu mới
                         </Label>
                         <div className='relative'>
                           <Input
-                            id='newPassword'
+                            id='password'
                             type={showNewPassword ? 'text' : 'password'}
-                            {...registerPassword('newPassword', {
+                            {...registerPassword('password', {
                               required: 'Mật khẩu mới là bắt buộc',
                               minLength: { value: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự' }
                             })}
@@ -319,12 +330,20 @@ export default function Profile() {
                             )}
                           </Button>
                         </div>
-                        {newPassword && (
+                        {password && (
                           <div className='space-y-2'>
                             <div className='flex items-center justify-between text-xs'>
                               <span className='text-gray-600'>Độ mạnh mật khẩu:</span>
                               <span
-                                className={`font-medium ${passwordStrength.score <= 25 ? 'text-red-600' : passwordStrength.score <= 50 ? 'text-yellow-600' : passwordStrength.score <= 75 ? 'text-blue-600' : 'text-green-600'}`}
+                                className={`font-medium ${
+                                  passwordStrength.score <= 25
+                                    ? 'text-red-600'
+                                    : passwordStrength.score <= 50
+                                      ? 'text-yellow-600'
+                                      : passwordStrength.score <= 75
+                                        ? 'text-blue-600'
+                                        : 'text-green-600'
+                                }`}
                               >
                                 {passwordStrength.label}
                               </span>
@@ -332,22 +351,22 @@ export default function Profile() {
                             <Progress value={passwordStrength.score} className='h-2' />
                           </div>
                         )}
-                        {passwordErrors.newPassword && (
-                          <p className='text-red-500 text-xs mt-1'>{passwordErrors.newPassword.message}</p>
+                        {passwordErrors.password && (
+                          <p className='text-red-500 text-xs mt-1'>{passwordErrors.password.message}</p>
                         )}
                       </div>
 
                       <div className='space-y-2'>
-                        <Label htmlFor='confirmPassword' className='text-sm font-medium text-gray-700'>
+                        <Label htmlFor='confirm_password' className='text-sm font-medium text-gray-700'>
                           Xác nhận mật khẩu mới
                         </Label>
                         <div className='relative'>
                           <Input
-                            id='confirmPassword'
+                            id='confirm_password'
                             type={showConfirmPassword ? 'text' : 'password'}
-                            {...registerPassword('confirmPassword', {
+                            {...registerPassword('confirm_password', {
                               required: 'Vui lòng xác nhận mật khẩu mới',
-                              validate: (value) => value === watch('newPassword') || 'Mật khẩu xác nhận không khớp'
+                              validate: (value) => value === password || 'Mật khẩu xác nhận không khớp'
                             })}
                             className='border-purple-200 focus:border-purple-400 focus:ring-purple-400 pr-10'
                           />
@@ -365,8 +384,8 @@ export default function Profile() {
                             )}
                           </Button>
                         </div>
-                        {passwordErrors.confirmPassword && (
-                          <p className='text-red-500 text-xs mt-1'>{passwordErrors.confirmPassword.message}</p>
+                        {passwordErrors.confirm_password && (
+                          <p className='text-red-500 text-xs mt-1'>{passwordErrors.confirm_password.message}</p>
                         )}
                       </div>
 

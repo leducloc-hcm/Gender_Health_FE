@@ -35,6 +35,12 @@ export interface UpdateProfileInput {
   name?: string
   location?: string
   username?: string
-  avatar?: string
-  coverPhoto?: string
+  avatar?: File
+  coverPhoto?: File
+}
+
+export interface PasswordForm {
+  old_password: string
+  password: string
+  confirm_password: string
 }

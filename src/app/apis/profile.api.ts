@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios'
-import type { profileResponse, UpdateProfileInput } from '../pages/Customer/Profile/models/Profile'
+import type { PasswordForm, profileResponse, UpdateProfileInput } from '../pages/Customer/Profile/models/Profile'
 import { fetcher } from './fetcher'
 
 export const profileApi = {
@@ -22,7 +22,6 @@ export const profileApi = {
   updateProfile: async (data: Partial<UpdateProfileInput>): Promise<profileResponse> => {
     try {
       const accessToken = localStorage.getItem('access_token')
-      if (!accessToken) throw new Error('Access token not found')
 
       const response: AxiosResponse<profileResponse> = await fetcher.put('/users/update/me', data, {
         headers: {
@@ -33,6 +32,21 @@ export const profileApi = {
       return response.data
     } catch (error) {
       console.error('Failed to update profile:', error)
+      throw error
+    }
+  },
+  updatePassword: async (data: PasswordForm): Promise<profileResponse> => {
+    try {
+      const accessToken = localStorage.getItem('access_token')
+      const response: AxiosResponse<profileResponse> = await fetcher.put('/users/change-password', data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Failed to update password:', error)
       throw error
     }
   }
