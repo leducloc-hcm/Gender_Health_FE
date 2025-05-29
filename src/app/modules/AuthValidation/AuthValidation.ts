@@ -46,3 +46,12 @@ export const passwordValidation = {
     message: 'Password must include uppercase, lowercase, number, and symbol'
   }
 }
+
+export const otpValidation = {
+  required: 'OTP code is required',
+  pattern: {
+    value: /^\d{6}$/,
+    message: 'OTP code must be exactly 6 digits'
+  }
+}
+
