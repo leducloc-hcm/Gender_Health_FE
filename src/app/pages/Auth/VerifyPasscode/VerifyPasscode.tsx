@@ -1,61 +1,70 @@
-import { authApi } from '@/app/apis/auth.api'
-import { Button } from '@/app/components/ui/button'
-import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
-import { FiHeart, FiMail } from 'react-icons/fi'
-import { Link, useNavigate } from 'react-router-dom'
+import type { VerifyPasscodeRequest } from './models/VerifyPasscode'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { FiEye, FiEyeOff, FiHeart, FiLock } from 'react-icons/fi'
+import { authApi } from '@/app/apis/auth.api'
 import { toast } from 'react-toastify'
-import type { ForgotPasswordFormData } from './models/ForgetPassword'
-import { emailValidation } from '@/app/modules/AuthValidation/AuthValidation'
+import { otpValidation } from '@/app/modules/AuthValidation/AuthValidation'
+import { Button } from '@/app/components/ui/button'
 
-export default function ForgetPassword() {
+export default function VerifyPasscode() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [showPasscode, setShowPasscode] = useState<boolean>(false)
 
   const navigate = useNavigate()
+  const location = useLocation()
+  const { email } = location.state || {}
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     clearErrors
-  } = useForm<ForgotPasswordFormData>({
+  } = useForm<VerifyPasscodeRequest>({
     mode: 'onBlur',
     defaultValues: {
-      email: ''
+      otp: ''
     }
   })
 
-  const onSubmit: SubmitHandler<ForgotPasswordFormData> = async (data) => {
+  // function call api verify passcode
+  const onSubmit: SubmitHandler<VerifyPasscodeRequest> = async (data) => {
     console.log('Form submitted with data:', data)
     setIsLoading(true)
     try {
-      const response = await authApi.forgotPassword(data)
+      const response = await authApi.verifyPasscode(data)
       console.log('Response received:', response)
 
-      toast.success('Send successful! Please check your email...', {
+      toast.success('Verify successful, please enter your new password', {
         position: 'top-right',
         autoClose: 1500
       })
-      navigate('/auth/verify-otp', {
-        state: data
+
+      navigate('/auth/reset-password', {
+        state: {
+          otp: data.otp
+        }
       })
     } catch (error: any) {
-      console.log('🚀 ~ ForgotPassword ~ error:', error)
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.errors?.email?.msg || error.message || 'Failed. Please try again!'
-        toast.error(errorMessage)
-      } else {
-        toast.error('An unexpected error occurred. Please try again.')
-      }
+      toast.error('Failed. Please try again!')
+
+      navigate('/auth/forgot-password')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleInputFocus = (fieldName: keyof ForgotPasswordFormData) => {
+  const handleInputFocus = (fieldName: keyof VerifyPasscodeRequest) => {
     clearErrors(fieldName)
   }
+
+   useEffect(() => {
+      if (!email) {
+        navigate('/')
+      }
+    }, [email])
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center p-4'>
@@ -65,38 +74,47 @@ export default function ForgetPassword() {
 
       <div className='w-full max-w-md min-w-sm'>
         <div className='bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden'>
-          <div className='bg-gradient-to-r from-pink-500 to-rose-500 p-6 text-center'>
+          <div className='bg-gradient-to-r from-pink-500 to-rose-500 p-8 text-center'>
             <div className='inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-3'>
               <FiHeart className='w-6 h-6 text-pink-500' />
             </div>
-            <h1 className='text-xl font-bold text-white mb-1'>Forgot your password?</h1>
-            <p className='text-pink-100 text-sm'>Enter your email and we'll send you OTP to reset password</p>
+            <h1 className='text-xl font-bold text-white mb-1'>Enter the OTP</h1>
+            <p className='text-pink-100 text-sm'>We have sent you a OTP in email</p>
           </div>
 
           <div className='p-6'>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
               <div className='relative'>
-                <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
-                  Email Address
-                </label>
                 <div className='relative'>
                   <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                    <FiMail className='h-4 w-4 text-gray-400' />
+                    <FiLock className='h-4 w-4 text-gray-400' />
                   </div>
+
                   <input
-                    type='email'
-                    id='email'
-                    {...register('email', emailValidation)}
-                    onFocus={() => handleInputFocus('email')}
-                    className={`w-full pl-9 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
-                      errors.email ? 'border-red-300' : 'border-gray-300'
+                    type={showPasscode ? 'text' : 'password'}
+                    id='otp'
+                    {...register('otp', otpValidation)}
+                    onFocus={() => handleInputFocus('otp')}
+                    className={`w-full pl-9 pr-10 py-2.5 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-sm ${
+                      errors.otp ? 'border-red-300' : 'border-gray-300'
                     }`}
-                    placeholder='Enter your email'
+                    placeholder='XXXXXX'
                   />
+                  <button
+                    type='button'
+                    className='absolute inset-y-0 right-0 pr-3 flex items-center'
+                    onClick={() => setShowPasscode(!showPasscode)}
+                  >
+                    {showPasscode ? (
+                      <FiEyeOff className='h-4 w-4 text-gray-400 hover:text-gray-600' />
+                    ) : (
+                      <FiEye className='h-4 w-4 text-gray-400 hover:text-gray-600' />
+                    )}
+                  </button>
                 </div>
-                {errors.email && (
-                  <div className='absolute left-0 top-[93%] mt-1 z-10'>
-                    <p className='text-xs text-red-600 px-2 py-1 '>{errors.email.message}</p>
+                {errors.otp && (
+                  <div className='mt-1 z-10'>
+                    <p className='text-xs text-red-600 bg-white px-2 py-1 '>{errors.otp.message}</p>
                   </div>
                 )}
               </div>
@@ -112,7 +130,7 @@ export default function ForgetPassword() {
                     Sending...
                   </div>
                 ) : (
-                  'Reset password'
+                  'Send'
                 )}
               </Button>
             </form>

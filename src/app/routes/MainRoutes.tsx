@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import Admin from '../pages/Admin/Admin'
 import ForgetPassword from '../pages/Auth/ForgetPassword/ForgetPassword'
@@ -27,6 +27,7 @@ import staffPath from '@/app/routes/paths/staffPath'
 import DashboardStaff from '@/app/pages/Staff/DashboardStaff/DashboardStaff'
 import BlogStaff from '@/app/pages/Staff/BlogStaff/BlogStaff'
 import TestPackages from '@/app/pages/HomePage/TestPackages/TestPackages'
+import VerifyPasscode from '../pages/Auth/VerifyPasscode/VerifyPasscode'
 
 export default function MainRoutes() {
   return (
@@ -51,12 +52,15 @@ export default function MainRoutes() {
         <Route path='/test-packages' element={<TestPackages />} />
 
         <Route path='/auth' element={<Auth />}>
+          <Route index element={<Navigate to={authPath.login} replace />} />
           <Route path={authPath.login} element={<Login />} />
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
           {/* Route for verify/reset user click from email */}
           <Route path={authPath.resetPassword} element={<ResetPassword />} />
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
+          {/* Route for verify otp */}
+          <Route path={authPath.verifyPasscode} element={<VerifyPasscode />} />
         </Route>
 
         <Route path='/customer' element={<Customer />}>
