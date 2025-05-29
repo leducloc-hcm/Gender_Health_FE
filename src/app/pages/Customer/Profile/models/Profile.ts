@@ -25,7 +25,7 @@ export interface getProfileResult {
   location?: string
   username: string
   avatar?: string
-  cover_photo?: string
+  coverPhoto?: string
   date_of_birth: string
   website?: string
   phone_number?: string

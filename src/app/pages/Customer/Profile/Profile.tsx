@@ -24,7 +24,7 @@ export default function Profile() {
     location: '',
     username: '',
     avatar: '',
-    cover_photo: '',
+    coverPhoto: '',
     date_of_birth: ''
   })
 
@@ -49,8 +49,9 @@ export default function Profile() {
       try {
         const response = await profileApi.getProfile()
         const profile = response.result
+        console.log('profile: ', profile)
         setUserProfile(profile)
-        setCoverPreview(profile.cover_photo || '')
+        setCoverPreview(profile.coverPhoto || '')
         reset(profile)
         console.log(avatarFile)
         console.log(coverFile)
@@ -63,19 +64,21 @@ export default function Profile() {
   }, [reset])
 
   const onSubmit = async (data: UserProfile) => {
+    console.log('data: ', data)
     try {
       const updatedFields: Partial<UpdateProfileInput> = {}
       if (data.name !== userProfile.name) updatedFields.name = data.name
       if (data.location !== userProfile.location) updatedFields.location = data.location
       if (data.avatar !== userProfile.avatar) updatedFields.avatar = data.avatar
-      if (data.cover_photo !== userProfile.cover_photo) updatedFields.coverPhoto = data.cover_photo
+      if (data.cover_photo !== userProfile.coverPhoto) updatedFields.coverPhoto = data.cover_photo
 
+      console.log('Updated Fields:', updatedFields)
       if (Object.keys(updatedFields).length > 0) {
         await profileApi.updateProfile(updatedFields)
         const response = await profileApi.getProfile()
         const profile = response.result
         setUserProfile(profile)
-        setCoverPreview(profile.cover_photo || '')
+        setCoverPreview(profile.coverPhoto || '')
         reset(profile)
         toast.success('Profile updated successfully!')
       }
@@ -92,7 +95,7 @@ export default function Profile() {
     setAvatarFile(null)
     setCoverFile(null)
     setAvatarPreview('')
-    setCoverPreview(userProfile.cover_photo || '')
+    setCoverPreview(userProfile.coverPhoto || '')
     reset(userProfile)
     setIsEditing(false)
   }
@@ -138,7 +141,7 @@ export default function Profile() {
               isEditing ? 'cursor-pointer group' : ''
             }`}
             style={{
-              backgroundImage: `url(${coverPreview || userProfile.cover_photo || '/placeholder.svg'})`,
+              backgroundImage: `url(${coverPreview || userProfile.coverPhoto || '/placeholder.svg'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
