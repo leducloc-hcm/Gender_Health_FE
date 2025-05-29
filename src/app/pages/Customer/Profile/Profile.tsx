@@ -170,7 +170,6 @@ export default function Profile() {
     if (file && file.type.startsWith('image/')) {
       setCoverFile(file)
       setCoverPreview(URL.createObjectURL(file))
-      toast.info('Cover photo selected. Save to apply changes.')
     } else {
       setCoverFile(null)
       setCoverPreview(null)
