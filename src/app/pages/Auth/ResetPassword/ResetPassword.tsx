@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import type { ResetPasswordRequest, VerifyForgotPasswordRequest } from './models/ResetPassword'
+import { useLocation, useNavigate } from 'react-router-dom'
+import type { ResetPasswordRequest } from './models/ResetPassword'
 import { authApi } from '@/app/apis/auth.api'
 import { toast } from 'react-toastify'
 import { FiEye, FiEyeOff, FiHeart, FiLock } from 'react-icons/fi'
@@ -11,13 +11,13 @@ import { passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
 
 export default function ResetPassword() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const location = useLocation()
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
 
-  const token = searchParams.get('token')
+  const { otp } = location.state || {}
 
   const {
     register,
@@ -27,7 +27,7 @@ export default function ResetPassword() {
   } = useForm<ResetPasswordRequest>({
     mode: 'onBlur',
     defaultValues: {
-      forgot_password_token: token || '',
+      otp: otp || '',
       password: '',
       confirm_password: ''
     }
@@ -69,39 +69,13 @@ export default function ResetPassword() {
     }
   }
 
-  // function call api verify-forgot-password
-  const callVerify = async (data: VerifyForgotPasswordRequest) => {
-    setIsLoading(true)
-    try {
-      const response = await authApi.verifyForgotPassword(data)
-      console.log('🚀 ~ callVerify ~ response:', response)
-    } catch (error: any) {
-      console.error('Error:', error)
-      toast.error('Failed. Please try again!')
-      navigate('/')
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   useEffect(() => {
-    if (token) {
-      // console.log('🚀 ~ useEffect ~ token:', token)
-      callVerify({ forgot_password_token: token })
-    }
-
-    if (!token) {
+    // console.log('🚀 ~ ResetPassword ~ otp:', otp)
+    if (!otp) {
       navigate('/')
     }
-  }, [token])
-
-  if (isLoading) {
-    return (
-      <>
-        <div>Loading</div>
-      </>
-    )
-  }
+  }, [otp])
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center p-4'>
@@ -109,7 +83,7 @@ export default function ResetPassword() {
       <div className='absolute bottom-20 right-16 w-12 h-12 bg-rose-200 rounded-full opacity-40 animate-bounce'></div>
       <div className='absolute top-1/3 right-20 w-10 h-10 bg-pink-300 rounded-full opacity-25'></div>
 
-      <div className='w-full max-w-md min-w-sm'>
+      <div className='w-full max-w-md min-w-md'>
         <div className='bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden'>
           <div className='bg-gradient-to-r from-pink-500 to-rose-500 p-6 text-center'>
             <div className='inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-3'>
