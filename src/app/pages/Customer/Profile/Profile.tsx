@@ -91,6 +91,7 @@ export default function Profile() {
         reset(profile)
       } catch (error) {
         toast.error('Failed to load profile.')
+        console.log(error)
       }
     }
     fetchProfile()
@@ -183,6 +184,7 @@ export default function Profile() {
       const response = await profileApi.updatePassword(data)
       resetPassword()
       setIsPasswordModalOpen(false)
+      console.log(response)
       toast.success('Password changed successfully!')
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to change password. Please try again.')

@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
 import { CalendarIcon, Search } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import { fetchTags } from '@/app/apis/tag.api'
 import { fetchBlogs, type BlogPost } from '@/app/apis/blog.api'
-import type { TagBlog } from '../../Auth/Login/models/tag'
-import { Button } from '@/app/components/ui/button'
-import { Input } from '@/app/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { fetchTags } from '@/app/apis/tag.api'
 import { Badge } from '@/app/components/ui/badge'
+import { Button } from '@/app/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Input } from '@/app/components/ui/input'
+import type { TagBlog } from '../../Auth/Login/models/tag'
 
 const limit = 6
 
@@ -22,7 +22,6 @@ function formatDate(dateString: string): string {
 }
 
 export default function BlogPage() {
-  const [searchParams] = useSearchParams()
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [allTags, setAllTags] = useState<TagBlog[]>([])
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([])
@@ -39,6 +38,7 @@ export default function BlogPage() {
       try {
         const [tagsRes, blogRes] = await Promise.all([fetchTags(), fetchBlogs(1, 1000)]) // fetch tất cả
         setAllTags(tagsRes)
+        console.log(allTags)
         setBlogPosts(blogRes.data)
       } catch (err) {
         console.error('Failed to load data:', err)
