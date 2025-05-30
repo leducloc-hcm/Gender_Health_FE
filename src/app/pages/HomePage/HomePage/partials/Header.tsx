@@ -1,12 +1,49 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiMenu, FiHeart, FiX } from 'react-icons/fi'
 import { Button } from '@/app/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/app/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
+import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
+import { profileApi } from '@/app/apis/profile.api'
+import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
 
 export default function Header() {
   const nav = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [userProfile, setUserProfile] = useState<getProfileResult>({
+    id: 0,
+    email: '',
+    role: '',
+    status: '',
+    created_at: '',
+    updated_at: '',
+    name: '',
+    bio: '',
+    location: '',
+    username: '',
+    avatar: '',
+    coverPhoto: '',
+    date_of_birth: ''
+  })
+  const accessToken = localStorage.getItem('access_token')
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await profileApi.getProfile()
+        console.log('response: ', response)
+        setUserProfile(response.result)
+      } catch (error) {}
+    }
+    fetchProfile()
+  }, [accessToken])
   return (
     <header className='sticky top-0 z-50 w-full border-b border-pink-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm'>
       <div className='container mx-auto px-4 md:px-8'>
@@ -19,17 +56,16 @@ export default function Header() {
               </span>
             </Link>
           </div>
-
           <nav className='hidden md:flex gap-6'>
-            <a href='#features' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+            <Link to='/#features' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Features
-            </a>
-            <a href='#about' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+            </Link>
+            <Link to='/#about' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               About
-            </a>
-            <a href='#services' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+            </Link>
+            <Link to='/#services' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Services
-            </a>
+            </Link>
             <Link
               to='/menstrual-cycle'
               className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
@@ -45,73 +81,148 @@ export default function Header() {
             >
               Test Packages
             </Link>
-            <a href='#contact' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+            <Link to='/#contact' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Contact
-            </a>
+            </Link>
           </nav>
+          {accessToken ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' className='p-0'>
+                  <Avatar className='h-8 w-8 rounded-lg'>
+                    <AvatarImage src={userProfile?.avatar} alt='User' />
+                    <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-lg'>
+                      {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-56 rounded-xl border-pink-100 shadow-lg' align='end' forceMount>
+                <div className='flex items-center justify-start gap-2 p-3 bg-gradient-to-r from-pink-50 to-rose-50'>
+                  <Avatar className='h-8 w-8 rounded-lg'>
+                    <AvatarImage src={userProfile?.avatar} alt='User' />
+                    <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-lg'>
+                      {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-col space-y-1 leading-none'>
+                    <p className='font-semibold text-gray-900'>{userProfile.name}</p>
+                    <p className='text-xs text-pink-600'>{userProfile.email}</p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator className='bg-pink-100' />
+                <Link to='customer/profile'>
+                  <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'>
+                    <User className='mr-3 h-4 w-4 text-pink-500' />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem
+                  className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
+                  onClick={() => nav('/orders')}
+                >
+                  <ShoppingBag className='mr-3 h-4 w-4 text-pink-500' />
+                  <span>Orders</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
+                  onClick={() => nav('/settings')}
+                >
+                  <Settings className='mr-3 h-4 w-4 text-pink-500' />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className='bg-pink-100' />
+                <DropdownMenuItem
+                  className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'
+                  onClick={() => {
+                    localStorage.removeItem('access_token')
+                    nav('/auth/login')
+                  }}
+                >
+                  <LogOut className='mr-3 h-4 w-4' />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className='flex items-center gap-4'>
+              <div className='hidden md:flex gap-2'>
+                <Button
+                  variant='ghost'
+                  className='text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50'
+                  onClick={() => nav('/auth/login')}
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={() => nav('/auth/register')}
+                  className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'
+                >
+                  Register
+                </Button>
+              </div>
 
-          <div className='flex items-center gap-4'>
-            <div className='hidden md:flex gap-2'>
               <Button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className='md:hidden p-2 rounded hover:bg-pink-50 text-pink-600'
                 variant='ghost'
-                className='text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50'
-                onClick={() => nav('/auth/login')}
+                aria-label='Toggle menu'
               >
-                Login
-              </Button>
-              <Button
-                onClick={() => nav('/auth/register')}
-                className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'
-              >
-                Register
+                {isMenuOpen ? <FiX className='h-6 w-6' /> : <FiMenu className='h-6 w-6' />}
               </Button>
             </div>
-
-            <Button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className='md:hidden p-2 rounded hover:bg-pink-50 text-pink-600'
-              variant='ghost'
-              aria-label='Toggle menu'
-            >
-              {isMenuOpen ? <FiX className='h-6 w-6' /> : <FiMenu className='h-6 w-6' />}
-            </Button>
-          </div>
+          )}
         </div>
       </div>
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className='md:hidden bg-white border-t border-pink-100 px-4 py-6 space-y-4 shadow-lg'>
-          <a href='#features' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+          <Link
+            to='/#features'
+            className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'
+          >
             Features
-          </a>
-          <a href='#about' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+          </Link>
+          <Link to='/#about' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
             About
-          </a>
-          <a href='#services' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+          </Link>
+          <Link
+            to='/#services'
+            className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'
+          >
             Services
-          </a>
-          <a
-            href='#cycle-tracking'
+          </Link>
+          <Link
+            to='/menstrual-cycle'
             className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'
           >
             Cycle Tracking
-          </a>
-          <a href='#blog' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+          </Link>
+          <Link to='/blog' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
             Blog
-          </a>
-          <a href='#contact' className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+          </Link>
+          <Link
+            to='/test-packages'
+            className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'
+          >
+            Test Packages
+          </Link>
+          <Link
+            to='/#contact'
+            className='block text-lg font-medium text-gray-700 hover:text-pink-600 transition-colors'
+          >
             Contact
-          </a>
+          </Link>
           <div className='flex flex-col gap-2 mt-4'>
             <Button
               variant='outline'
-              onClick={() => nav('auth/login')}
+              onClick={() => nav('/auth/login')}
               className='w-full border-pink-200 text-pink-600 hover:bg-pink-50'
             >
               Login
             </Button>
             <Button
-              onClick={() => nav('auth/register')}
+              onClick={() => nav('/auth/register')}
               className='w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'
             >
               Register
