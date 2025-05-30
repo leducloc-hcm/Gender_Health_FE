@@ -108,7 +108,7 @@ export default function BlogDetail() {
 
         <h1 className='text-4xl font-bold leading-tight'>{blog.title}</h1>
 
-        <div className='prose prose-lg max-w-none text-gray-800'>
+        <div className='prose prose-lg max-w-none text-gray-800 whitespace-pre-line break-words '>
           <p>{blog.content}</p>
         </div>
       </article>
