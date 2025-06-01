@@ -17,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { BookOpen, ChevronDown, Home, LogOut, Settings, ShoppingBag, User } from 'lucide-react'
+import { BookOpen, ChevronDown, Home, LogOut, Settings, ShoppingBag, Tags, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [
@@ -30,6 +30,11 @@ const navigationItems = [
     title: 'Blog & Articles',
     url: '/staff/blog',
     icon: BookOpen
+  },
+  {
+    title: 'Tags',
+    url: '/staff/tag',
+    icon: Tags
   }
 ]
 
