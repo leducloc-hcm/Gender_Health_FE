@@ -33,6 +33,7 @@ import BlogDetailStaff from '../pages/Staff/BlogStaff/BlogDetailStaff'
 import CreateBlog from '../pages/Staff/BlogStaff/CreateBlog'
 import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
+import Forum from '@/app/pages/HomePage/Forum/Forum'
 
 export default function MainRoutes() {
   return (
@@ -57,6 +58,7 @@ export default function MainRoutes() {
           <Route path='/profile' element={<Profile />} />
           <Route path='/blog' element={<Blog />} />
           <Route path='/blog/:id' element={<BlogDetail />} />
+          <Route path='/forum' element={<Forum />} />
         </Route>
 
         <Route path='/login/oauth' element={<OauthLogin />} />

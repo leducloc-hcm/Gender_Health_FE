@@ -60,11 +60,8 @@ export default function Header() {
             <Link to='/#features' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Features
             </Link>
-            <Link to='/#about' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              About
-            </Link>
-            <Link to='/#services' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Services
+            <Link to='/forum' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+              Forum
             </Link>
             <Link
               to='/menstrual-cycle'
@@ -80,9 +77,6 @@ export default function Header() {
               className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
             >
               Test Packages
-            </Link>
-            <Link to='/#contact' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Contact
             </Link>
           </nav>
           {accessToken ? (
