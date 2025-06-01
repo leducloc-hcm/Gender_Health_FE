@@ -29,7 +29,7 @@ const getGoogleAuthUrl = () => {
 const googleOAuthUrl = getGoogleAuthUrl()
 
 const ROLE_ROUTES = {
-  CUSTOMER: '/customer',
+  CUSTOMER: '/',
   ADMIN: '/admin',
   STAFF: '/staff',
   CONSULTANT: '/consultant'
@@ -120,7 +120,7 @@ export default function LoginPage() {
               <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
                 Email Address
               </label>
-              <div className='relative'> 
+              <div className='relative'>
                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                   <FiMail className='h-4 w-4 text-gray-400' />
                 </div>

@@ -50,7 +50,6 @@ export default function MenstrualCycle() {
 
   return (
     <>
-      <Header />
       <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 p-4'>
         <div className='max-w-6xl mx-auto'>
           {renderCurrentStep()}

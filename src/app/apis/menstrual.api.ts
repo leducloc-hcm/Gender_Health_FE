@@ -1,81 +1,97 @@
-import { fetcher } from '@/app/apis/fetcher'
-import { AxiosError, type AxiosResponse } from 'axios'
+import { api } from '@/app/apis/fetcherToken'
+import type {
+  CreateMenstrualCycleData,
+  MenstrualCycleResponse
+} from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/models/cycleinput.type'
+import type { AxiosResponse } from 'axios'
 
-export interface CreateMenstrualRequest {
-  customer_profile_id: number
-  startDate: string
-  cycleLength: number
-  periodLength: number
+export interface CreateSymptomData {
+  menstrual_cycle_id: number
+  date: string
+  symptomType: string
+  description?: string
 }
 
-export interface CreateMenstrualResponse {
+export interface CreateFertilityData {
+  menstrual_cycle_id: number
+  temperature: number
+  weight: number
+  description?: string
+  cervicalMucus?: string
+}
+
+export interface CreateMedicationData {
+  menstrual_cycle_id: number
+  name: string
+  dosage: string
+  frequency: string
+  startDate: string
+  endDate: string
+  notes?: string
+}
+
+export interface CreateMoodData {
+  menstrual_cycle_id: number
+  moodType: string
+  description: string
+}
+
+export interface DailySymptomResponse {
   message: string
   data: {
     id: number
-    startDate: string
-    cycleLength: number
-    periodLength: number
-    createdAt: string
+    menstrualCycleId: number
   }
 }
 
 export const menstrualApi = {
-  // getAllMenstrual: async (): Promise<MenstrualPost[]> => {
-  //   try {
-  //     const response: AxiosResponse<{ data: MenstrualPost[] }> = await fetcher.get('/menstrual-cycle/all')
-  //     return response.data.data
-  //   } catch (error) {
-  //     throw error as AxiosError
-  //   }
-  // },
-
-  createMenstrual: async (data: CreateMenstrualRequest): Promise<CreateMenstrualResponse> => {
+  createMenstrualCycle: async (data: CreateMenstrualCycleData): Promise<MenstrualCycleResponse> => {
     try {
-      const response: AxiosResponse<{ data: CreateMenstrualResponse }> = await fetcher.post(
-        '/menstrual-cycle/create',
-        data
-      )
-      return response.data.data
+      const response: AxiosResponse<MenstrualCycleResponse> = await api.post('/menstrual-cycles/create', data)
+      return response.data
     } catch (error) {
-      throw error as AxiosError
+      console.error('Failed to create menstrual cycle:', error)
+      throw error
+    }
+  },
+
+  createSymptom: async (data: CreateSymptomData): Promise<DailySymptomResponse> => {
+    try {
+      const response: AxiosResponse<DailySymptomResponse> = await api.post('/daily-symptoms/create', data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to create symptom:', error)
+      throw error
+    }
+  },
+
+  createFertility: async (data: CreateFertilityData): Promise<DailySymptomResponse> => {
+    try {
+      const response: AxiosResponse<DailySymptomResponse> = await api.post('/fertility-tracking/create', data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to create fertility data:', error)
+      throw error
+    }
+  },
+
+  createMedication: async (data: CreateMedicationData): Promise<DailySymptomResponse> => {
+    try {
+      const response: AxiosResponse<DailySymptomResponse> = await api.post('/medication-tracking/create', data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to create medication:', error)
+      throw error
+    }
+  },
+
+  createMood: async (data: CreateMoodData): Promise<DailySymptomResponse> => {
+    try {
+      const response: AxiosResponse<DailySymptomResponse> = await api.post('/mood-tracking/create', data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to create mood data:', error)
+      throw error
     }
   }
-
-  // getLatestMenstrual: async (): Promise<MenstrualPost | null> => {
-  //   try {
-  //     const response: AxiosResponse<{ data: MenstrualPost | null }> = await fetcher.get('/menstrual-cycle/latest')
-  //     return response.data.data
-  //   } catch (error) {
-  //     throw error as AxiosError
-  //   }
-  // },
-
-  // updateMenstrual: async (id: number, data: UpdateMenstrualInput): Promise<MenstrualPost> => {
-  //   try {
-  //     const response: AxiosResponse<{ data: MenstrualPost }> = await fetcher.put(`/menstrual-cycle/update/${id}`, data)
-  //     return response.data.data
-  //   } catch (error) {
-  //     throw error as AxiosError
-  //   }
-  // },
-
-  // deleteMenstrual: async (id: number): Promise<void> => {
-  //   try {
-  //     await fetcher.delete(`/menstrual-cycle/delete/${id}`)
-  //   } catch (error) {
-  //     throw error as AxiosError
-  //   }
-  // },
-
-  // calculateMenstrual: async (data: MenstrualCalculationInput): Promise<MenstrualCalculationResult> => {
-  //   try {
-  //     const response: AxiosResponse<{ data: MenstrualCalculationResult }> = await fetcher.post(
-  //       '/menstrual-cycle/calculate',
-  //       data
-  //     )
-  //     return response.data.data
-  //   } catch (error) {
-  //     throw error as AxiosError
-  //   }
-  // }
 }

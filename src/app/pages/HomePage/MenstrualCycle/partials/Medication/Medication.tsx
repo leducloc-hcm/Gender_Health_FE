@@ -1,41 +1,39 @@
-import { api } from '@/app/apis/fetcherToken'
+import { menstrualApi } from '@/app/apis/menstrual.api'
 import { Button } from '@/app/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
-import { Input } from '@/app/components/ui/input'
-import { Label } from '@/app/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select'
-import { Textarea } from '@/app/components/ui/textarea'
 import type {
   MedicationData,
   MedicationProps
 } from '@/app/pages/HomePage/MenstrualCycle/partials/Medication/models/medication.type'
-import { Loader2, Pill, SkipForward } from 'lucide-react'
+import { AlertCircle, Calendar, Clock, Heart, Info, Loader2, Pill, SkipForward } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
+const frequencyOptions = [
+  { value: 'once-daily', label: 'Once Daily' },
+  { value: 'twice-daily', label: 'Twice Daily' },
+  { value: 'three-times-daily', label: 'Three Times Daily' },
+  { value: 'as-needed', label: 'As Needed' },
+  { value: 'weekly', label: 'Weekly' }
+]
+
 export default function Medication({ menstrualCycleId, onNext, onSkipAll }: MedicationProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedFrequency, setSelectedFrequency] = useState<string>('')
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch,
-    setValue
+    formState: { errors }
   } = useForm<MedicationData>({
     defaultValues: {
-      menstrual_cycle_id: menstrualCycleId || 0,
       name: '',
       dosage: '',
-      frequency: '',
-      startDate: '',
+      startDate: new Date().toISOString().split('T')[0],
       endDate: '',
       notes: ''
     }
   })
-
-  const watchedFrequency = watch('frequency')
 
   const onSubmit = async (data: MedicationData) => {
     if (!menstrualCycleId) {
@@ -43,28 +41,28 @@ export default function Medication({ menstrualCycleId, onNext, onSkipAll }: Medi
       return
     }
 
+    if (!selectedFrequency) {
+      toast.error('Please select medication frequency')
+      return
+    }
+
     try {
       setIsSubmitting(true)
 
       const requestData = {
-        menstrual_cycle_id: menstrualCycleId,
+        menstrual_cycle_id: parseInt(menstrualCycleId),
         name: data.name,
         dosage: data.dosage,
-        frequency: data.frequency,
+        frequency: selectedFrequency,
         startDate: data.startDate,
-        endDate: data.endDate,
-        notes: data.notes
+        endDate: data.endDate || '',
+        notes: data.notes || ''
       }
 
       console.log('Sending medication data:', requestData)
 
-      const response = await api.post('/medication-tracking/create', requestData)
+      await menstrualApi.createMedication(requestData)
 
-      console.log('Medication created:', response.data)
-
-      toast.success('Medication data saved successfully!')
-
-      // Move to next step after successful submission
       if (onNext) {
         onNext()
       }
@@ -78,140 +76,212 @@ export default function Medication({ menstrualCycleId, onNext, onSkipAll }: Medi
 
   if (!menstrualCycleId) {
     return (
-      <Card className='w-full max-w-2xl mx-auto'>
-        <CardContent className='p-6'>
-          <div className='text-center text-red-500'>
-            <p>Error: Menstrual cycle ID not found. Please go back and complete the previous steps.</p>
+      <div className='w-full max-w-lg mx-auto'>
+        <div className='bg-white rounded-2xl shadow-lg border border-red-100'>
+          <div className='flex items-center justify-center py-12'>
+            <div className='text-center text-red-500'>
+              <AlertCircle className='w-12 h-12 mx-auto mb-4' />
+              <p className='font-medium'>Menstrual cycle ID not found</p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Card className='w-full max-w-2xl mx-auto mt-4 pt-4'>
-      <CardHeader>
-        <CardTitle className='flex items-center gap-2'>
-          <Pill className='w-5 h-5' />
-          Medication Tracking
-        </CardTitle>
-        <CardDescription>Keep track of medications and supplements related to your cycle.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+    <div className='w-full max-w-lg mx-auto'>
+      <div className='bg-white rounded-2xl shadow-lg border border-pink-100 overflow-hidden'>
+        {/* Header */}
+        <div className='bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-5'>
+          <div className='flex items-center space-x-3'>
+            <div className='w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center'>
+              <Pill className='w-5 h-5 text-white' />
+            </div>
+            <div>
+              <h2 className='text-lg font-semibold text-white'>Medication Tracking</h2>
+              <p className='text-sm text-pink-100'>Track your medications and supplements</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className='p-6 space-y-2'>
+          {/* Medication Name */}
           <div className='space-y-2'>
-            <Label htmlFor='medicationName'>Medication Name *</Label>
-            <Input
-              id='medicationName'
-              placeholder='e.g., Ibuprofen, Birth Control'
+            <label htmlFor='name' className='flex items-center text-sm font-medium text-gray-700'>
+              <Pill className='w-4 h-4 mr-2 text-pink-500' />
+              <span>Medication Name</span>
+              <span className='text-red-500 ml-1'>*</span>
+            </label>
+            <input
+              id='name'
+              type='text'
               {...register('name', {
                 required: 'Medication name is required',
                 minLength: {
                   value: 2,
-                  message: 'Medication name must be at least 2 characters'
+                  message: 'Name must be at least 2 characters'
                 }
               })}
-              className={errors.name ? 'border-red-500' : ''}
+              placeholder='e.g., Ibuprofen, Birth Control'
+              className={`w-full px-3 py-2 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors ${
+                errors.name
+                  ? 'border-red-300 focus:border-red-400 bg-red-50'
+                  : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+              }`}
             />
-            {errors.name && <p className='text-sm text-red-500'>{errors.name.message}</p>}
+            {errors.name && (
+              <p className='text-xs text-red-600 flex items-center'>
+                <Info className='w-3 h-3 mr-1' />
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
+          {/* Dosage & Frequency Row */}
           <div className='grid grid-cols-2 gap-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='dosage'>Dosage *</Label>
-              <Input
+            <div className=''>
+              <label htmlFor='dosage' className='text-sm font-medium text-gray-700'>
+                Dosage
+                <span className='text-red-500 ml-1'>*</span>
+              </label>
+              <input
                 id='dosage'
-                placeholder='e.g., 200mg'
+                type='text'
                 {...register('dosage', {
                   required: 'Dosage is required'
                 })}
-                className={errors.dosage ? 'border-red-500' : ''}
+                placeholder='e.g., 200mg'
+                className={`w-full px-3 py-2 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors ${
+                  errors.dosage
+                    ? 'border-red-300 focus:border-red-400 bg-red-50'
+                    : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+                }`}
               />
-              {errors.dosage && <p className='text-sm text-red-500'>{errors.dosage.message}</p>}
+              {errors.dosage && (
+                <p className='text-xs text-red-600 flex items-center'>
+                  <Info className='w-3 h-3 mr-1' />
+                  {errors.dosage.message}
+                </p>
+              )}
             </div>
 
-            <div className='space-y-2'>
-              <Label htmlFor='frequency'>Frequency *</Label>
-              <Select value={watchedFrequency} onValueChange={(value) => setValue('frequency', value)}>
-                <SelectTrigger className={errors.frequency ? 'border-red-500' : ''}>
-                  <SelectValue placeholder='Select frequency' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='once-daily'>Once Daily</SelectItem>
-                  <SelectItem value='twice-daily'>Twice Daily</SelectItem>
-                  <SelectItem value='three-times-daily'>Three Times Daily</SelectItem>
-                  <SelectItem value='as-needed'>As Needed</SelectItem>
-                  <SelectItem value='weekly'>Weekly</SelectItem>
-                </SelectContent>
-              </Select>
-              <input
-                type='hidden'
-                {...register('frequency', {
-                  required: 'Please select frequency'
-                })}
-              />
-              {errors.frequency && <p className='text-sm text-red-500'>{errors.frequency.message}</p>}
+            <div className=''>
+              <label className='text-sm font-medium text-gray-700'>
+                Frequency
+                <span className='text-red-500 ml-1'>*</span>
+              </label>
+              <div className='relative'>
+                <select
+                  value={selectedFrequency}
+                  onChange={(e) => setSelectedFrequency(e.target.value)}
+                  className={`w-full px-3 py-2 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors appearance-none ${
+                    !selectedFrequency
+                      ? 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+                      : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+                  }`}
+                >
+                  <option value=''>Select frequency</option>
+                  {frequencyOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <Clock className='absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
+              </div>
             </div>
           </div>
 
+          {/* Start Date & End Date Row */}
           <div className='grid grid-cols-2 gap-4'>
             <div className='space-y-2'>
-              <Label htmlFor='medicationStartDate'>Start Date *</Label>
-              <Input
-                id='medicationStartDate'
+              <label htmlFor='startDate' className='text-sm font-medium text-gray-700'>
+                Start Date
+                <span className='text-red-500 ml-1'>*</span>
+              </label>
+              <input
+                id='startDate'
                 type='date'
                 {...register('startDate', {
                   required: 'Start date is required'
                 })}
-                className={errors.startDate ? 'border-red-500' : ''}
+                className={`w-full px-3 py-2 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors ${
+                  errors.startDate
+                    ? 'border-red-300 focus:border-red-400 bg-red-50'
+                    : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+                }`}
               />
-              {errors.startDate && <p className='text-sm text-red-500'>{errors.startDate.message}</p>}
+              {errors.startDate && (
+                <p className='text-xs text-red-600 flex items-center'>
+                  <Info className='w-3 h-3 mr-1' />
+                  {errors.startDate.message}
+                </p>
+              )}
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='medicationEndDate'>End Date</Label>
-              <Input
-                id='medicationEndDate'
+              <label htmlFor='endDate' className='text-sm font-medium text-gray-700'>
+                End Date
+              </label>
+              <input
+                id='endDate'
                 type='date'
-                {...register('endDate')}
-                className={errors.endDate ? 'border-red-500' : ''}
+                {...register('endDate', {
+                  required: 'End date is required'
+                })}
+                className='w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-0 focus:border-pink-400 bg-gray-50 focus:bg-white transition-colors'
               />
-              {errors.endDate && <p className='text-sm text-red-500'>{errors.endDate.message}</p>}
-              <p className='text-sm text-gray-500'>Leave empty if ongoing</p>
             </div>
           </div>
 
+          {/* Notes */}
           <div className='space-y-2'>
-            <Label htmlFor='medicationNotes'>Notes</Label>
-            <Textarea
-              id='medicationNotes'
-              placeholder='Additional notes about this medication...'
+            <label htmlFor='notes' className='text-sm font-medium text-gray-700'>
+              Additional Notes
+            </label>
+            <textarea
+              id='notes'
+              rows={3}
               {...register('notes')}
+              placeholder='Any additional notes about this medication...'
+              className='w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-0 focus:border-pink-400 bg-gray-50 focus:bg-white transition-colors resize-none'
             />
           </div>
 
+          {/* Action Buttons */}
           <div className='flex gap-3 pt-4'>
-            <Button type='button' variant='outline' onClick={onSkipAll} className='flex-1' disabled={isSubmitting}>
+            <Button
+              type='button'
+              onClick={onSkipAll}
+              disabled={isSubmitting}
+              className='flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors'
+            >
               <SkipForward className='w-4 h-4 mr-2' />
               Skip All
             </Button>
+
             <Button
               type='submit'
-              className='flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'
-              disabled={isSubmitting}
+              disabled={isSubmitting || !selectedFrequency}
+              className='flex-1 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
             >
               {isSubmitting ? (
-                <>
-                  <Loader2 className='w-4 h-4 mr-2 animate-spin' />
-                  Saving...
-                </>
+                <div className='flex items-center justify-center space-x-2'>
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                  <span>Saving...</span>
+                </div>
               ) : (
-                'Save Medication'
+                <div className='flex items-center justify-center space-x-2'>
+                  <span>Save Medication</span>
+                  <Pill className='w-4 h-4' />
+                </div>
               )}
             </Button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

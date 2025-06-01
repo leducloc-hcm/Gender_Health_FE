@@ -74,7 +74,7 @@ export default function BlogDetail() {
   return (
     <div className='container mx-auto px-4 py-8 max-w-7xl'>
       <Button variant='outline' className='mb-6' asChild>
-        <Link to='/customer/blog'>
+        <Link to='/blog'>
           <ArrowLeft className='w-4 h-4 mr-2' /> Back to Blog
         </Link>
       </Button>
@@ -122,7 +122,7 @@ export default function BlogDetail() {
               <CarouselContent>
                 {relatedPosts.map((item) => (
                   <CarouselItem key={item.id} className='md:basis-1/2 lg:basis-1/4'>
-                    <Link to={`/customer/blog/${item.id}`}>
+                    <Link to={`/blog/${item.id}`}>
                       <Card className='rounded-xl hover:shadow-lg transition-shadow h-[320px]'>
                         <div className='h-[160px] overflow-hidden rounded-t-xl'>
                           <img
