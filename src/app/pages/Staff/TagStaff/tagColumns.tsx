@@ -32,19 +32,13 @@ export const tagColumns: ColumnDef<TagBlog>[] = [
       const id = row.original.id
       return (
         <div className='flex gap-2 justify-center items-center'>
-          <Link to={`/staff/blog/${id}`}>
-            <Button className='bg-blue-500 hover:bg-blue-600 text-white' size='sm'>
-              View
-            </Button>
-          </Link>
-
           <Link to={`/staff/blog/edit/${id}`}>
-            <Button className='bg-yellow-500 hover:bg-yellow-600 text-white' size='sm'>
+            <Button className='bg-pink-400 hover:bg-pink-500 text-white' size='sm'>
               Edit
             </Button>
           </Link>
 
-          <Button className='bg-yellow-500 hover:bg-yellow-600 text-white' size='sm'>
+          <Button className='bg-pink-400 hover:bg-pink-500 text-white' size='sm'>
             Delete
           </Button>
         </div>
