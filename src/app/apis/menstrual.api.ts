@@ -1,4 +1,4 @@
-import { api } from '@/app/apis/fetcherToken'
+import { fetcher } from '@/app/apis/fetcher'
 import type {
   CreateMenstrualCycleData,
   MenstrualCycleResponse
@@ -47,7 +47,7 @@ export interface DailySymptomResponse {
 export const menstrualApi = {
   createMenstrualCycle: async (data: CreateMenstrualCycleData): Promise<MenstrualCycleResponse> => {
     try {
-      const response: AxiosResponse<MenstrualCycleResponse> = await api.post('/menstrual-cycles/create', data)
+      const response: AxiosResponse<MenstrualCycleResponse> = await fetcher.post('/menstrual-cycles/create', data)
       return response.data
     } catch (error) {
       console.error('Failed to create menstrual cycle:', error)
@@ -57,7 +57,7 @@ export const menstrualApi = {
 
   createSymptom: async (data: CreateSymptomData): Promise<DailySymptomResponse> => {
     try {
-      const response: AxiosResponse<DailySymptomResponse> = await api.post('/daily-symptoms/create', data)
+      const response: AxiosResponse<DailySymptomResponse> = await fetcher.post('/daily-symptoms/create', data)
       return response.data
     } catch (error) {
       console.error('Failed to create symptom:', error)
@@ -67,7 +67,7 @@ export const menstrualApi = {
 
   createFertility: async (data: CreateFertilityData): Promise<DailySymptomResponse> => {
     try {
-      const response: AxiosResponse<DailySymptomResponse> = await api.post('/fertility-tracking/create', data)
+      const response: AxiosResponse<DailySymptomResponse> = await fetcher.post('/fertility-tracking/create', data)
       return response.data
     } catch (error) {
       console.error('Failed to create fertility data:', error)
@@ -77,7 +77,7 @@ export const menstrualApi = {
 
   createMedication: async (data: CreateMedicationData): Promise<DailySymptomResponse> => {
     try {
-      const response: AxiosResponse<DailySymptomResponse> = await api.post('/medication-tracking/create', data)
+      const response: AxiosResponse<DailySymptomResponse> = await fetcher.post('/medication-tracking/create', data)
       return response.data
     } catch (error) {
       console.error('Failed to create medication:', error)
@@ -87,7 +87,7 @@ export const menstrualApi = {
 
   createMood: async (data: CreateMoodData): Promise<DailySymptomResponse> => {
     try {
-      const response: AxiosResponse<DailySymptomResponse> = await api.post('/mood-tracking/create', data)
+      const response: AxiosResponse<DailySymptomResponse> = await fetcher.post('/mood-tracking/create', data)
       return response.data
     } catch (error) {
       console.error('Failed to create mood data:', error)

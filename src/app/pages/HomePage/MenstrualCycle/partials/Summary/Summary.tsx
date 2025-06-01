@@ -1,7 +1,7 @@
-import { api } from '@/app/apis/fetcherToken'
+import { fetcher } from '@/app/apis/fetcher'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
 import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import type { PredictionData } from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/models/summary.type'
 import { addDays, differenceInDays, format, isWithinInterval } from 'date-fns'
@@ -347,12 +347,12 @@ export default function Summary() {
       try {
         setIsLoading(true)
         setError(null)
-        const userResponse = await api.get('/users/me')
+        const userResponse = await fetcher.get('/users/me')
         const userResult = userResponse.data.result
         console.log(userProfile)
         setUserProfile(userResult)
         const customerProfileId = userResult.customer_profile_id
-        const predictionResponse = await api.get(`/prediction/${customerProfileId}`)
+        const predictionResponse = await fetcher.get(`/prediction/${customerProfileId}`)
         setPredictionData(predictionResponse.data.data)
       } catch (error: any) {
         let errorMessage = 'Failed to load data'

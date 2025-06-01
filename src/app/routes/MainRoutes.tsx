@@ -29,6 +29,10 @@ import BlogStaff from '@/app/pages/Staff/BlogStaff/BlogStaff'
 import TestPackages from '@/app/pages/HomePage/TestPackages/TestPackages'
 import VerifyPasscode from '../pages/Auth/VerifyPasscode/VerifyPasscode'
 import HomePageLayout from '../pages/HomePage/HomePageLayout'
+import BlogDetailStaff from '../pages/Staff/BlogStaff/BlogDetailStaff'
+import CreateBlog from '../pages/Staff/BlogStaff/CreateBlog'
+import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
+import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 
 export default function MainRoutes() {
   return (
@@ -87,6 +91,10 @@ export default function MainRoutes() {
           <Route index element={<Navigate to={staffPath.dashboard} replace />} />
           <Route path={staffPath.dashboard} element={<DashboardStaff />} />
           <Route path={staffPath.blog} element={<BlogStaff />} />
+          <Route path={staffPath.blogDetail} element={<BlogDetailStaff />} />
+          <Route path={staffPath.blogCreate} element={<CreateBlog />} />
+          <Route path={staffPath.blogEdit} element={<EditBlog />} />
+          <Route path={staffPath.tag} element={<TagStaff />} />
         </Route>
       </Routes>
     </>

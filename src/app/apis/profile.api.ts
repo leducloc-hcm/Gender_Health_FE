@@ -1,11 +1,11 @@
 import type { AxiosResponse } from 'axios'
 import type { PasswordForm, profileResponse, UpdateProfileInput } from '../pages/Customer/Profile/models/Profile'
-import { api } from './fetcherToken'
+import { fetcher } from '@/app/apis/fetcher'
 
 export const profileApi = {
   getProfile: async (): Promise<profileResponse> => {
     try {
-      const response: AxiosResponse<profileResponse> = await api.get('/users/me')
+      const response: AxiosResponse<profileResponse> = await fetcher.get('/users/me')
       return response.data
     } catch (error) {
       console.error('Failed to fetch profile:', error)
@@ -14,7 +14,7 @@ export const profileApi = {
   },
   updateProfile: async (data: Partial<UpdateProfileInput>): Promise<profileResponse> => {
     try {
-      const response: AxiosResponse<profileResponse> = await api.put('/users/update/me', data, {
+      const response: AxiosResponse<profileResponse> = await fetcher.put('/users/update/me', data, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -27,7 +27,7 @@ export const profileApi = {
   },
   updatePassword: async (data: PasswordForm): Promise<profileResponse> => {
     try {
-      const response: AxiosResponse<profileResponse> = await api.put('/users/change-password', data, {
+      const response: AxiosResponse<profileResponse> = await fetcher.put('/users/change-password', data, {
         headers: {
           'Content-Type': 'application/json'
         }

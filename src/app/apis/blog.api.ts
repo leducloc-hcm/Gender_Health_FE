@@ -44,3 +44,6 @@ export const fetchBlogById = async (id: string) => {
   const res = await fetcher.get(`/blogs/${id}`)
   return res.data.data
 }
+export const deleteBlog = async (id: number): Promise<void> => {
+  await fetcher.delete(`/blogs/delete/${id}`)
+}
