@@ -21,6 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/app/components/ui/dropdown-menu'
+import { Link } from 'react-router-dom'
 
 type DataTableProps<TData> = {
   columns: ColumnDef<TData>[]
@@ -49,7 +50,7 @@ export default function DataTableTags<TData>({ columns, data }: DataTableProps<T
 
   return (
     <div>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center py-4 space-x-2'>
         <Input
           placeholder='Filter name...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -78,6 +79,11 @@ export default function DataTableTags<TData>({ columns, data }: DataTableProps<T
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <Link to='/staff/tag/create'>
+          <Button variant='default' className='bg-pink-400 hover:bg-pink-500 text-white'>
+            + Create Tag
+          </Button>
+        </Link>
       </div>
 
       <div className='rounded-md border'>
