@@ -66,12 +66,6 @@ export default function TestTypeSect() {
     }
   }
 
-  const pricingPlans = testPackages.map((pack) => ({
-    ...pack,
-    bgColor: bgColorMapping[pack.code] || 'bg-gray-500',
-    checkColor: checkColorMapping[pack.code] || 'text-gray-500'
-  }))
-
   // Function merge TestCategories (includedInPackages)
   function mergeTestCategoriesByType(testTypes: TestTypeItem[], testPackages: TestPackageItem[]): MergedTestType[] {
     // Collect array test codes in each package
@@ -101,9 +95,16 @@ export default function TestTypeSect() {
     try {
       // fetch test packages & fetch test packages
       const [packagesRes, typesRes] = await Promise.all([testApi.getAllTestPackage(), testApi.getAllTypeOfTest()])
-      setTestPackages(packagesRes.data)
 
-      // start to merge TestCategories
+      // Add bgColor & checkColor for each package
+      const pricingPlans = packagesRes.data?.map((pack) => ({
+        ...pack,
+        bgColor: bgColorMapping[pack.code] || 'bg-gray-500',
+        checkColor: checkColorMapping[pack.code] || 'text-gray-500'
+      }))
+      setTestPackages(pricingPlans)
+
+      // Merge TestCategories
       const merged = mergeTestCategoriesByType(typesRes.data, packagesRes.data)
       setRenderedTestTypes(merged)
     } catch (error: any) {
@@ -128,27 +129,27 @@ export default function TestTypeSect() {
                 Cost of the 13-Disease STi Testing Package
               </h1>
               <div className='grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 p-2 sm:p-4 md:p-6'>
-                {pricingPlans.length === 0 ? (
+                {testPackages.length === 0 ? (
                   <p className='col-span-4 text-center text-lg sm:text-xl md:text-2xl text-gray-600 font-semibold bg-gray-100 py-4 sm:py-6 md:py-8 rounded-lg sm:rounded-xl md:rounded-2xl'>
                     No test packages found
                   </p>
                 ) : (
                   <>
-                    {pricingPlans.map((plan, index) => (
+                    {testPackages.map((pkg, index) => (
                       <Card
                         key={index}
-                        className={`${plan.bgColor} text-white border-0 rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden`}
+                        className={`${pkg.bgColor} text-white border-0 rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden`}
                       >
                         <CardHeader className='text-center pb-0 px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-6'>
                           <h3 className='text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight'>
-                            {plan.name}
+                            {pkg.name}
                           </h3>
                         </CardHeader>
 
                         <CardContent className='text-center pb-0 px-2 sm:px-4 md:px-6 pt-0'>
-                          <p className='text-sm sm:text-lg font-semibold opacity-90 mb-1 sm:mb-2'>{plan.description}</p>
+                          <p className='text-sm sm:text-lg font-semibold opacity-90 mb-1 sm:mb-2'>{pkg.description}</p>
                           <p className='text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight'>
-                            {plan.price.toLocaleString()} VND
+                            {pkg.price.toLocaleString()} VND
                           </p>
                         </CardContent>
 
@@ -213,7 +214,7 @@ export default function TestTypeSect() {
                                       {test.includedInPackages.map((included, pkgIndex) => (
                                         <div key={pkgIndex} className='flex justify-center items-center h-6'>
                                           {included ? (
-                                            <CircleCheck className={`h-8 w-8 ${pricingPlans[pkgIndex].checkColor}`} />
+                                            <CircleCheck className={`h-8 w-8 ${testPackages[pkgIndex].checkColor}`} />
                                           ) : (
                                             <div className='h-8 w-8' />
                                           )}
