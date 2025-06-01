@@ -203,6 +203,20 @@ export default function ChatFlow() {
     return `User#${user.id}`
   }
 
+  // Check if message should be displayed on the right (customer messages when logged in as customer)
+  const isRightSideMessage = (sender: User) => {
+    const isLoggedInAsCustomer = userRole === 'customer' || userRole === 'CUSTOMER'
+    const isCustomerMessage = sender.role === 'CUSTOMER'
+
+    if (isLoggedInAsCustomer) {
+      // If logged in as customer, show customer messages on right
+      return isCustomerMessage
+    } else {
+      // If logged in as staff, show staff messages on right
+      return !isCustomerMessage
+    }
+  }
+
   // Fetch available staff for new conversation (if customer)
   useEffect(() => {
     if (!userRole || (userRole !== 'customer' && userRole !== 'CUSTOMER')) return
@@ -344,17 +358,17 @@ export default function ChatFlow() {
                 <div className='text-gray-500 text-center'>No messages yet. Start the conversation!</div>
               ) : (
                 messages.map((msg) => {
-                  const isCustomer = msg.sender.id === selectedConversation.customer?.id
+                  const isMyMessage = isRightSideMessage(msg.sender)
                   return (
-                    <div key={msg.id} className={`flex ${isCustomer ? 'justify-start' : 'justify-end'}`}>
+                    <div key={msg.id} className={`flex ${isMyMessage ? 'justify-end' : 'justify-start'}`}>
                       <div
                         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                          isCustomer ? 'bg-gray-200 text-gray-800' : 'bg-blue-500 text-white'
+                          isMyMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
                         }`}
                       >
                         <div className='font-semibold text-sm mb-1'>{getUserName(msg.sender)}</div>
                         <div>{msg.message}</div>
-                        <div className={`text-xs mt-1 ${isCustomer ? 'text-gray-500' : 'text-blue-100'}`}>
+                        <div className={`text-xs mt-1 ${isMyMessage ? 'text-blue-100' : 'text-gray-500'}`}>
                           {new Date(msg.created_at).toLocaleTimeString()}
                         </div>
                       </div>
