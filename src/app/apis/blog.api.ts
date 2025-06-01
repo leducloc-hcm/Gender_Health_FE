@@ -17,7 +17,13 @@ export interface BlogPost {
     }
   }[]
 }
-
+export interface BlogRequest {
+  title: string
+  content: string
+  tags: number[]
+  date: string
+  image: string
+}
 export interface BlogResponse {
   data: BlogPost[]
   pagination: {
@@ -26,6 +32,9 @@ export interface BlogResponse {
     totalItems: number
     totalPages: number
   }
+}
+interface BlogMessageResponse {
+  message: string
 }
 export const fetchBlog = async (): Promise<BlogPost[]> => {
   const response = await fetcher.get('/blogs')
@@ -46,4 +55,13 @@ export const fetchBlogById = async (id: string) => {
 }
 export const deleteBlog = async (id: number): Promise<void> => {
   await fetcher.delete(`/blogs/delete/${id}`)
+}
+export const createBlog = async (data: BlogRequest): Promise<BlogMessageResponse> => {
+  const res = await fetcher.post('/blogs/create', data)
+  return res.data
+}
+
+export const updateBlog = async (id: string, data: BlogRequest): Promise<BlogMessageResponse> => {
+  const res = await fetcher.put(`/blogs/update/${id}`, data)
+  return res.data
 }
