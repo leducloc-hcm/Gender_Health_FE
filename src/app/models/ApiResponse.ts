@@ -1,4 +1,4 @@
-import type { AxiosResponse } from "axios"
+import type { AxiosResponse } from 'axios'
 
 export interface AuthApiResponse extends Partial<AxiosResponse> {
   message?: string

@@ -111,7 +111,7 @@ export default function Header() {
                   </div>
                 </div>
                 <DropdownMenuSeparator className='bg-pink-100' />
-                <Link to='customer/profile'>
+                <Link to='/profile'>
                   <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'>
                     <User className='mr-3 h-4 w-4 text-pink-500' />
                     <span>Profile</span>
@@ -136,7 +136,9 @@ export default function Header() {
                   className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'
                   onClick={() => {
                     localStorage.removeItem('access_token')
-                    nav('/auth/login')
+                    localStorage.removeItem('refresh_token')
+                    localStorage.removeItem('user_role')
+                    nav('/')
                   }}
                 >
                   <LogOut className='mr-3 h-4 w-4' />

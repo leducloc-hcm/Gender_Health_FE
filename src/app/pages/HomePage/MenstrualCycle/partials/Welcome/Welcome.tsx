@@ -1,19 +1,20 @@
-import { api } from '@/app/apis/fetcherToken'
-import type { UserProfile, WelcomeProps } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
+import { profileApi } from '@/app/apis/profile.api'
+import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
+import type { WelcomeProps } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import { Calendar, ChevronRight, Heart, Loader2, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 export default function Welcome({ onNext }: WelcomeProps) {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [userProfile, setUserProfile] = useState<getProfileResult | null>(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
 
   useEffect(() => {
     const getUserProfile = async () => {
       try {
         setIsLoadingProfile(true)
-        const response = await api.get('/users/me')
-        setUserProfile(response.data.result)
+        const response = await profileApi.getProfile()
+        setUserProfile(response.result)
       } catch (error: any) {
         console.error('Failed to fetch user profile:', error)
         toast.error(error.response?.data?.message || 'Failed to load user profile')

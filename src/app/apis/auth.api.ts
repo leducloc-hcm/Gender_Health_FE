@@ -71,6 +71,19 @@ export const authApi = {
     }
   },
 
+  refreshToken: async (refreshToken: string): Promise<LoginResponse> => {
+    try {
+      const response: AxiosResponse<LoginResponse> = await fetcher.post('/users/refresh-token', {
+        refresh_token: refreshToken
+      })
+
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
+
   getMe: async (token: string): Promise<UserProfile> => {
     try {
       const response: AxiosResponse<{ message: string; result: UserProfile }> = await fetcher.get('/users/me', {
