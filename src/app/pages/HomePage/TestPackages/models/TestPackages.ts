@@ -14,6 +14,8 @@ export interface TestPackageItem {
   description: string
   price: number
   tests: TestCategory[]
+  bgColor: string
+  checkColor: string
 }
 
 export interface TestPackageResponse {
