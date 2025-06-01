@@ -19,10 +19,10 @@ import ResetPassword from '../pages/Auth/ResetPassword/ResetPassword'
 import OauthLogin from '@/app/pages/Auth/OauthLogin/OauthLogin'
 import VerifyEmail from '../pages/Auth/VerfiEmail/VerifyEmail'
 import Profile from '@/app/pages/Customer/Profile/Profile'
-import Blog from '@/app/pages/Customer/Blog/Blog'
+import Blog from '@/app/pages/HomePage/Blog/Blog'
 import Order from '@/app/pages/Customer/Order/Order'
 import MenstrualCycle from '@/app/pages/HomePage/MenstrualCycle/MenstrualCycle'
-import BlogDetail from '../pages/Customer/Blog/BlogDetail'
+import BlogDetail from '../pages/HomePage/Blog/BlogDetail'
 import staffPath from '@/app/routes/paths/staffPath'
 import DashboardStaff from '@/app/pages/Staff/DashboardStaff/DashboardStaff'
 import BlogStaff from '@/app/pages/Staff/BlogStaff/BlogStaff'
@@ -33,6 +33,7 @@ import BlogDetailStaff from '../pages/Staff/BlogStaff/BlogDetailStaff'
 import CreateBlog from '../pages/Staff/BlogStaff/CreateBlog'
 import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
+import Forum from '@/app/pages/HomePage/Forum/Forum'
 
 export default function MainRoutes() {
   return (
@@ -53,10 +54,14 @@ export default function MainRoutes() {
         <Route path='/' element={<HomePageLayout />}>
           <Route path='/' element={<HomePage />} />
           <Route path='/test-packages' element={<TestPackages />} />
+          <Route path='/menstrual-cycle' element={<MenstrualCycle />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/blog' element={<Blog />} />
+          <Route path='/blog/:id' element={<BlogDetail />} />
+          <Route path='/forum' element={<Forum />} />
         </Route>
 
         <Route path='/login/oauth' element={<OauthLogin />} />
-        <Route path='/menstrual-cycle' element={<MenstrualCycle />} />
 
         <Route path='/auth' element={<Auth />}>
           <Route index element={<Navigate to={authPath.login} replace />} />
@@ -73,10 +78,7 @@ export default function MainRoutes() {
         <Route path='/customer' element={<Customer />}>
           <Route index element={<Navigate to={customerPath.dashboard} replace />} />
           <Route path={customerPath.dashboard} element={<Dashboard />} />
-          <Route path={customerPath.profile} element={<Profile />} />
           <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
-          <Route path={customerPath.blog} element={<Blog />} />
-          <Route path={customerPath.blogDetail} element={<BlogDetail />} />
           <Route path={customerPath.orders} element={<Order />} />
         </Route>
 

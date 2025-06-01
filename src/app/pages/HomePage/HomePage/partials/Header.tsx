@@ -60,11 +60,8 @@ export default function Header() {
             <Link to='/#features' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Features
             </Link>
-            <Link to='/#about' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              About
-            </Link>
-            <Link to='/#services' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Services
+            <Link to='/forum' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+              Forum
             </Link>
             <Link
               to='/menstrual-cycle'
@@ -80,9 +77,6 @@ export default function Header() {
               className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
             >
               Test Packages
-            </Link>
-            <Link to='/#contact' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Contact
             </Link>
           </nav>
           {accessToken ? (
@@ -111,7 +105,7 @@ export default function Header() {
                   </div>
                 </div>
                 <DropdownMenuSeparator className='bg-pink-100' />
-                <Link to='customer/profile'>
+                <Link to='/profile'>
                   <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'>
                     <User className='mr-3 h-4 w-4 text-pink-500' />
                     <span>Profile</span>
@@ -136,7 +130,9 @@ export default function Header() {
                   className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'
                   onClick={() => {
                     localStorage.removeItem('access_token')
-                    nav('/auth/login')
+                    localStorage.removeItem('refresh_token')
+                    localStorage.removeItem('user_role')
+                    nav('/')
                   }}
                 >
                   <LogOut className='mr-3 h-4 w-4' />

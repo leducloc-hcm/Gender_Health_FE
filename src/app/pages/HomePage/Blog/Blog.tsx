@@ -140,7 +140,7 @@ export default function BlogPage() {
           {visiblePosts.length > 0 ? (
             <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
               {visiblePosts.map((post) => (
-                <Link key={post.id} to={`/customer/blog/${post.id}`}>
+                <Link key={post.id} to={`/blog/${post.id}`}>
                   <Card className='h-full overflow-hidden rounded-2xl cursor-pointer hover:shadow-lg transition-shadow'>
                     <div className='w-full h-[220px] overflow-hidden rounded-t-2xl'>
                       <img
