@@ -4,7 +4,7 @@ import type {
   MedicationData,
   MedicationProps
 } from '@/app/pages/HomePage/MenstrualCycle/partials/Medication/models/medication.type'
-import { AlertCircle, Calendar, Clock, Heart, Info, Loader2, Pill, SkipForward } from 'lucide-react'
+import { AlertCircle, Clock, Info, Loader2, Pill, SkipForward } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -50,7 +50,7 @@ export default function Medication({ menstrualCycleId, onNext, onSkipAll }: Medi
       setIsSubmitting(true)
 
       const requestData = {
-        menstrual_cycle_id: parseInt(menstrualCycleId),
+        menstrual_cycle_id: menstrualCycleId,
         name: data.name,
         dosage: data.dosage,
         frequency: selectedFrequency,

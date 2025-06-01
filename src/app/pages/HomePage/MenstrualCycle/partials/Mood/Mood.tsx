@@ -1,7 +1,7 @@
 import { menstrualApi } from '@/app/apis/menstrual.api'
 import { Button } from '@/app/components/ui/button'
 import type { MoodData, MoodProps } from '@/app/pages/HomePage/MenstrualCycle/partials/Mood/models/mood.type'
-import { AlertCircle, Heart, Info, Loader2, SkipForward, Smile } from 'lucide-react'
+import { AlertCircle, Heart, Loader2, SkipForward, Smile } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'

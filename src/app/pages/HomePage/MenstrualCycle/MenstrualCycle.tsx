@@ -1,4 +1,3 @@
-import Header from '@/app/pages/HomePage/HomePage/partials/Header'
 import CycleInput from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/CycleInput'
 import Fertility from '@/app/pages/HomePage/MenstrualCycle/partials/Fertility/Fertility'
 import Medication from '@/app/pages/HomePage/MenstrualCycle/partials/Medication/Medication'
