@@ -34,6 +34,7 @@ import CreateBlog from '../pages/Staff/BlogStaff/CreateBlog'
 import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import Forum from '@/app/pages/HomePage/Forum/Forum'
+import CreateTag from '../pages/Staff/TagStaff/CreateTag'
 
 export default function MainRoutes() {
   return (
@@ -97,6 +98,7 @@ export default function MainRoutes() {
           <Route path={staffPath.blogCreate} element={<CreateBlog />} />
           <Route path={staffPath.blogEdit} element={<EditBlog />} />
           <Route path={staffPath.tag} element={<TagStaff />} />
+          <Route path={staffPath.tagCreate} element={<CreateTag />} />
         </Route>
       </Routes>
     </>
