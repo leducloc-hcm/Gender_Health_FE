@@ -4,7 +4,7 @@ import { useInView, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { MergedTestType, TestPackageItem, TestTypeItem } from '../models/TestPackages'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/app/components/ui/collapsible'
-import { Minus, Plus, CircleCheck } from 'lucide-react'
+import { Minus, Plus, CircleX, CircleCheck } from 'lucide-react'
 import { testApi } from '@/app/apis/test.api'
 import { toast } from 'react-toastify'
 
@@ -193,7 +193,7 @@ export default function TestTypeSect() {
                         {/* data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down */}
                         <CollapsibleContent className='overflow-hidden py-4'>
                           {type.tests.map((test) => (
-                            <div key={test.id} className='ml-8 space-y-2'>
+                            <div key={test.id} className='ml-6 space-y-2'>
                               <div className='border-l-2 border-gray-100'>
                                 <Collapsible
                                   open={openTestCategory[test.id]}
@@ -214,9 +214,11 @@ export default function TestTypeSect() {
                                       {test.includedInPackages.map((included, pkgIndex) => (
                                         <div key={pkgIndex} className='flex justify-center items-center h-6'>
                                           {included ? (
-                                            <CircleCheck className={`h-8 w-8 ${testPackages[pkgIndex].checkColor}`} />
+                                            <CircleCheck
+                                              className={`h-8 w-8 ${testPackages[pkgIndex].bgColor} rounded-full text-white`}
+                                            />
                                           ) : (
-                                            <div className='h-8 w-8' />
+                                            <CircleX className='h-8 w-8 text-gray-300 opacity-80 rounded-full' />
                                           )}
                                         </div>
                                       ))}

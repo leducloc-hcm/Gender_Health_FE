@@ -1,4 +1,3 @@
-import { Button } from '@/app/components/ui/button'
 import { useInView, motion } from 'framer-motion'
 import { useRef } from 'react'
 import { IoMdCheckmarkCircle } from 'react-icons/io'
@@ -68,9 +67,9 @@ export default function IntroductionTest() {
                 <h3 className='text-base md:text-2xl font-bold text-gray-900'>{benefit.title}</h3>
               </div>
             ))}
-            <Button className='w-2/5 mt-3 text-base md:text-xl py-5 md:py-6 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'>
+            {/* <Button className='w-2/5 mt-3 text-base md:text-xl py-5 md:py-6 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-lg'>
               Get a consultation now
-            </Button>
+            </Button> */}
           </motion.div>
           <motion.div variants={itemVariants} className='order-1 lg:order-2'>
             <div className='relative'>
