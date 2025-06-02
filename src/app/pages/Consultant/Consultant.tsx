@@ -1,3 +1,3 @@
 export default function Consultant() {
-  return <div>Consultant</div>
+  return <div>Consul--t</div>
 }

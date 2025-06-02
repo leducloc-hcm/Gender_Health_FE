@@ -25,16 +25,23 @@ export interface getProfileResult {
   location?: string
   username: string
   avatar?: string
-  cover_photo?: string
+  coverPhoto?: string
   date_of_birth: string
   website?: string
   phone_number?: string
   description?: string
+  customer_profile_id?: number
 }
 export interface UpdateProfileInput {
   name?: string
   location?: string
   username?: string
-  avatar?: string
-  coverPhoto?: string
+  avatar?: File
+  coverPhoto?: File
+}
+
+export interface PasswordForm {
+  old_password: string
+  password: string
+  confirm_password: string
 }

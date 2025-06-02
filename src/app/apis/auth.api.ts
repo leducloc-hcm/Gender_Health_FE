@@ -2,8 +2,9 @@ import type { AxiosError, AxiosResponse } from 'axios'
 import { fetcher } from '@/app/apis/fetcher'
 import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
 import type { ForgotPasswordFormData } from '../pages/Auth/ForgetPassword/models/ForgetPassword'
-import type { ResetPasswordRequest, VerifyForgotPasswordRequest } from '../pages/Auth/ResetPassword/models/ResetPassword'
+import type { ResetPasswordRequest } from '../pages/Auth/ResetPassword/models/ResetPassword'
 import type { AuthApiResponse } from '../models/ApiResponse'
+import type { VerifyPasscodeRequest } from '../pages/Auth/VerifyPasscode/models/VerifyPasscode'
 
 export interface UserProfile {
   id: number
@@ -37,7 +38,7 @@ export const authApi = {
     }
   },
 
-  verifyForgotPassword: async (data: VerifyForgotPasswordRequest): Promise<AuthApiResponse> => {
+  verifyPasscode: async (data: VerifyPasscodeRequest): Promise<AuthApiResponse> => {
     try {
       const response: AxiosResponse<AuthApiResponse> = await fetcher.post(`/users/verify-forgot-password`, data)
 
@@ -62,6 +63,19 @@ export const authApi = {
   login: async (data: LoginFormData): Promise<LoginResponse> => {
     try {
       const response: AxiosResponse<LoginResponse> = await fetcher.post(`/users/login`, data)
+
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
+
+  refreshToken: async (refreshToken: string): Promise<LoginResponse> => {
+    try {
+      const response: AxiosResponse<LoginResponse> = await fetcher.post('/users/refresh-token', {
+        refresh_token: refreshToken
+      })
 
       return response.data
     } catch (error) {

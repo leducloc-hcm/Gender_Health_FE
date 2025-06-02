@@ -29,7 +29,7 @@ const getGoogleAuthUrl = () => {
 const googleOAuthUrl = getGoogleAuthUrl()
 
 const ROLE_ROUTES = {
-  CUSTOMER: '/customer',
+  CUSTOMER: '/',
   ADMIN: '/admin',
   STAFF: '/staff',
   CONSULTANT: '/consultant'
@@ -190,7 +190,7 @@ export default function LoginPage() {
                 </label>
               </div>
 
-              <Link to='/auth/forgotPassword' className='text-sm text-pink-600 hover:text-pink-500 font-medium'>
+              <Link to='/auth/forgot-password' className='text-sm text-pink-600 hover:text-pink-500 font-medium'>
                 Forgot password?
               </Link>
             </div>

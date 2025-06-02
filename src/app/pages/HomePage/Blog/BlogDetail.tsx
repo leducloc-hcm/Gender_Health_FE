@@ -48,10 +48,18 @@ export default function BlogDetail() {
       if (!blog) return
       try {
         const res = await fetchBlogs(1, 100)
-        const related = res.data.filter(
-          (item) => item.id !== blog.id && item.tags?.some((t) => blog.tags.some((bt) => bt.tag.id === t.tag.id))
-        )
-        setRelatedPosts(related as any)
+        const related = res.data
+          .filter(
+            (item) =>
+              item.id !== blog.id &&
+              Array.isArray(item.tags) &&
+              item.tags.some((t) => blog.tags.some((bt) => bt.tag.id === t.tag.id))
+          )
+          .map((item) => ({
+            ...item,
+            tags: Array.isArray(item.tags) ? item.tags : []
+          }))
+        setRelatedPosts(related)
       } catch (err) {
         console.error('Failed to load related blogs:', err)
       }
@@ -66,7 +74,7 @@ export default function BlogDetail() {
   return (
     <div className='container mx-auto px-4 py-8 max-w-7xl'>
       <Button variant='outline' className='mb-6' asChild>
-        <Link to='/customer/blog'>
+        <Link to='/blog'>
           <ArrowLeft className='w-4 h-4 mr-2' /> Back to Blog
         </Link>
       </Button>
@@ -100,7 +108,7 @@ export default function BlogDetail() {
 
         <h1 className='text-4xl font-bold leading-tight'>{blog.title}</h1>
 
-        <div className='prose prose-lg max-w-none text-gray-800'>
+        <div className='prose prose-lg max-w-none text-gray-800 whitespace-pre-line break-words '>
           <p>{blog.content}</p>
         </div>
       </article>
@@ -114,7 +122,7 @@ export default function BlogDetail() {
               <CarouselContent>
                 {relatedPosts.map((item) => (
                   <CarouselItem key={item.id} className='md:basis-1/2 lg:basis-1/4'>
-                    <Link to={`/customer/blog/${item.id}`}>
+                    <Link to={`/blog/${item.id}`}>
                       <Card className='rounded-xl hover:shadow-lg transition-shadow h-[320px]'>
                         <div className='h-[160px] overflow-hidden rounded-t-xl'>
                           <img

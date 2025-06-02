@@ -1,7 +1,7 @@
-import { api } from '@/app/apis/fetcherToken'
+import { fetcher } from '@/app/apis/fetcher'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
 import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import type { PredictionData } from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/models/summary.type'
 import { addDays, differenceInDays, format, isWithinInterval } from 'date-fns'
@@ -19,14 +19,11 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
   const fertileStart = new Date(predictionData.pregnancyAbility.fertileWindowStart)
   const fertileEnd = new Date(predictionData.pregnancyAbility.fertileWindowEnd)
 
-  // Calculate countdown to next menstrual period
   const daysUntilMenstrual = Math.max(0, differenceInDays(cycleStart, today))
 
-  // Calculate cycle length and menstrual period length
   const cycleLength = predictionData.prediction.cycleLength
   const menstrualDays = differenceInDays(cycleEnd, cycleStart) + 1
 
-  // Calculate phases based on actual cycle data
   const menstrualPhase = {
     start: 1,
     end: menstrualDays,
@@ -36,7 +33,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
     endDate: cycleEnd
   }
 
-  // Follicular phase starts after menstrual ends
   const follicularStartDate = addDays(cycleEnd, 1)
   const follicularEndDate = addDays(fertileStart, -1)
   const follicularDays = Math.max(1, differenceInDays(follicularEndDate, follicularStartDate) + 1)
@@ -50,7 +46,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
     endDate: follicularEndDate
   }
 
-  // Ovulation phase is the fertile window
   const ovulationDays = differenceInDays(fertileEnd, fertileStart) + 1
   const ovulationPhase = {
     start: follicularPhase.end + 1,
@@ -61,7 +56,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
     endDate: fertileEnd
   }
 
-  // Luteal phase is the rest of the cycle
   const lutealStartDate = addDays(fertileEnd, 1)
   const lutealEndDate = addDays(cycleStart, cycleLength - 1)
 
@@ -74,7 +68,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
     endDate: lutealEndDate
   }
 
-  // Calculate current day based on today's position in cycle
   const daysSinceCycleStart = differenceInDays(today, cycleStart)
   let currentDay = 1
 
@@ -93,12 +86,10 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
     return lutealPhase
   }
 
-  // Get specific date for a cycle day
   const getDateForDay = (day: number) => {
     return addDays(cycleStart, day - 1)
   }
 
-  // Generate chart data
   const chartData = []
   for (let day = 1; day <= cycleLength; day++) {
     const phase = getCurrentPhase(day)
@@ -147,7 +138,7 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
             const angle = (index * 360) / cycleLength - 90
             const radian = (angle * Math.PI) / 180
             const innerRadius = 120
-            const outerRadius = radius // Removed current day expansion
+            const outerRadius = radius
 
             const x1 = centerX + Math.cos(radian) * innerRadius
             const y1 = centerY + Math.sin(radian) * innerRadius
@@ -175,12 +166,10 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
                   onMouseMove={(e) => handleMouseMove(e, item.day)}
                   onMouseLeave={handleMouseLeave}
                 />
-                {/* Removed current day indicator */}
               </g>
             )
           })}
 
-          {/* Enhanced Center content with countdown */}
           <circle
             cx={centerX}
             cy={centerY}
@@ -191,7 +180,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
             className='drop-shadow-lg'
           />
 
-          {/* Countdown to next period */}
           <text x={centerX} y={centerY - 20} textAnchor='middle' className='text-5xl font-bold fill-pink-600'>
             {daysUntilMenstrual}
           </text>
@@ -204,24 +192,21 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
                 : 'days until period'}
           </text>
 
-          {/* Next period date */}
           <text x={centerX} y={centerY + 30} textAnchor='middle' className='text-sm fill-gray-600'>
             {format(cycleStart, 'MMM dd, yyyy')}
           </text>
 
-          {/* Phase icon */}
           <text x={centerX} y={centerY + 55} textAnchor='middle' className='text-2xl'>
             🩸
           </text>
         </svg>
 
-        {/* Enhanced Tooltip - Fixed positioning */}
         {hoveredDay && (
           <div
             className='absolute z-50 bg-white/95 backdrop-blur-sm rounded-lg shadow-2xl border border-pink-200 p-4 pointer-events-none'
             style={{
-              left: Math.min(mousePosition.x, 440 - 240), // Keep within bounds
-              top: Math.max(mousePosition.y - 200, 10), // Position above cursor
+              left: Math.min(mousePosition.x, 440), // Keep within bounds
+              top: Math.max(mousePosition.y, 50), // Position above cursor
               minWidth: '240px',
               maxWidth: '280px'
             }}
@@ -243,7 +228,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
                 {chartData[hoveredDay - 1]?.phase} Phase
               </div>
 
-              {/* Phase date range */}
               <div className='text-sm text-gray-600 bg-gray-50 p-3 rounded-lg'>
                 <div className='font-medium mb-1'>{chartData[hoveredDay - 1]?.phase} Phase Duration:</div>
                 <div>
@@ -260,7 +244,6 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
                 </div>
               </div>
 
-              {/* Phase description */}
               <div className='text-xs text-gray-600 pt-2 border-t border-gray-200'>
                 {chartData[hoveredDay - 1]?.phase === 'Menstrual' && '🩸 Menstruation period - Rest and self-care time'}
                 {chartData[hoveredDay - 1]?.phase === 'Follicular' &&
@@ -296,7 +279,7 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
       </div>
 
       {/* Enhanced Legend with actual date ranges */}
-      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 w-full max-w-4xl'>
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-4xl'>
         <div className='flex items-center gap-3 p-4 bg-white rounded-lg shadow-md border border-pink-100 hover:shadow-lg transition-shadow'>
           <div className='w-5 h-5 rounded-full bg-pink-500'></div>
           <div className='flex-1'>
@@ -363,32 +346,54 @@ export default function Summary() {
     const fetchData = async () => {
       try {
         setIsLoading(true)
-
-        const userResponse = await api.get('/users/me')
-        console.log('User profile response:', userResponse.data)
+        setError(null)
+        const userResponse = await fetcher.get('/users/me')
+        const userResult = userResponse.data.result
         console.log(userProfile)
-
-        setUserProfile(userResponse.data.result)
-        const customerProfileId = userResponse.data.result.customer_profile_id
-        const predictionResponse = await api.get(`/prediction/${customerProfileId}`)
-        console.log('Prediction response:', predictionResponse.data)
+        setUserProfile(userResult)
+        const customerProfileId = userResult.customer_profile_id
+        const predictionResponse = await fetcher.get(`/prediction/${customerProfileId}`)
         setPredictionData(predictionResponse.data.data)
       } catch (error: any) {
-        console.error('Failed to fetch data:', error)
-        setError(error.response?.data?.message || 'Failed to load data')
-        toast.error(error.response?.data?.message || 'Failed to load prediction data')
+        let errorMessage = 'Failed to load data'
+
+        if (error.response?.status === 400) {
+          errorMessage = 'Invalid request. Please check your data and try again.'
+        } else if (error.response?.status === 401) {
+          errorMessage = 'Authentication required. Please login again.'
+        } else if (error.response?.status === 403) {
+          errorMessage = 'Access denied. Please check your permissions.'
+        } else if (error.response?.status === 404) {
+          errorMessage = 'Data not found. Please complete your cycle tracking first.'
+        } else if (error.response?.status === 422) {
+          errorMessage = 'Validation error. Please complete your profile setup.'
+        } else if (error.response?.status >= 500) {
+          errorMessage = 'Server error. Please try again later.'
+        } else if (error.response?.data?.message) {
+          errorMessage = error.response.data.message
+        } else if (error.message) {
+          errorMessage = error.message
+        }
+        setError(errorMessage)
+        toast.error(errorMessage)
       } finally {
         setIsLoading(false)
       }
     }
+
     fetchData()
   }, [])
 
   const getDaysUntilNextPeriod = () => {
     if (!predictionData) return 0
-    const today = new Date()
-    const nextPeriod = new Date(predictionData.prediction.predictedStartDate)
-    return Math.max(0, differenceInDays(nextPeriod, today))
+    try {
+      const today = new Date()
+      const nextPeriod = new Date(predictionData.prediction.predictedStartDate)
+      return Math.max(0, differenceInDays(nextPeriod, today))
+    } catch (error) {
+      console.error('Error calculating days until period:', error)
+      return 0
+    }
   }
 
   if (isLoading) {
@@ -421,17 +426,31 @@ export default function Summary() {
       <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center'>
         <Card className='w-full max-w-md mx-auto shadow-2xl border-0 bg-white/90 backdrop-blur-sm'>
           <CardContent className='p-8'>
-            <div className='text-center space-y-4 '>
+            <div className='text-center space-y-4'>
               <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto'>
                 <TrendingUp className='w-8 h-8 text-red-500' />
               </div>
               <div>
                 <h3 className='text-lg font-semibold text-red-600'>Something went wrong</h3>
-                <p className='text-gray-600 mt-1'>{error}</p>
+                <p className='text-gray-600 mt-1 text-sm'>{error}</p>
               </div>
-              <Button onClick={() => window.location.reload()} className='bg-red-500 hover:bg-red-600 text-white'>
-                Try Again
-              </Button>
+              <div className='space-y-2'>
+                <Button
+                  onClick={() => window.location.reload()}
+                  className='w-full bg-red-500 hover:bg-red-600 text-white'
+                >
+                  Try Again
+                </Button>
+                <Button
+                  variant='outline'
+                  onClick={() => {
+                    window.location.href = '/menstrual-cycle'
+                  }}
+                  className='w-full border-gray-300 text-gray-700 hover:bg-gray-50'
+                >
+                  Complete Cycle Setup
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -443,85 +462,112 @@ export default function Summary() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100'>
-      <div className='w-full max-w-7xl mx-auto p-6 space-y-10'>
-        {/* Large Cycle Visualization - Full Width */}
-        <Card className='shadow-2xl border-0 bg-white/90 backdrop-blur-sm mt-4 pt-4'>
-          <CardHeader className=' rounded-t-lg'>
-            <CardTitle className='flex items-center justify-center gap-3 text-3xl'>
-              <div className='w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500  rounded-full flex items-center justify-center'>
-                <Activity className='w-6 h-6 text-white ' />
-              </div>
-              Your Cycle Visualization
-            </CardTitle>
-            <CardDescription className='text-center text-gray-600 text-lg'>
-              Interactive view of your current cycle phase and timeline
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='p-10'>{predictionData && <CycleChart predictionData={predictionData} />}</CardContent>
-        </Card>
-
-        {/* Quick Stats Row */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-          <Card className='shadow-xl border-0 bg-gradient-to-br from-pink-500 to-rose-500 text-white transform hover:scale-105 transition-transform'>
-            <CardContent className='p-8'>
-              <div className='flex items-center justify-between'>
-                <div>
-                  <div className='flex items-center gap-2 mb-3'>
-                    <Clock className='w-6 h-6' />
-                    <span className='text-pink-100 text-lg'>Next Period</span>
-                  </div>
-                  <div className='text-4xl font-bold'>{daysUntilPeriod}</div>
-                  <div className='text-pink-100 text-lg'>days away</div>
-                </div>
-                <div className='w-20 h-20 bg-white/20 rounded-full flex items-center justify-center'>
-                  <Droplets className='w-10 h-10' />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className='shadow-xl border-0 bg-gradient-to-br from-rose-500 to-pink-600 text-white transform hover:scale-105 transition-transform'>
-            <CardContent className='p-8'>
-              <div className='flex items-center justify-between'>
-                <div>
-                  <div className='flex items-center gap-2 mb-3'>
-                    <Target className='w-6 h-6' />
-                    <span className='text-rose-100 text-lg'>Fertility</span>
-                  </div>
-                  <div className='text-4xl font-bold'>{predictionData?.pregnancyAbility.pregnancyPercent}%</div>
-                  <div className='text-rose-100 text-lg'>chance</div>
-                </div>
-                <div className='w-20 h-20 bg-white/20 rounded-full flex items-center justify-center'>
-                  <Baby className='w-10 h-10' />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className='shadow-xl border-0 bg-gradient-to-br from-pink-600 to-rose-600 text-white transform hover:scale-105 transition-transform'>
-            <CardContent className='p-8'>
-              <div className='flex items-center justify-between'>
-                <div>
-                  <div className='flex items-center gap-2 mb-3'>
-                    <Calendar className='w-6 h-6' />
-                    <span className='text-pink-100 text-lg'>Cycle Length</span>
-                  </div>
-                  <div className='text-4xl font-bold'>{predictionData?.prediction.cycleLength}</div>
-                  <div className='text-pink-100 text-lg'>days</div>
-                </div>
-                <div className='w-20 h-20 bg-white/20 rounded-full flex items-center justify-center'>
-                  <TrendingUp className='w-10 h-10' />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      <div className='text-center pt-6'>
+        <div className='flex items-center justify-center gap-4'>
+          <div className='relative'>
+            <div className='w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300'>
+              <Activity className='w-6 h-6 text-white' />
+            </div>
+            <div className='absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse'></div>
+          </div>
+          <div>
+            <h1 className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 bg-clip-text text-transparent leading-tight'>
+              Your Cycle Summary
+            </h1>
+          </div>
         </div>
 
-        {/* Detailed Predictions */}
+        {/* Subtitle */}
+        <div className='max-w-2xl mx-auto'>
+          <p className='text-xl text-gray-700 font-medium '>Interactive view of your current cycle phase</p>
+          <p className='text-gray-500'>Complete overview of your menstrual health and predictions</p>
+        </div>
+      </div>
+      <div className='w-full max-w-7xl mx-auto  space-y-10 '>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4 '>
+          <div className='col-span-2 shadow-md border-0 bg-white/90 backdrop-blur-sm rounded-xl'>
+            <div className='px-6'>{predictionData && <CycleChart predictionData={predictionData} />}</div>
+          </div>
+
+          {/* Right Side - Quick Stats */}
+          <div className='space-y-6'>
+            <div className='space-y-4'>
+              {/* Next Period Card */}
+              <Card className='shadow-xl border-0 bg-gradient-to-br from-pink-500 to-rose-500 text-white transform hover:scale-105 transition-all duration-200'>
+                <CardContent className='p-6'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2 mb-2'>
+                        <Clock className='w-5 h-5' />
+                        <span className='text-pink-100 font-medium'>Next Period</span>
+                      </div>
+                      <div className='text-3xl font-bold mb-1'>{daysUntilPeriod}</div>
+                      <div className='text-pink-100'>days away</div>
+                      <div className='text-xs text-pink-200 mt-1'>
+                        {predictionData &&
+                          format(new Date(predictionData.prediction.predictedStartDate), 'MMM dd, yyyy')}
+                      </div>
+                    </div>
+                    <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center ml-4'>
+                      <Droplets className='w-8 h-8' />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Fertility Card */}
+              <Card className='shadow-xl border-0 bg-gradient-to-br from-rose-500 to-pink-600 text-white transform hover:scale-105 transition-all duration-200'>
+                <CardContent className='p-6'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2 mb-2'>
+                        <Target className='w-5 h-5' />
+                        <span className='text-rose-100 font-medium'>Fertility</span>
+                      </div>
+                      <div className='text-3xl font-bold mb-1'>
+                        {predictionData?.pregnancyAbility.pregnancyPercent}%
+                      </div>
+                      <div className='text-rose-100'>chance</div>
+                      <div className='text-xs text-rose-200 mt-1'>
+                        {predictionData &&
+                          `${format(new Date(predictionData.pregnancyAbility.fertileWindowStart), 'MMM dd')} - ${format(new Date(predictionData.pregnancyAbility.fertileWindowEnd), 'MMM dd')}`}
+                      </div>
+                    </div>
+                    <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center ml-4'>
+                      <Baby className='w-8 h-8' />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Cycle Length Card */}
+              <Card className='shadow-xl border-0 bg-gradient-to-br from-pink-600 to-rose-600 text-white transform hover:scale-105 transition-all duration-200'>
+                <CardContent className='p-6'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2 mb-2'>
+                        <Calendar className='w-5 h-5' />
+                        <span className='text-pink-100 font-medium'>Cycle Length</span>
+                      </div>
+                      <div className='text-3xl font-bold mb-1'>{predictionData?.prediction.cycleLength}</div>
+                      <div className='text-pink-100'>days average</div>
+                      <div className='text-xs text-pink-200 mt-1'>Based on your cycle history</div>
+                    </div>
+                    <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center ml-4'>
+                      <TrendingUp className='w-8 h-8' />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Detailed Predictions - Full Width Below */}
         {predictionData && (
           <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
             <Card className='shadow-xl border-0 bg-white/90 backdrop-blur-sm'>
-              <CardHeader className=' rounded-t-lg mt-4 pt-4'>
+              <CardHeader className='rounded-t-lg mt-4 pt-4'>
                 <CardTitle className='flex items-center gap-2 text-pink-800 text-xl'>
                   <Droplets className='w-6 h-6' />
                   Next Period Details
@@ -546,7 +592,7 @@ export default function Summary() {
             </Card>
 
             <Card className='shadow-xl border-0 bg-white/90 backdrop-blur-sm'>
-              <CardHeader className=' rounded-t-lg mt-4 pt-4'>
+              <CardHeader className='rounded-t-lg mt-4 pt-4'>
                 <CardTitle className='flex items-center gap-2 text-pink-800 text-xl'>
                   <Target className='w-6 h-6' />
                   Fertile Window

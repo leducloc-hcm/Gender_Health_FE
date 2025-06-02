@@ -1,17 +1,18 @@
-import { api } from '@/app/apis/fetcherToken'
+import { menstrualApi } from '@/app/apis/menstrual.api'
+import { profileApi } from '@/app/apis/profile.api'
 import { Button } from '@/app/components/ui/button'
-import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
+import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
 import type {
   CycleInputProps,
   FormData
 } from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/models/cycleinput.type'
-import { Calendar, Loader2 } from 'lucide-react'
+import { Calendar, Heart, Loader2, Info } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 export default function CycleInput({ onNext }: CycleInputProps) {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [userProfile, setUserProfile] = useState<getProfileResult | null>(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -31,10 +32,8 @@ export default function CycleInput({ onNext }: CycleInputProps) {
     const getUserProfile = async () => {
       try {
         setIsLoadingProfile(true)
-        const response = await api.get('/users/me')
-
-        console.log('User profile response:', response.data)
-        setUserProfile(response.data.result)
+        const response = await profileApi.getProfile()
+        setUserProfile(response.result)
       } catch (error: any) {
         console.error('Failed to fetch user profile:', error)
         toast.error(error.response?.data?.message || 'Failed to load user profile')
@@ -61,18 +60,11 @@ export default function CycleInput({ onNext }: CycleInputProps) {
         cycleLength: data.cycleLength,
         periodLength: data.periodLength
       }
+      const response = await menstrualApi.createMenstrualCycle(requestData)
 
-      console.log('Sending menstrual cycle data:', requestData)
-
-      const response = await api.post('/menstrual-cycles/create', requestData)
-
-      console.log('Menstrual cycle created:', response.data)
-
-      toast.success('Menstrual cycle data saved successfully!')
-
-      // Pass the cycle ID to parent component
-      if (onNext && response.data.data?.id) {
-        onNext(response.data.data.id)
+      const cycleId = response.data?.id
+      if (onNext && cycleId) {
+        onNext(cycleId)
       }
     } catch (error: any) {
       console.error('Failed to create menstrual cycle:', error)
@@ -84,30 +76,44 @@ export default function CycleInput({ onNext }: CycleInputProps) {
 
   if (isLoadingProfile) {
     return (
-      <div className='w-full max-w-2xl mx-auto bg-white rounded-lg shadow-md'>
-        <div className='flex items-center justify-center py-8'>
-          <Loader2 className='w-8 h-8 animate-spin text-pink-500' />
-          <span className='ml-2 text-gray-600'>Loading profile...</span>
+      <div className='w-full max-w-md mx-auto'>
+        <div className='bg-white rounded-2xl shadow-lg border border-pink-100'>
+          <div className='flex items-center justify-center py-12'>
+            <div className='flex flex-col items-center space-y-3'>
+              <div className='relative'>
+                <div className='w-12 h-12 bg-gradient-to-r from-pink-100 to-rose-100 rounded-full flex items-center justify-center'>
+                  <Heart className='w-6 h-6 text-pink-500' />
+                </div>
+                <Loader2 className='w-4 h-4 animate-spin text-pink-500 absolute -top-1 -right-1' />
+              </div>
+              <p className='text-gray-600 text-sm font-medium'>Loading your profile...</p>
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className='w-full max-w-2xl mx-auto bg-white rounded-lg shadow-md'>
-      <div className='p-6 border-b'>
-        <div className='flex items-center gap-2 mb-2'>
-          <Calendar className='w-5 h-5 text-pink-600' />
-          <h2 className='text-xl font-semibold'>Cycle Information</h2>
+    <div className='w-full max-w-md mx-auto'>
+      <div className='bg-white rounded-2xl shadow-lg border border-pink-100 overflow-hidden'>
+        <div className='bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-5'>
+          <div className='flex items-center space-x-3'>
+            <div className='w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center'>
+              <Calendar className='w-5 h-5 text-white' />
+            </div>
+            <div>
+              <h2 className='text-lg font-semibold text-white'>Cycle Information</h2>
+              <p className='text-sm text-pink-100'>Set up your menstrual cycle tracking</p>
+            </div>
+          </div>
         </div>
-        <p className='text-gray-600'>Enter your basic menstrual cycle information to get started.</p>
-      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className='p-6'>
-        <div className='space-y-4'>
+        <form onSubmit={handleSubmit(onSubmit)} className='p-6 space-y-5'>
           <div className='space-y-2'>
-            <label htmlFor='startDate' className='block text-sm font-medium text-gray-700'>
-              Last Period Start Date *
+            <label htmlFor='startDate' className='flex items-center text-sm font-medium text-gray-700'>
+              <span>Last Period Start Date</span>
+              <span className='text-red-500 ml-1'>*</span>
             </label>
             <input
               id='startDate'
@@ -115,85 +121,128 @@ export default function CycleInput({ onNext }: CycleInputProps) {
               {...register('startDate', {
                 required: 'Start date is required'
               })}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 ${
-                errors.startDate ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors ${
+                errors.startDate
+                  ? 'border-red-300 focus:border-red-400 bg-red-50'
+                  : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
               }`}
             />
-            {errors.startDate && <p className='text-sm text-red-500'>{errors.startDate.message}</p>}
+            {errors.startDate && (
+              <p className='text-xs text-red-600 flex items-center mt-1'>
+                <Info className='w-3 h-3 mr-1' />
+                {errors.startDate.message}
+              </p>
+            )}
           </div>
 
+          {/* Cycle Length */}
           <div className='space-y-2'>
-            <label htmlFor='cycleLength' className='block text-sm font-medium text-gray-700'>
-              Average Cycle Length (days) *
+            <label htmlFor='cycleLength' className='flex items-center text-sm font-medium text-gray-700'>
+              <span>Average Cycle Length</span>
+              <span className='text-red-500 ml-1'>*</span>
             </label>
-            <input
-              id='cycleLength'
-              type='number'
-              {...register('cycleLength', {
-                required: 'Cycle length is required',
-                min: {
-                  value: 21,
-                  message: 'Cycle length must be at least 21 days'
-                },
-                max: {
-                  value: 35,
-                  message: 'Cycle length must not exceed 35 days'
-                },
-                valueAsNumber: true
-              })}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 ${
-                errors.cycleLength ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.cycleLength && <p className='text-sm text-red-500'>{errors.cycleLength.message}</p>}
-            <p className='text-sm text-gray-500'>Normal range: 21-35 days</p>
+            <div className='relative'>
+              <input
+                id='cycleLength'
+                type='number'
+                min='21'
+                max='35'
+                {...register('cycleLength', {
+                  required: 'Cycle length is required',
+                  min: {
+                    value: 21,
+                    message: 'Minimum 21 days'
+                  },
+                  max: {
+                    value: 35,
+                    message: 'Maximum 35 days'
+                  },
+                  valueAsNumber: true
+                })}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors ${
+                  errors.cycleLength
+                    ? 'border-red-300 focus:border-red-400 bg-red-50'
+                    : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+                }`}
+                placeholder='28'
+              />
+            </div>
+            {errors.cycleLength ? (
+              <p className='text-xs text-red-600 flex items-center mt-1'>
+                <Info className='w-3 h-3 mr-1' />
+                {errors.cycleLength.message}
+              </p>
+            ) : (
+              <p className='text-xs text-gray-500'>Normal range: 21-35 days</p>
+            )}
           </div>
 
+          {/* Period Length */}
           <div className='space-y-2'>
-            <label htmlFor='periodLength' className='block text-sm font-medium text-gray-700'>
-              Period Length (days) *
+            <label htmlFor='periodLength' className='flex items-center text-sm font-medium text-gray-700'>
+              <span>Period Length</span>
+              <span className='text-red-500 ml-1'>*</span>
             </label>
-            <input
-              id='periodLength'
-              type='number'
-              {...register('periodLength', {
-                required: 'Period length is required',
-                min: {
-                  value: 3,
-                  message: 'Period length must be at least 3 days'
-                },
-                max: {
-                  value: 7,
-                  message: 'Period length must not exceed 7 days'
-                },
-                valueAsNumber: true
-              })}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 ${
-                errors.periodLength ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.periodLength && <p className='text-sm text-red-500'>{errors.periodLength.message}</p>}
-            <p className='text-sm text-gray-500'>Normal range: 3-7 days</p>
+            <div className='relative'>
+              <input
+                id='periodLength'
+                type='number'
+                min='3'
+                max='7'
+                {...register('periodLength', {
+                  required: 'Period length is required',
+                  min: {
+                    value: 3,
+                    message: 'Minimum 3 days'
+                  },
+                  max: {
+                    value: 7,
+                    message: 'Maximum 7 days'
+                  },
+                  valueAsNumber: true
+                })}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-0 transition-colors ${
+                  errors.periodLength
+                    ? 'border-red-300 focus:border-red-400 bg-red-50'
+                    : 'border-gray-200 focus:border-pink-400 bg-gray-50 focus:bg-white'
+                }`}
+                placeholder='5'
+              />
+            </div>
+            {errors.periodLength ? (
+              <p className='text-xs text-red-600 flex items-center mt-1'>
+                <Info className='w-3 h-3 mr-1' />
+                {errors.periodLength.message}
+              </p>
+            ) : (
+              <p className='text-xs text-gray-500'>Normal range: 3-7 days</p>
+            )}
           </div>
 
+          {/* Submit Button */}
           <div className='pt-4'>
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-50 flex items-center justify-center'
+              className='w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
             >
               {isSubmitting ? (
-                <>
-                  <Loader2 className='w-4 h-4 mr-2 animate-spin' />
-                  Saving...
-                </>
+                <div className='flex items-center justify-center space-x-2'>
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                  <span>Saving...</span>
+                </div>
               ) : (
-                'Continue'
+                <div className='flex items-center justify-center space-x-2'>
+                  <span>Continue</span>
+                  <Calendar className='w-4 h-4' />
+                </div>
               )}
             </Button>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
+
+      {/* Info Card */}
     </div>
   )
 }
