@@ -7,6 +7,9 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/app/compo
 import { Minus, Plus, CircleX, CircleCheck } from 'lucide-react'
 import { testApi } from '@/app/apis/test.api'
 import { toast } from 'react-toastify'
+import { useLocation, useNavigate } from 'react-router-dom'
+import ForceLoginModal from './ForceLoginModal'
+import OrderModal from './OrderModal'
 
 const bgColorMapping: Record<string, string> = {
   SE110: 'bg-teal-500',
@@ -22,12 +25,50 @@ const checkColorMapping: Record<string, string> = {
   SE113: 'text-purple-600'
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.5 }
+  }
+}
+
 export default function TestTypeSect() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
 
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const [testPackages, setTestPackages] = useState<TestPackageItem[]>([])
   const [renderedTestTypes, setRenderedTestTypes] = useState<MergedTestType[]>([])
+  const [showForceLoginModal, setShowForceLoginModal] = useState(false)
+  const [showOrderModal, setShowOrderModal] = useState(false)
+  const [packageId, setPackageId] = useState<number>(0)
+
+  // handleCloseForceLoginModal
+  const handleCloseForceLoginModal = () => {
+    setShowForceLoginModal(false)
+    navigate(location.pathname)
+  }
+
+  // handleCloseOrderModal
+  const handleCloseOrderModal = () => {
+    setShowOrderModal(false)
+    setPackageId(0)
+    navigate(location.pathname)
+  }
 
   // TestTypes
   const [openTestTypes, setOpenTestTypes] = useState<{ [key: number | string]: boolean }>({})
@@ -45,25 +86,6 @@ export default function TestTypeSect() {
       ...prev,
       [id]: !prev[id]
     }))
-  }
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
   }
 
   // Function merge TestCategories (includedInPackages)
@@ -91,6 +113,7 @@ export default function TestTypeSect() {
     }))
   }
 
+  // Function fetch getAllTestPackage & getAllTypeOfTest
   async function fetchAllData(): Promise<void> {
     try {
       // fetch test packages & fetch test packages
@@ -113,10 +136,32 @@ export default function TestTypeSect() {
     }
   }
 
+  // Function handle booking
+  function handleBooking(pkgId: number) {
+    const accessToken = localStorage.getItem('access_token')
+    if (!accessToken) {
+      setShowForceLoginModal(true)
+      setPackageId(0)
+      return
+    }
+    setPackageId(pkgId)
+    setShowOrderModal(true)
+  }
+
   useEffect(() => {
     fetchAllData()
     toggleOpenTestTypes(1)
   }, [])
+
+  if (showForceLoginModal) {
+    return <ForceLoginModal key={'ForceLoginModal'} handleCloseModal={handleCloseForceLoginModal} />
+  }
+
+  if (showOrderModal) {
+    return (
+      <OrderModal key={'OrderModal'} id={packageId} handleCloseModal={handleCloseOrderModal} isOpen={showOrderModal} />
+    )
+  }
 
   return (
     <>
@@ -154,7 +199,10 @@ export default function TestTypeSect() {
                         </CardContent>
 
                         <CardFooter className='px-2 sm:px-4 md:px-6 pb-2 sm:pb-4 md:pb-6 pt-0 sm:pt-1'>
-                          <Button className='w-full bg-white text-gray-800 hover:bg-gray-200 font-bold rounded-md sm:rounded-lg text-base md:text-xl py-4 md:py-5'>
+                          <Button
+                            className='w-full bg-white text-gray-800 hover:bg-gray-200 font-bold rounded-md sm:rounded-lg text-base md:text-xl py-4 md:py-5'
+                            onClick={() => handleBooking(pkg.id)}
+                          >
                             Booking
                           </Button>
                         </CardFooter>
