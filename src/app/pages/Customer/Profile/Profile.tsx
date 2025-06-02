@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import type { getProfileResult, PasswordForm, UpdateProfileInput, UserProfile } from './models/Profile'
+import { clearUserProfileSignify, setUserProfileToSignify } from '@/app/hooks/sUserProfile'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -87,11 +88,14 @@ export default function Profile() {
       try {
         const response = await profileApi.getProfile()
         const profile = response.result
+        setUserProfileToSignify(profile)
+
         setUserProfile(profile)
         reset(profile)
       } catch (error) {
         toast.error('Failed to load profile.')
         console.log(error)
+        clearUserProfileSignify()
       }
     }
     fetchProfile()
