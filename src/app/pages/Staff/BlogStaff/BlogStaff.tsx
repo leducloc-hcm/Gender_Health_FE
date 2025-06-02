@@ -17,6 +17,7 @@ export default function BlogStaffTable() {
     try {
       const res = await fetchBlogs(1, 1000) // lấy tất cả blogs (hoặc phân trang sau)
       setBlogs(res.data)
+      console.log('Blogs:', res.data)
     } catch (err) {
       console.error('Failed to load blogs:', err)
       toast.error('Không thể tải danh sách blog')

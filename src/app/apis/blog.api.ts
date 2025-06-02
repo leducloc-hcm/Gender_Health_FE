@@ -5,7 +5,7 @@ export interface BlogPost {
   title: string
   content: string
   date: string
-  image: string
+  image: File
   staff?: {
     id: number
     name: string
@@ -22,7 +22,7 @@ export interface BlogRequest {
   content: string
   tags: number[]
   date: string
-  image: string
+  image: File
 }
 export interface BlogResponse {
   data: BlogPost[]
@@ -56,12 +56,20 @@ export const fetchBlogById = async (id: string) => {
 export const deleteBlog = async (id: number): Promise<void> => {
   await fetcher.delete(`/blogs/delete/${id}`)
 }
-export const createBlog = async (data: BlogRequest): Promise<BlogMessageResponse> => {
-  const res = await fetcher.post('/blogs/create', data)
+export const createBlog = async (data: FormData): Promise<BlogMessageResponse> => {
+  const res = await fetcher.post('/blogs/create', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   return res.data
 }
 
-export const updateBlog = async (id: string, data: BlogRequest): Promise<BlogMessageResponse> => {
-  const res = await fetcher.put(`/blogs/update/${id}`, data)
+export const updateBlog = async (id: string, data: FormData): Promise<BlogMessageResponse> => {
+  const res = await fetcher.put(`/blogs/update/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   return res.data
 }

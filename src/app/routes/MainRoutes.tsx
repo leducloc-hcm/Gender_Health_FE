@@ -69,9 +69,7 @@ export default function MainRoutes() {
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
           <Route path={authPath.resetPassword} element={<ResetPassword />} />
-          {/* Route for verify/reset user click from email */}
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
-          {/* Route for verify otp */}
           <Route path={authPath.verifyPasscode} element={<VerifyPasscode />} />
         </Route>
 

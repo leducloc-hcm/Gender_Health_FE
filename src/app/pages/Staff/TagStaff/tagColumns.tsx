@@ -33,11 +33,11 @@ export const getTagColumns = (onDelete: (id: number, name: string) => void): Col
       return (
         <div className='flex gap-2 justify-center items-center'>
           <Link to={`/staff/tag/edit/${id}`}>
-            <Button className='bg-pink-400 hover:bg-pink-500 text-white' size='sm'>
+            <Button className='bg-yellow-500 hover:bg-yellow-600 text-white' size='sm'>
               Edit
             </Button>
           </Link>
-          <Button className='bg-pink-400 hover:bg-pink-500 text-white' size='sm' onClick={() => onDelete(id, name)}>
+          <Button className='bg-red-500 hover:bg-red-600 text-white' size='sm' onClick={() => onDelete(id, name)}>
             Delete
           </Button>
         </div>

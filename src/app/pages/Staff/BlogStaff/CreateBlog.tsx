@@ -1,24 +1,23 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
-import { Textarea } from '@/app/components/ui/textarea'
+import draftToHtml from 'draftjs-to-html'
 import { createBlog } from '@/app/apis/blog.api'
 import { fetchTags } from '@/app/apis/tag.api'
-import 'react-quill/dist/quill.snow.css'
 import { ArrowLeft, X } from 'lucide-react'
 import type { TagBlog } from '../../Auth/Login/models/tag'
-import { Link } from 'react-router-dom'
+import DraftEditor from '@/app/components/ui/DraftEditor'
 
 interface FormData {
   title: string
   content: string
   tags: number[]
   date: string
-  image: string
+  image: File | null
 }
 
 export default function CreateBlogPage() {
@@ -28,7 +27,7 @@ export default function CreateBlogPage() {
     content: '',
     tags: [],
     date: '',
-    image: ''
+    image: null
   })
   const [tagsList, setTagsList] = useState<TagBlog[]>([])
   const [errors, setErrors] = useState<Partial<FormData>>({})
@@ -50,7 +49,7 @@ export default function CreateBlogPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleChange = (field: keyof FormData, value: string) => {
+  const handleChange = (field: keyof FormData, value: string | File | null) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     setErrors((prev) => ({ ...prev, [field]: undefined }))
   }
@@ -68,7 +67,14 @@ export default function CreateBlogPage() {
     setIsSubmitting(true)
 
     try {
-      await createBlog(formData)
+      const data = new FormData()
+      data.append('title', formData.title)
+      data.append('content', formData.content)
+      data.append('date', formData.date)
+      data.append('tags', JSON.stringify(formData.tags))
+      console.log('data', data)
+      if (formData.image) data.append('image', formData.image)
+      await createBlog(data)
       toast.success('Blog created successfully!')
       navigate('/staff/blog')
     } catch (err: unknown) {
@@ -80,14 +86,14 @@ export default function CreateBlogPage() {
   }
 
   return (
-    <div className=' px-4 py-10'>
+    <div className='px-4 py-10'>
       <div className='mb-8 flex'>
         <Link to='/staff/blog' className='flex items-center'>
           <ArrowLeft /> Back to Blog
         </Link>
       </div>
       <h1 className='text-2xl font-bold mb-6 text-gray-900'>Create New Blog</h1>
-      <Card className='rounded-2xl border shadow-sm '>
+      <Card className='rounded-2xl border shadow-sm'>
         <CardHeader className='pt-6'>
           <CardTitle>Create Blog</CardTitle>
         </CardHeader>
@@ -106,14 +112,18 @@ export default function CreateBlogPage() {
 
             <div>
               <Label className='pb-2'>Content</Label>
-              <Textarea
-                value={formData.content}
-                onChange={(e) => handleChange('content', e.target.value)}
-                placeholder='Enter blog content'
-                className={errors.content ? 'border-red-500' : ''}
-              />
-
+              <DraftEditor value={formData.content} onChange={(val) => handleChange('content', val)} />
               {errors.content && <p className='text-sm text-red-500'>{errors.content}</p>}
+            </div>
+
+            <div>
+              <Label className='pb-2'>Content Preview</Label>
+              <div
+                className='prose max-w-none border rounded p-4 bg-white'
+                dangerouslySetInnerHTML={{
+                  __html: draftToHtml(JSON.parse(formData.content || '{}'))
+                }}
+              />
             </div>
 
             <div>
@@ -126,16 +136,27 @@ export default function CreateBlogPage() {
               />
               {errors.date && <p className='text-sm text-red-500'>{errors.date}</p>}
             </div>
-
             <div>
-              <Label className='pb-2'>Image URL</Label>
-              <Input
-                value={formData.image}
-                onChange={(e) => handleChange('image', e.target.value)}
-                placeholder='https://example.com/image.jpg'
+              <Label className='pb-2'>Upload Image</Label>
+              <input
+                type='file'
+                accept='image/*'
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null
+                  handleChange('image', file)
+                }}
+                className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer  file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-rose-500 file:text-white hover:file:bg-rose-600'
               />
+
+              {formData.image && (
+                <img
+                  src={URL.createObjectURL(formData.image)}
+                  alt='Preview'
+                  className='mt-2 w-28 h-auto rounded-md border border-gray-300'
+                />
+              )}
             </div>
-            {formData.image && <img src={formData.image} alt='Preview' className='mt-2 max-h-48 rounded' />}
+
             <div>
               <Label>Tags</Label>
               <div className='flex flex-wrap gap-2'>
@@ -168,13 +189,6 @@ export default function CreateBlogPage() {
             <div className='flex justify-end gap-4 pt-2'>
               <Button type='submit' disabled={isSubmitting}>
                 {isSubmitting ? 'Creating...' : 'Create Blog'}
-              </Button>
-              <Button
-                type='button'
-                variant='outline'
-                onClick={() => setFormData({ title: '', content: '', tags: [], date: '', image: '' })}
-              >
-                Reset
               </Button>
             </div>
           </form>
