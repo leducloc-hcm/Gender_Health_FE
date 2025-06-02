@@ -14,8 +14,13 @@ export interface TestPackageItem {
   description: string
   price: number
   tests: TestCategory[]
-  bgColor: string
-  checkColor: string
+  bgColor?: string
+  checkColor?: string
+}
+
+export interface TestPackageItemResponse {
+  message: string
+  data: TestPackageItem
 }
 
 export interface TestPackageResponse {
@@ -52,4 +57,14 @@ export interface MergedTestType {
   typeCode: string
   typeName: string
   tests: MergedTestCategory[]
+}
+
+// Order form request
+export interface OrderFormRequest {
+  address: string
+  phone: string
+  note: string
+  customer_profile_id: number | string
+  test_package_ids: number[]
+  preferred_date: Date | undefined
 }
