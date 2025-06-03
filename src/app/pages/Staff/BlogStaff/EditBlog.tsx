@@ -34,13 +34,28 @@ export default function EditBlogPage() {
 
     if (id) {
       fetchBlogById(id).then((data) => {
-        const blocksFromHtml = htmlToDraft(data.content)
-        const contentState = ContentState.createFromBlockArray(blocksFromHtml.contentBlocks)
-        const raw = convertToRaw(contentState)
+        let contentRawString: string
+
+        try {
+          const parsed = JSON.parse(data.content)
+          if (parsed?.blocks && Array.isArray(parsed.blocks)) {
+            contentRawString = data.content
+          } else {
+            const blocks = htmlToDraft(data.content)
+            const contentState = ContentState.createFromBlockArray(blocks.contentBlocks)
+            const raw = convertToRaw(contentState)
+            contentRawString = JSON.stringify(raw)
+          }
+        } catch {
+          const blocks = htmlToDraft(data.content)
+          const contentState = ContentState.createFromBlockArray(blocks.contentBlocks)
+          const raw = convertToRaw(contentState)
+          contentRawString = JSON.stringify(raw)
+        }
 
         setFormData({
           title: data.title,
-          content: JSON.stringify(raw),
+          content: contentRawString,
           tags: data.tags?.map((t: { tag: { id: number } }) => t.tag.id) || [],
           date: data.date?.substring(0, 10),
           image: data.image,
