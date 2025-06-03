@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { authApi } from '@/app/apis/auth.api'
 =======
 import { profileApi } from '@/app/apis/profile.api'
 >>>>>>> 1165cc9 (fea: create calendar ui and fixing profile refetching dont show email)
+=======
+import { authApi } from '@/app/apis/auth.api'
+>>>>>>> 7701d87 (fea: create signify for consultant)
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Button } from '@/app/components/ui/button'
 import {
@@ -14,9 +18,13 @@ import {
 } from '@/app/components/ui/dropdown-menu'
 import { SidebarTrigger } from '@/app/components/ui/sidebar'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { setConsultantProfileToSignify, sConsultantProfile } from '@/app/hooks/sConsultantProfile'
 =======
 >>>>>>> 1165cc9 (fea: create calendar ui and fixing profile refetching dont show email)
+=======
+import { setConsultantProfileToSignify, sConsultantProfile } from '@/app/hooks/sConsultantProfile'
+>>>>>>> 7701d87 (fea: create signify for consultant)
 import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
 import { Bell, LogOut, Settings, ShoppingBag, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -44,6 +52,7 @@ export default function ConsultantHeader() {
     const fetchProfile = async () => {
       try {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const response = await authApi.getProfileConsultant()
         setUserProfile(response.result)
         setConsultantProfileToSignify(response.result)
@@ -51,6 +60,11 @@ export default function ConsultantHeader() {
         const response = await profileApi.getProfile()
         setUserProfile(response.result)
 >>>>>>> 1165cc9 (fea: create calendar ui and fixing profile refetching dont show email)
+=======
+        const response = await authApi.getProfileConsultant()
+        setUserProfile(response.result)
+        setConsultantProfileToSignify(response.result)
+>>>>>>> 7701d87 (fea: create signify for consultant)
       } catch (error) {}
     }
     fetchProfile()
@@ -58,11 +72,17 @@ export default function ConsultantHeader() {
   return (
     <header className='flex h-20 shrink-0 items-center gap-2 bg-white border-b border-pink-100 '>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <div className='z-50'>
         <sConsultantProfile.DevTool name='Consultant Profile' color='pink' />
       </div>
 =======
 >>>>>>> 1165cc9 (fea: create calendar ui and fixing profile refetching dont show email)
+=======
+      <div className='z-50'>
+        <sConsultantProfile.DevTool name='Consultant Profile' color='pink' />
+      </div>
+>>>>>>> 7701d87 (fea: create signify for consultant)
       <div className='flex items-center gap-4 px-6'>
         <SidebarTrigger className='h-8 w-8 rounded-lg hover:bg-pink-50 transition-colors' />
         <div className='h-6 w-px bg-pink-200' />
