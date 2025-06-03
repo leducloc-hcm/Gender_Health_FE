@@ -35,7 +35,7 @@ import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import Forum from '@/app/pages/HomePage/Forum/Forum'
 import CreateTag from '../pages/Staff/TagStaff/CreateTag'
-
+import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
 export default function MainRoutes() {
   return (
     <>
@@ -88,7 +88,10 @@ export default function MainRoutes() {
           <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
         </Route>
 
-        <Route path='/consultant' element={<Consultant />}></Route>
+        <Route path='/consultant' element={<Consultant />}>
+          <Route index element={<Navigate to='/consultant/calendar' replace />} />
+          <Route path='/consultant/calendar' element={<CalendarBooking />} />
+        </Route>
 
         <Route path='/staff' element={<Staff />}>
           <Route index element={<Navigate to={staffPath.dashboard} replace />} />

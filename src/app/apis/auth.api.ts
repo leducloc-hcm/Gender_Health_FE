@@ -5,6 +5,7 @@ import type { ForgotPasswordFormData } from '../pages/Auth/ForgetPassword/models
 import type { ResetPasswordRequest } from '../pages/Auth/ResetPassword/models/ResetPassword'
 import type { AuthApiResponse } from '../models/ApiResponse'
 import type { VerifyPasscodeRequest } from '../pages/Auth/VerifyPasscode/models/VerifyPasscode'
+import type { profileResponse } from '../pages/Customer/Profile/models/Profile'
 
 export interface UserProfile {
   id: number
@@ -95,6 +96,15 @@ export const authApi = {
       return response.data.result
     } catch (error) {
       throw error as AxiosError
+    }
+  },
+  getProfileConsultant: async (): Promise<profileResponse> => {
+    try {
+      const response: AxiosResponse<profileResponse> = await fetcher.get('/users/consultant/me')
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch consultant profile:', error)
+      throw error
     }
   }
 }
