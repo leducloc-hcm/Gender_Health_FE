@@ -17,33 +17,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { BookOpen, ChevronDown, Home, LogOut, Settings, ShoppingBag, Tags, User, CalendarFold } from 'lucide-react'
+import { ChevronDown, LogOut, Settings, ShoppingBag, User, CalendarHeart } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [
   {
-    title: 'Dashboard',
-    url: '/staff/dashboard',
-    icon: Home
-  },
-  {
-    title: 'Blog & Articles',
-    url: '/staff/blog',
-    icon: BookOpen
-  },
-  {
-    title: 'Tags',
-    url: '/staff/tag',
-    icon: Tags
-  },
-  {
-    title: 'Schedules',
-    url: '/staff/schedule',
-    icon: CalendarFold
+    title: 'Calendar',
+    url: '/consultant/calendar',
+    icon: CalendarHeart
   }
 ]
 
-export default function StaffSidebar() {
+export default function ConsultantSidebar() {
   const location = useLocation()
 
   return (
@@ -106,7 +91,7 @@ export default function StaffSidebar() {
                   <Avatar className='h-9 w-9 rounded-xl border-2 border-pink-200 transition-all duration-300'>
                     <AvatarImage src='/placeholder.svg?height=36&width=36' alt='User' />
                     <AvatarFallback className='rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 text-white font-semibold text-sm'>
-                      HH
+                      HH222
                     </AvatarFallback>
                   </Avatar>
                   <div className='grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden'>

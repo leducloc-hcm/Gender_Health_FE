@@ -58,13 +58,3 @@ export interface MergedTestType {
   typeName: string
   tests: MergedTestCategory[]
 }
-
-// Order form request
-export interface OrderFormRequest {
-  address: string
-  phone: string
-  note: string
-  customer_profile_id: number | string
-  test_package_ids: number[]
-  preferred_date: Date | undefined
-}

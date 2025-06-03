@@ -35,7 +35,10 @@ import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import Forum from '@/app/pages/HomePage/Forum/Forum'
 import CreateTag from '../pages/Staff/TagStaff/CreateTag'
-
+import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
+import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
+import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
+import Schedule from '../pages/Staff/Schedule/Schedule'
 export default function MainRoutes() {
   return (
     <>
@@ -60,6 +63,8 @@ export default function MainRoutes() {
           <Route path='/blog' element={<Blog />} />
           <Route path='/blog/:id' element={<BlogDetail />} />
           <Route path='/forum' element={<Forum />} />
+          <Route path='/payment/success' element={<PaymentSuccess />} />
+          <Route path='/payment/failed' element={<PaymentFailed />} />
         </Route>
 
         <Route path='/login/oauth' element={<OauthLogin />} />
@@ -88,7 +93,10 @@ export default function MainRoutes() {
           <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
         </Route>
 
-        <Route path='/consultant' element={<Consultant />}></Route>
+        <Route path='/consultant' element={<Consultant />}>
+          <Route index element={<Navigate to='/consultant/calendar' replace />} />
+          <Route path='/consultant/calendar' element={<CalendarBooking />} />
+        </Route>
 
         <Route path='/staff' element={<Staff />}>
           <Route index element={<Navigate to={staffPath.dashboard} replace />} />
@@ -99,6 +107,7 @@ export default function MainRoutes() {
           <Route path={staffPath.blogEdit} element={<EditBlog />} />
           <Route path={staffPath.tag} element={<TagStaff />} />
           <Route path={staffPath.tagCreate} element={<CreateTag />} />
+          <Route path={staffPath.schedule} element={<Schedule />} />
         </Route>
       </Routes>
     </>

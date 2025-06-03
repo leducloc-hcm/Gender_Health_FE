@@ -159,7 +159,12 @@ export default function TestTypeSect() {
 
   if (showOrderModal) {
     return (
-      <OrderModal key={'OrderModal'} id={packageId} handleCloseModal={handleCloseOrderModal} isOpen={showOrderModal} />
+      <OrderModal
+        key={'OrderModal'}
+        id={packageId}
+        handleCloseModal={handleCloseOrderModal}
+        isOpen={showOrderModal}
+      />
     )
   }
 
