@@ -133,7 +133,9 @@ export default function Profile() {
       if (hasChanges) {
         const response = await profileApi.updateProfile(updateData)
         const profile = response.result
-        setUserProfile(profile)
+        const fetchedProfile = await profileApi.getProfile()
+        console.log('fetchedProfile: ', fetchedProfile)
+        setUserProfile(fetchedProfile.result)
         reset(profile)
         toast.success('Profile updated successfully!')
       } else {
@@ -436,7 +438,7 @@ export default function Profile() {
                     <h1 className='text-3xl font-bold text-gray-900 mb-2'>{userProfile.name}</h1>
                     <div className='flex flex-wrap items-center gap-4 text-gray-600'>
                       <Badge variant='secondary' className='bg-rose-100 text-rose-700 hover:bg-rose-200'>
-                        @{userProfile.email}
+                        @{userProfile?.email}
                       </Badge>
                       <div className='flex items-center gap-1'>
                         <MapPin className='w-4 h-4 text-rose-500' />
