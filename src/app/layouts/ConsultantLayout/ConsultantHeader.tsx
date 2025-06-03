@@ -1,5 +1,4 @@
 import { authApi } from '@/app/apis/auth.api'
-import { profileApi } from '@/app/apis/profile.api'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Button } from '@/app/components/ui/button'
 import {
@@ -51,9 +50,6 @@ export default function ConsultantHeader() {
         <sConsultantProfile.DevTool name='Consultant Profile' color='pink' />
       </div>
 
-      <div className='z-50'>
-        <sConsultantProfile.DevTool name='Consultant Profile' color='pink' />
-      </div>
       <div className='flex items-center gap-4 px-6'>
         <SidebarTrigger className='h-8 w-8 rounded-lg hover:bg-pink-50 transition-colors' />
         <div className='h-6 w-px bg-pink-200' />
