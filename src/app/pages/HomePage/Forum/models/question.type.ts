@@ -1,17 +1,17 @@
 export interface questionResquest {
   title: string
   content: string
-  image: File
+  image?: File
 }
 
 export interface questionResponseCreate {
   message: string
-  result: QuestionData
+  data: QuestionData
 }
 
 export interface questionResponse {
   message: string
-  result: QuestionData[]
+  data: QuestionData[]
 }
 
 export interface QuestionData {

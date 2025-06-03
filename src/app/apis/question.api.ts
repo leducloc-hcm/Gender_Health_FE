@@ -1,9 +1,5 @@
 import { fetcher } from '@/app/apis/fetcher'
-import type {
-  questionResponse,
-  questionResponseCreate,
-  questionResquest
-} from '@/app/pages/HomePage/Forum/models/question.type'
+import type { questionResponse, questionResponseCreate } from '@/app/pages/HomePage/Forum/models/question.type'
 
 export const questionApi = {
   getAllQuestions: async (): Promise<questionResponse> => {
@@ -16,7 +12,7 @@ export const questionApi = {
     }
   },
 
-  createQuestion: async (data: questionResquest): Promise<questionResponseCreate> => {
+  createQuestion: async (data: FormData): Promise<questionResponseCreate> => {
     try {
       const response = await fetcher.post('/questions/create', data, {
         headers: {
@@ -30,12 +26,25 @@ export const questionApi = {
     }
   },
 
-  getQuestionById: async (id: number): Promise<questionResponse> => {
+  updateQuestion: async (id: number, data: FormData): Promise<questionResponseCreate> => {
     try {
-      const response = await fetcher.get(`/questions/${id}`)
+      const response = await fetcher.put(`/questions/update/${id}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       return response.data
     } catch (error) {
-      console.log('Failed to fetch question by ID:', error)
+      console.log('Failed to update question:', error)
+      throw error
+    }
+  },
+  deleteQuestion: async (id: number): Promise<{ message: string }> => {
+    try {
+      const response = await fetcher.delete(`/questions/delete/${id}`)
+      return response.data
+    } catch (error) {
+      console.log('Failed to delete question:', error)
       throw error
     }
   }

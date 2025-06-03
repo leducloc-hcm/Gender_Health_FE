@@ -1,116 +1,163 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
 import { Textarea } from '@/app/components/ui/textarea'
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  MoreHorizontal,
-  Plus,
-  Image as ImageIcon,
-  Send,
-  Bookmark,
-  ChevronUp,
-  X
-} from 'lucide-react'
-import { useState } from 'react'
+import { Heart, MessageCircle, Plus, Image as ImageIcon, Send, ChevronUp, X, Edit, Trash2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { questionApi } from '@/app/apis/question.api'
+import type { QuestionData, questionResquest } from '@/app/pages/HomePage/Forum/models/question.type'
+import { toast } from 'react-toastify'
 
 export default function Forum() {
   const [showCreatePost, setShowCreatePost] = useState(false)
+  const [showEditPost, setShowEditPost] = useState(false)
+  const [editingPost, setEditingPost] = useState<QuestionData | null>(null)
   const [expandedComments, setExpandedComments] = useState<number[]>([])
   const [likedPosts, setLikedPosts] = useState<number[]>([])
+  const [questions, setQuestions] = useState<QuestionData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [creating, setCreating] = useState(false)
+  const [updating, setUpdating] = useState(false)
+  const [newQuestion, setNewQuestion] = useState<questionResquest>({
+    title: '',
+    content: '',
+    image: undefined
+  })
+  const [editQuestion, setEditQuestion] = useState<questionResquest>({
+    title: '',
+    content: '',
+    image: undefined
+  })
 
-  const posts = [
-    {
-      id: 1,
-      category: 'Menstrual Health',
-      author: 'HealthyWoman23',
-      avatar: '/placeholder.svg?height=32&width=32',
-      time: '2 hours ago',
-      title: 'Tips for managing severe period cramps naturally',
-      content:
-        "I've been dealing with really painful cramps for years and wanted to share some natural remedies that have helped me. Heat therapy, gentle yoga, and magnesium supplements have made a huge difference in my monthly experience.",
-      likes: 127,
-      comments: 34,
-      image: null,
-      isLiked: false
-    },
-    {
-      id: 2,
-      category: 'Mental Health',
-      author: 'MindfulMama',
-      avatar: '/placeholder.svg?height=32&width=32',
-      time: '4 hours ago',
-      title: "Dealing with PMS mood swings - you're not alone",
-      content:
-        "Sometimes I feel like I'm going crazy with the emotional ups and downs before my period. Here's what helps me stay grounded during those difficult days.",
-      likes: 89,
-      comments: 56,
-      image: '/placeholder.svg?height=300&width=500',
-      isLiked: false
-    },
-    {
-      id: 3,
-      category: 'Lifestyle',
-      author: 'WellnessJourney',
-      avatar: '/placeholder.svg?height=32&width=32',
-      time: '6 hours ago',
-      title: 'My cycle tracking journey - 1 year update',
-      content:
-        "It's been exactly one year since I started tracking my cycle properly. The insights I've gained about my body have been incredible!",
-      likes: 203,
-      comments: 78,
-      image: null,
-      isLiked: false
+  useEffect(() => {
+    fetchQuestions()
+  }, [])
+
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true)
+      const response = await questionApi.getAllQuestions()
+      setQuestions(response.data || [])
+    } catch (error) {
+      console.error('Error fetching questions:', error)
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
 
-  const postComments = {
-    1: [
-      {
-        id: 1,
-        author: 'NaturalHealing',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '1 hour ago',
-        content:
-          "Thank you for sharing! I've tried heat therapy and it works wonders. Have you tried chamomile tea? It also helps with relaxation.",
-        likes: 12
-      },
-      {
-        id: 2,
-        author: 'YogaLover22',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '30 minutes ago',
-        content:
-          "Child's pose and gentle twists are my go-to yoga poses during my period. They really help with the discomfort.",
-        likes: 8
+  const handleCreateQuestion = async () => {
+    if (!newQuestion.title.trim() || !newQuestion.content.trim()) {
+      toast.error('Please fill in title and content')
+      return
+    }
+
+    try {
+      setCreating(true)
+      const formData = new FormData()
+      formData.append('title', newQuestion.title)
+      formData.append('content', newQuestion.content)
+
+      if (newQuestion.image) {
+        formData.append('image', newQuestion.image)
       }
-    ],
-    2: [
-      {
-        id: 3,
-        author: 'SupportiveSister',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '2 hours ago',
-        content:
-          "You're definitely not alone! I track my mood changes and it helps me prepare mentally for those tough days.",
-        likes: 15
+
+      await questionApi.createQuestion(formData)
+      resetCreateForm()
+      await fetchQuestions()
+      toast.success('Question created successfully!')
+    } catch (error) {
+      console.error('Error creating question:', error)
+      toast.error('Failed to create question')
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  const handleUpdateQuestion = async () => {
+    if (!editQuestion.title.trim() || !editQuestion.content.trim() || !editingPost) {
+      toast.warn('Please fill in title and content')
+      return
+    }
+
+    try {
+      setUpdating(true)
+      const formData = new FormData()
+      formData.append('title', editQuestion.title)
+      formData.append('content', editQuestion.content)
+
+      if (editQuestion.image) {
+        formData.append('image', editQuestion.image)
       }
-    ],
-    3: [
-      {
-        id: 4,
-        author: 'DataDriven',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '3 hours ago',
-        content:
-          "This is so inspiring! I've been tracking for 6 months and already see patterns. What app do you recommend?",
-        likes: 9
+
+      await questionApi.updateQuestion(editingPost.id, formData)
+      resetEditForm()
+      await fetchQuestions()
+      toast.success('Question updated successfully!')
+    } catch (error) {
+      console.error('Error updating question:', error)
+      toast.error('Failed to update question')
+    } finally {
+      setUpdating(false)
+    }
+  }
+
+  const handleDeleteQuestion = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this question?')) return
+
+    try {
+      await questionApi.deleteQuestion(id)
+      await fetchQuestions()
+      toast.success('Question deleted successfully!')
+    } catch (error) {
+      toast.error('Error deleting question:', error)
+      alert('Failed to delete question')
+    }
+  }
+
+  const resetCreateForm = () => {
+    setNewQuestion({
+      title: '',
+      content: '',
+      image: undefined
+    })
+    setShowCreatePost(false)
+  }
+
+  const resetEditForm = () => {
+    setEditQuestion({
+      title: '',
+      content: '',
+      image: undefined
+    })
+    setEditingPost(null)
+    setShowEditPost(false)
+  }
+
+  const openEditModal = (question: QuestionData) => {
+    setEditingPost(question)
+    setEditQuestion({
+      title: question.title,
+      content: question.content,
+      image: undefined
+    })
+    setShowEditPost(true)
+  }
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, isEdit = false) => {
+    const file = event.target.files?.[0]
+
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB')
+        return
       }
-    ]
+      if (isEdit) {
+        setEditQuestion((prev) => ({ ...prev, image: file }))
+      } else {
+        setNewQuestion((prev) => ({ ...prev, image: file }))
+      }
+    }
   }
 
   const toggleComments = (postId: number) => {
@@ -119,6 +166,14 @@ export default function Forum() {
 
   const toggleLike = (postId: number) => {
     setLikedPosts((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]))
+  }
+
+  if (loading) {
+    return (
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500'></div>
+      </div>
+    )
   }
 
   return (
@@ -172,7 +227,7 @@ export default function Forum() {
               <CardHeader className='border-b'>
                 <div className='flex items-center justify-between'>
                   <h3 className='text-xl font-semibold'>Create Post</h3>
-                  <Button variant='ghost' size='sm' onClick={() => setShowCreatePost(false)}>
+                  <Button variant='ghost' size='sm' onClick={resetCreateForm}>
                     <X className='h-4 w-4' />
                   </Button>
                 </div>
@@ -188,31 +243,136 @@ export default function Forum() {
                     </Avatar>
                     <div>
                       <p className='font-medium'>Jane Doe</p>
-                      <select className='text-sm text-gray-500 bg-transparent border-none outline-none'>
-                        <option>🩺 Menstrual Health</option>
-                        <option>🧠 Mental Health</option>
-                        <option>💪 Lifestyle</option>
-                        <option>👥 General Discussion</option>
-                      </select>
                     </div>
                   </div>
-                  <Input placeholder='Post title...' className='text-lg font-medium' />
+                  <Input
+                    placeholder='Post title...'
+                    className='text-lg font-medium'
+                    value={newQuestion.title}
+                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, title: e.target.value }))}
+                  />
                   <Textarea
                     placeholder='Share your thoughts, experiences, or ask questions...'
                     className='min-h-[120px] resize-none'
+                    value={newQuestion.content}
+                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, content: e.target.value }))}
                   />
                   <div className='flex gap-2'>
-                    <Button variant='outline' className='flex-1'>
-                      <ImageIcon className='h-4 w-4 mr-2' />
-                      Add Photo
-                    </Button>
+                    <label className='flex-1'>
+                      <input
+                        type='file'
+                        accept='image/*'
+                        onChange={(e) => handleImageUpload(e, false)}
+                        className='hidden'
+                      />
+                      <Button variant='outline' className='flex-1 w-full' type='button' asChild>
+                        <span>
+                          <ImageIcon className='h-4 w-4 mr-2' />
+                          {newQuestion.image ? `Selected: ${newQuestion.image.name}` : 'Add Photo'}
+                        </span>
+                      </Button>
+                    </label>
+                    {newQuestion.image && (
+                      <div className='mt-4'>
+                        <img
+                          src={URL.createObjectURL(newQuestion.image)}
+                          alt='Preview'
+                          className='w-full h-48 object-cover rounded-lg border'
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className='flex gap-2 pt-4'>
-                    <Button className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white flex-1'>
+                    <Button
+                      className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white flex-1'
+                      onClick={handleCreateQuestion}
+                      disabled={creating}
+                    >
                       <Send className='h-4 w-4 mr-2' />
-                      Post
+                      {creating ? 'Posting...' : 'Post'}
                     </Button>
-                    <Button variant='outline' onClick={() => setShowCreatePost(false)}>
+                    <Button variant='outline' onClick={resetCreateForm}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Edit Post Modal */}
+        {showEditPost && editingPost && (
+          <div className='fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
+            <Card className='w-full max-w-2xl max-h-[90vh] overflow-y-auto'>
+              <CardHeader className='border-b'>
+                <div className='flex items-center justify-between'>
+                  <h3 className='text-xl font-semibold'>Edit Post</h3>
+                  <Button variant='ghost' size='sm' onClick={resetEditForm}>
+                    <X className='h-4 w-4' />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className='p-6'>
+                <div className='space-y-4'>
+                  <div className='flex items-center gap-3'>
+                    <Avatar className='h-10 w-10'>
+                      <AvatarImage src='/placeholder.svg?height=40&width=40' />
+                      <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white'>
+                        {editingPost.username?.[0] || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className='font-medium'>{editingPost.username || 'User'}</p>
+                    </div>
+                  </div>
+                  <Input
+                    placeholder='Post title...'
+                    className='text-lg font-medium'
+                    value={editQuestion.title}
+                    onChange={(e) => setEditQuestion((prev) => ({ ...prev, title: e.target.value }))}
+                  />
+                  <Textarea
+                    placeholder='Share your thoughts, experiences, or ask questions...'
+                    className='min-h-[120px] resize-none'
+                    value={editQuestion.content}
+                    onChange={(e) => setEditQuestion((prev) => ({ ...prev, content: e.target.value }))}
+                  />
+                  <div className='flex gap-2'>
+                    <label className='flex-1'>
+                      <input
+                        type='file'
+                        accept='image/*'
+                        onChange={(e) => handleImageUpload(e, true)}
+                        className='hidden'
+                      />
+                      <Button variant='outline' className='flex-1 w-full' type='button' asChild>
+                        <span>
+                          <ImageIcon className='h-4 w-4 mr-2' />
+                          {editQuestion.image ? `Selected: ${editQuestion.image.name}` : 'Change Photo'}
+                        </span>
+                      </Button>
+                    </label>
+                    {editQuestion.image && (
+                      <div className='mt-4'>
+                        <img
+                          src={URL.createObjectURL(editQuestion.image)}
+                          alt='Preview'
+                          className='w-full h-48 object-cover rounded-lg border'
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className='flex gap-2 pt-4'>
+                    <Button
+                      className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white flex-1'
+                      onClick={handleUpdateQuestion}
+                      disabled={updating}
+                    >
+                      <Send className='h-4 w-4 mr-2' />
+                      {updating ? 'Updating...' : 'Update'}
+                    </Button>
+                    <Button variant='outline' onClick={resetEditForm}>
                       Cancel
                     </Button>
                   </div>
@@ -223,50 +383,59 @@ export default function Forum() {
         )}
 
         <div className='space-y-6'>
-          {posts.map((post) => (
+          {questions.map((question) => (
             <Card
-              key={post.id}
+              key={question.id}
               className='shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-200'
             >
               <CardContent className='p-6'>
                 <div className='flex items-start justify-between mb-4'>
                   <div className='flex items-center space-x-3'>
                     <Avatar className='h-10 w-10 border-2 border-pink-200'>
-                      <AvatarImage src={post.avatar} />
+                      <AvatarImage src={question.customerProfile.avatar} />
                       <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white'>
-                        {post.author[0]}
+                        {question.customerProfile.name?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <div className='flex items-center gap-2'>
-                        <p className='font-semibold text-gray-900'>{post.author}</p>
-                        <Badge variant='secondary' className='text-xs bg-pink-100 text-pink-700'>
-                          {post.category}
-                        </Badge>
+                        <p className='font-semibold text-gray-900'>{question.customerProfile.name || 'Anonymous'}</p>
                       </div>
-                      <p className='text-sm text-gray-500'>{post.time}</p>
+                      <p className='text-sm text-gray-500'>
+                        {new Date(question.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
                     </div>
                   </div>
-                  <Button variant='ghost' size='sm'>
-                    <MoreHorizontal className='h-4 w-4' />
-                  </Button>
+                  <div className='flex items-center gap-2'>
+                    <Button variant='ghost' size='sm' onClick={() => openEditModal(question)}>
+                      <Edit className='h-4 w-4' />
+                    </Button>
+                    <Button variant='ghost' size='sm' onClick={() => handleDeleteQuestion(question.id)}>
+                      <Trash2 className='h-4 w-4 text-red-500' />
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Post Title */}
                 <h2 className='text-xl font-semibold text-gray-900 mb-3 hover:text-pink-600 cursor-pointer transition-colors'>
-                  {post.title}
+                  {question.title}
                 </h2>
 
                 {/* Post Content */}
-                <p className='text-gray-700 mb-4 leading-relaxed'>{post.content}</p>
+                <p className='text-gray-700 mb-4 leading-relaxed'>{question.content}</p>
 
                 {/* Post Image */}
-                {post.image && (
+                {question.image && (
                   <div className='mb-4'>
                     <img
-                      src={post.image}
+                      src={question.image}
                       alt='Post content'
-                      className='w-full h-auto rounded-xl border border-gray-200'
+                      className='w-full h-auto rounded-xl border border-gray-200 max-h-96 object-cover'
                     />
                   </div>
                 )}
@@ -277,40 +446,27 @@ export default function Forum() {
                     <Button
                       variant='ghost'
                       size='sm'
-                      className={`flex items-center space-x-2 ${likedPosts.includes(post.id) ? 'text-pink-600' : 'text-gray-600'} hover:text-pink-600 transition-colors`}
-                      onClick={() => toggleLike(post.id)}
+                      className={`flex items-center space-x-2 ${likedPosts.includes(question.id) ? 'text-pink-600' : 'text-gray-600'} hover:text-pink-600 transition-colors`}
+                      onClick={() => toggleLike(question.id)}
                     >
-                      <Heart className={`h-5 w-5 ${likedPosts.includes(post.id) ? 'fill-current' : ''}`} />
-                      <span className='font-medium'>{post.likes + (likedPosts.includes(post.id) ? 1 : 0)}</span>
+                      <Heart className={`h-5 w-5 ${likedPosts.includes(question.id) ? 'fill-current' : ''}`} />
+                      <span className='font-medium'>{likedPosts.includes(question.id) ? 1 : 0}</span>
                     </Button>
 
                     <Button
                       variant='ghost'
                       size='sm'
                       className='flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors'
-                      onClick={() => toggleComments(post.id)}
+                      onClick={() => toggleComments(question.id)}
                     >
                       <MessageCircle className='h-5 w-5' />
-                      <span className='font-medium'>{post.comments}</span>
-                    </Button>
-
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      className='flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors'
-                    >
-                      <Share2 className='h-5 w-5' />
-                      <span className='font-medium'>Share</span>
+                      <span className='font-medium'>0</span>
                     </Button>
                   </div>
-
-                  <Button variant='ghost' size='sm' className='text-gray-600 hover:text-yellow-600 transition-colors'>
-                    <Bookmark className='h-5 w-5' />
-                  </Button>
                 </div>
 
                 {/* Comments Section */}
-                {expandedComments.includes(post.id) && (
+                {expandedComments.includes(question.id) && (
                   <div className='mt-6 pt-6 border-t border-gray-100'>
                     {/* Add Comment */}
                     <div className='flex space-x-3 mb-6'>
@@ -338,42 +494,10 @@ export default function Forum() {
                       </div>
                     </div>
 
-                    {/* Existing Comments */}
-                    <div className='space-y-4'>
-                      {postComments[post.id as keyof typeof postComments]?.map((comment) => (
-                        <div key={comment.id} className='flex space-x-3 p-4 bg-gray-50 rounded-xl'>
-                          <Avatar className='h-8 w-8'>
-                            <AvatarImage src={comment.avatar} />
-                            <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-500 text-white text-sm'>
-                              {comment.author[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className='flex-1'>
-                            <div className='flex items-center space-x-2 mb-1'>
-                              <span className='font-medium text-gray-900 text-sm'>{comment.author}</span>
-                              <span className='text-xs text-gray-500'>{comment.time}</span>
-                            </div>
-                            <p className='text-gray-700 text-sm mb-2'>{comment.content}</p>
-                            <div className='flex items-center space-x-4'>
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                className='text-xs text-gray-500 hover:text-pink-600 p-0 h-auto'
-                              >
-                                <Heart className='h-3 w-3 mr-1' />
-                                {comment.likes}
-                              </Button>
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                className='text-xs text-gray-500 hover:text-blue-600 p-0 h-auto'
-                              >
-                                Reply
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                    {/* Placeholder for comments - you can implement comment API later */}
+                    <div className='text-center text-gray-500 py-8'>
+                      <MessageCircle className='h-8 w-8 mx-auto mb-2 opacity-50' />
+                      <p>No comments yet. Be the first to comment!</p>
                     </div>
 
                     {/* Show/Hide Comments Toggle */}
@@ -381,7 +505,7 @@ export default function Forum() {
                       <Button
                         variant='ghost'
                         size='sm'
-                        onClick={() => toggleComments(post.id)}
+                        onClick={() => toggleComments(question.id)}
                         className='text-gray-500 hover:text-gray-700'
                       >
                         <ChevronUp className='h-4 w-4 mr-1' />
