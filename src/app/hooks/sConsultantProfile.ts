@@ -13,7 +13,8 @@ export const sConsultantProfile = signify({
   username: '',
   avatar: '',
   coverPhoto: '',
-  date_of_birth: ''
+  date_of_birth: '',
+  consultant_profile_id: 0
 })
 
 export const setConsultantProfileToSignify = (profile: any) => {
@@ -37,7 +38,8 @@ export const clearConsultantProfileSignify = () => {
       username: '',
       avatar: '',
       coverPhoto: '',
-      date_of_birth: ''
+      date_of_birth: '',
+      consultant_profile_id: 0
     }
   })
 }

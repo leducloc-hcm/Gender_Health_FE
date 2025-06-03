@@ -38,6 +38,7 @@ import CreateTag from '../pages/Staff/TagStaff/CreateTag'
 import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
 import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
+import Schedule from '../pages/Staff/Schedule/Schedule'
 export default function MainRoutes() {
   return (
     <>
@@ -106,6 +107,7 @@ export default function MainRoutes() {
           <Route path={staffPath.blogEdit} element={<EditBlog />} />
           <Route path={staffPath.tag} element={<TagStaff />} />
           <Route path={staffPath.tagCreate} element={<CreateTag />} />
+          <Route path={staffPath.schedule} element={<Schedule />} />
         </Route>
       </Routes>
     </>
