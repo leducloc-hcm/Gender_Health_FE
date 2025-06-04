@@ -1,5 +1,10 @@
 import { fetcher } from '@/app/apis/fetcher'
-import type { ReplyRequest, ReplyResponse, ReplyResponseCreate } from '@/app/pages/HomePage/Forum/models/reply.type'
+import type {
+  ReplyRequest,
+  ReplyRequestUpdate,
+  ReplyResponse,
+  ReplyResponseCreate
+} from '@/app/pages/HomePage/Forum/models/reply.type'
 
 export const replyApi = {
   getRepliesByQuestionId: async (questionId: number): Promise<ReplyResponse> => {
@@ -29,7 +34,7 @@ export const replyApi = {
       throw error
     }
   },
-  updateReply: async (replyId: number, data: ReplyRequest): Promise<ReplyResponseCreate> => {
+  updateReply: async (replyId: number, data: ReplyRequestUpdate): Promise<ReplyResponse> => {
     try {
       const response = await fetcher.put(`/replies/update/${replyId}`, data)
       return response.data

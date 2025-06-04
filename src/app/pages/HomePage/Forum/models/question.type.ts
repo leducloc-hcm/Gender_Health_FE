@@ -23,7 +23,7 @@ export interface QuestionData {
   createdAt: string
   updateAt: string
   customerProfile: CustomerProfileQuestion
-  count: Count
+  _count: Count
 }
 
 export interface CustomerProfileQuestion {
