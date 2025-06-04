@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -24,14 +24,49 @@ import { cn } from '@/app/lib/utils'
 import { scheduleApi } from '@/app/apis/Schedule.api'
 import { toast } from 'react-toastify'
 import { sConsultantProfile } from '@/app/hooks/sConsultantProfile'
+import { authApi } from '@/app/apis/auth.api'
+
+export interface ResponseCalendar {
+  message: string
+  data: DataResponseCalendar[]
+}
+
+export interface DataResponseCalendar {
+  id: number
+  consultantProfileId: number
+  title: string
+  description: string
+  date: string
+  startTime: string
+  endTime: string
+  status: string
+  createdAt: string
+  acceptedAt?: string
+  acceptedBy?: number
+  bookedBy: any
+  bookedAt: any
+}
 
 const CalendarBooking = () => {
-  const [events, setEvents] = useState<CalendarEvent[]>([
-    { title: 'Team Meeting', start: '2025-06-02T10:00:00', end: '2025-06-02T11:00:00' },
-    { title: 'Project Review', start: '2025-06-03T14:00:00', end: '2025-06-03T15:30:00' }
-  ])
+  const [events, setEvents] = useState<CalendarEvent[]>([])
+  console.log('events: ', events)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const mapToCalendarEvents = (apiData: any): CalendarEvent[] => {
+    return apiData.map((item: any) => {
+      // Extract date part (YYYY-MM-DD) from the date field
+      const datePart = item.date.split('T')[0]
+      // Combine date with startTime and endTime
+      const start = `${datePart}T${item.startTime}:00`
+      const end = `${datePart}T${item.endTime}:00`
+
+      return {
+        title: item.title,
+        start,
+        end
+      }
+    })
+  }
   const form = useForm<ConsultantFormData>({
     mode: 'onBlur',
     defaultValues: {
@@ -58,6 +93,8 @@ const CalendarBooking = () => {
       data.consultantProfileId = sConsultantProfile.value.consultant_profile_id
       console.log('data: ', data)
       const response = await scheduleApi.creteConsultantSchedule(data)
+      console.log('response: ', response)
+
       toast.success('Event created successfully!')
       form.reset()
       setIsModalOpen(false)
@@ -65,6 +102,24 @@ const CalendarBooking = () => {
       console.error('Error creating event:', error)
     }
   }
+
+  useEffect(() => {
+    const fetchCalendarSchedule = async () => {
+      try {
+        const profileResponse = await authApi.getProfileConsultant()
+        console.log('profileResponse: ', profileResponse)
+        const consultantProfileId = profileResponse.result.consultant_profile_id
+        console.log('consultantProfileId: ', consultantProfileId)
+        const reponse = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
+        console.log('reponse: ', reponse)
+        const mappedEvents = mapToCalendarEvents(reponse.data)
+        setEvents([...events, ...mappedEvents])
+      } catch (error) {
+        console.error('Error fetching calendar schedule:', error)
+      }
+    }
+    fetchCalendarSchedule()
+  }, [])
 
   const closeModal = () => {
     setIsModalOpen(false)
@@ -303,7 +358,6 @@ const CalendarBooking = () => {
               dateClick={(info) => {
                 alert('Clicked on: ' + info.dateStr)
                 setIsModalOpen(true)
-                // Convert dateStr to Date object for the form
                 const selectedDate = parse(info.dateStr, 'yyyy-MM-dd', new Date())
                 setValue('date', selectedDate)
               }}
@@ -322,9 +376,15 @@ const CalendarBooking = () => {
               viewClassNames='bg-white'
               dayCellClassNames='border-b border-slate-100 hover:bg-emerald-50 transition-colors duration-200'
               slotLabelClassNames='text-slate-600 font-medium'
-              eventClassNames='rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-l-4 border-l-pink-300 bg-gradient-to-r from-pink-300 to-pink-400 hover:from-pink-500 hover:to-pink-600 font-medium text-sm backdrop-blur-sm'
-              eventBackgroundColor='#ec4899'
-              eventBorderColor='#db2777'
+              eventClassNames='rounded-md shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-l-pink-400 bg-pink-100 hover:bg-pink-200 font-medium text-xs text-slate-800 truncate max-w-[95%] overflow-hidden whitespace-nowrap text-ellipsis py-1 px-2'
+              eventBackgroundColor='#f9e8f0'
+              eventBorderColor='#ec4899'
+              eventContent={(arg) => (
+                <div className='relative'>
+                  <div className='truncate'>{arg.event.title}</div>
+                  <div className='event-tooltip'>{arg.event.extendedProps.fullTitle}</div>
+                </div>
+              )}
             />
           </div>
         </div>

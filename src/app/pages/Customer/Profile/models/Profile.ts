@@ -31,6 +31,7 @@ export interface getProfileResult {
   phone_number?: string
   description?: string
   customer_profile_id?: number
+  consultant_profile_id?: number
 }
 export interface UpdateProfileInput {
   name?: string
