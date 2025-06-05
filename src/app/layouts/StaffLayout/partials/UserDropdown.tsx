@@ -35,16 +35,16 @@ const UserDropdown = () => {
 
   const accessToken = localStorage.getItem('access_token')
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const response = await authApi.getProfileConsultant()
-  //       setUserProfile(response.result)
-  //       setConsultantProfileToSignify(response.result)
-  //     } catch (error) {}
-  //   }
-  //   fetchProfile()
-  // }, [accessToken])
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await authApi.getProfileStaff()
+        setUserProfile(response.result)
+        setConsultantProfileToSignify(response.result)
+      } catch (error) {}
+    }
+    fetchProfile()
+  }, [accessToken])
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

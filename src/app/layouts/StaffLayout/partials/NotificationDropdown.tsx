@@ -10,6 +10,7 @@ import {
 import { Bell } from 'lucide-react'
 import { io, Socket } from 'socket.io-client'
 import { fetcher } from '@/app/apis/fetcher'
+import { setStaffSchedule } from '@/app/hooks/sStaffSchedule'
 
 type Notification = {
   id: number
@@ -30,7 +31,9 @@ const NotificationDropdown = () => {
       .get('/notifications', { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         const data = Array.isArray(res?.data) ? res.data : Array.isArray(res?.data?.data) ? res.data.data : []
+        console.log('data: ', data)
         setNotifications(data)
+        setStaffSchedule(data)
       })
       .catch((e) => {
         console.error('Error fetching notifications:', e)

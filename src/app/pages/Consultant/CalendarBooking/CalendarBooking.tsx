@@ -54,7 +54,6 @@ const CalendarBooking = () => {
 
   const mapToCalendarEvents = (apiData: any): CalendarEvent[] => {
     return apiData.map((item: any) => {
-      // Extract date part (YYYY-MM-DD) from the date field
       const datePart = item.date.split('T')[0]
       // Combine date with startTime and endTime
       const start = `${datePart}T${item.startTime}:00`

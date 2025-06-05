@@ -5,6 +5,7 @@ export const sConsultantProfile = signify({
   email: '',
   role: '',
   status: '',
+  consultant_profile_id: 0,
   created_at: '',
   updated_at: '',
   name: '',
@@ -14,7 +15,9 @@ export const sConsultantProfile = signify({
   avatar: '',
   coverPhoto: '',
   date_of_birth: '',
-  consultant_profile_id: 0
+  website: '',
+  phone_number: '',
+  description: ''
 })
 
 export const setConsultantProfileToSignify = (profile: any) => {
@@ -39,7 +42,10 @@ export const clearConsultantProfileSignify = () => {
       avatar: '',
       coverPhoto: '',
       date_of_birth: '',
-      consultant_profile_id: 0
+      consultant_profile_id: 0,
+      website: '',
+      phone_number: '',
+      description: ''
     }
   })
 }

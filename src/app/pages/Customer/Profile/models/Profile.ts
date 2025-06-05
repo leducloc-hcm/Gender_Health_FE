@@ -13,6 +13,7 @@ export interface UserProfile {
   website?: string
   coverPhoto?: string
 }
+
 export interface getProfileResult {
   id: number
   email: string
