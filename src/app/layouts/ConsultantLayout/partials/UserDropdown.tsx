@@ -38,7 +38,7 @@ const UserDropdown = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await authApi.getProfileStaff()
+        const response = await authApi.getProfileConsultant()
         setUserProfile(response.result)
         setConsultantProfileToSignify(response.result)
       } catch (error) {}
