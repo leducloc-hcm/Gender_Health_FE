@@ -35,6 +35,7 @@ import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import Forum from '@/app/pages/HomePage/Forum/Forum'
 import CreateTag from '../pages/Staff/TagStaff/CreateTag'
+import EditTag from '../pages/Staff/TagStaff/EditTag'
 import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
 import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
@@ -75,9 +76,7 @@ export default function MainRoutes() {
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
           <Route path={authPath.resetPassword} element={<ResetPassword />} />
-          {/* Route for verify/reset user click from email */}
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
-          {/* Route for verify otp */}
           <Route path={authPath.verifyPasscode} element={<VerifyPasscode />} />
         </Route>
 
@@ -107,6 +106,7 @@ export default function MainRoutes() {
           <Route path={staffPath.blogEdit} element={<EditBlog />} />
           <Route path={staffPath.tag} element={<TagStaff />} />
           <Route path={staffPath.tagCreate} element={<CreateTag />} />
+          <Route path={staffPath.tagEdit} element={<EditTag />} />
           <Route path={staffPath.schedule} element={<Schedule />} />
         </Route>
       </Routes>

@@ -1,399 +1,397 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import { Badge } from '@/app/components/ui/badge'
-import { Button } from '@/app/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/app/components/ui/card'
-import { Input } from '@/app/components/ui/input'
-import { Textarea } from '@/app/components/ui/textarea'
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  MoreHorizontal,
-  Plus,
-  Image as ImageIcon,
-  Send,
-  Bookmark,
-  ChevronUp,
-  X
-} from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { questionApi } from '@/app/apis/question.api'
+import { replyApi } from '@/app/apis/reply.api'
+import { voteApi } from '@/app/apis/vote.api'
+import type { QuestionData, questionResquest } from '@/app/pages/HomePage/Forum/models/question.type'
+import type { ReplyData, ReplyRequest } from '@/app/pages/HomePage/Forum/models/reply.type'
+import type { VoteRequest, VoteData } from '@/app/pages/HomePage/Forum/models/vote.type'
+
+import ForumHeader from './partials/ForumHeader'
+import CreatePostForm from './partials/CreatePostForm'
+import PostCard from './partials/PostCard'
+import CreatePostModal from './partials/CreatePostModal'
+import EditPostModal from './partials/EditPostModal'
+import LoadingSpinner from './partials/LoadingSpinner'
+import { sUserProfile } from '@/app/hooks/sUserProfile'
 
 export default function Forum() {
+  // States
   const [showCreatePost, setShowCreatePost] = useState(false)
+  const [showEditPost, setShowEditPost] = useState(false)
+  const [editingPost, setEditingPost] = useState<QuestionData | null>(null)
   const [expandedComments, setExpandedComments] = useState<number[]>([])
-  const [likedPosts, setLikedPosts] = useState<number[]>([])
+  const [questions, setQuestions] = useState<QuestionData[]>([])
+  const [replies, setReplies] = useState<{ [questionId: number]: ReplyData[] }>({})
+  const [newComment, setNewComment] = useState<{ [questionId: number]: string }>({})
+  const [editingReply, setEditingReply] = useState<{ replyId: number; content: string } | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [creating, setCreating] = useState(false)
+  const [updating, setUpdating] = useState(false)
+  const [replyLoading, setReplyLoading] = useState<{ [questionId: number]: boolean }>({})
+  const [userLikes, setUserLikes] = useState<{ [key: string]: VoteData }>({})
+  const [newQuestion, setNewQuestion] = useState<questionResquest>({
+    title: '',
+    content: '',
+    image: undefined
+  })
+  const [editQuestion, setEditQuestion] = useState<questionResquest>({
+    title: '',
+    content: '',
+    image: undefined
+  })
 
-  const posts = [
-    {
-      id: 1,
-      category: 'Menstrual Health',
-      author: 'HealthyWoman23',
-      avatar: '/placeholder.svg?height=32&width=32',
-      time: '2 hours ago',
-      title: 'Tips for managing severe period cramps naturally',
-      content:
-        "I've been dealing with really painful cramps for years and wanted to share some natural remedies that have helped me. Heat therapy, gentle yoga, and magnesium supplements have made a huge difference in my monthly experience.",
-      likes: 127,
-      comments: 34,
-      image: null,
-      isLiked: false
-    },
-    {
-      id: 2,
-      category: 'Mental Health',
-      author: 'MindfulMama',
-      avatar: '/placeholder.svg?height=32&width=32',
-      time: '4 hours ago',
-      title: "Dealing with PMS mood swings - you're not alone",
-      content:
-        "Sometimes I feel like I'm going crazy with the emotional ups and downs before my period. Here's what helps me stay grounded during those difficult days.",
-      likes: 89,
-      comments: 56,
-      image: '/placeholder.svg?height=300&width=500',
-      isLiked: false
-    },
-    {
-      id: 3,
-      category: 'Lifestyle',
-      author: 'WellnessJourney',
-      avatar: '/placeholder.svg?height=32&width=32',
-      time: '6 hours ago',
-      title: 'My cycle tracking journey - 1 year update',
-      content:
-        "It's been exactly one year since I started tracking my cycle properly. The insights I've gained about my body have been incredible!",
-      likes: 203,
-      comments: 78,
-      image: null,
-      isLiked: false
+  useEffect(() => {
+    fetchQuestions()
+  }, [])
+
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true)
+      const response = await questionApi.getAllQuestions()
+      setQuestions(response.data || [])
+
+      // Fetch user votes for all questions
+      const votePromises = (response.data || []).map((question) => fetchUserVote(question.id))
+      await Promise.all(votePromises)
+    } catch (error) {
+      console.error('Error fetching questions:', error)
+      toast.error('Failed to load posts')
+    } finally {
+      setLoading(false)
     }
-  ]
-
-  const postComments = {
-    1: [
-      {
-        id: 1,
-        author: 'NaturalHealing',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '1 hour ago',
-        content:
-          "Thank you for sharing! I've tried heat therapy and it works wonders. Have you tried chamomile tea? It also helps with relaxation.",
-        likes: 12
-      },
-      {
-        id: 2,
-        author: 'YogaLover22',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '30 minutes ago',
-        content:
-          "Child's pose and gentle twists are my go-to yoga poses during my period. They really help with the discomfort.",
-        likes: 8
-      }
-    ],
-    2: [
-      {
-        id: 3,
-        author: 'SupportiveSister',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '2 hours ago',
-        content:
-          "You're definitely not alone! I track my mood changes and it helps me prepare mentally for those tough days.",
-        likes: 15
-      }
-    ],
-    3: [
-      {
-        id: 4,
-        author: 'DataDriven',
-        avatar: '/placeholder.svg?height=24&width=24',
-        time: '3 hours ago',
-        content:
-          "This is so inspiring! I've been tracking for 6 months and already see patterns. What app do you recommend?",
-        likes: 9
-      }
-    ]
   }
 
-  const toggleComments = (postId: number) => {
-    setExpandedComments((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]))
+  const fetchUserVote = async (questionId?: number, replyId?: number) => {
+    try {
+      const currentUserId = sUserProfile.value.id
+      if (!currentUserId) return
+
+      let response
+      if (questionId) {
+        response = await voteApi.getVoteByQuestionId(questionId)
+      } else if (replyId) {
+        response = await voteApi.getVoteByReplyId(replyId)
+      } else {
+        return
+      }
+      const userVote = response.data?.find((vote) => vote.userId === currentUserId)
+
+      if (userVote) {
+        const voteKey = questionId ? `question_${questionId}` : `reply_${replyId}`
+        setUserLikes((prev) => ({ ...prev, [voteKey]: userVote }))
+      }
+    } catch (error) {
+      console.error('Error fetching user vote:', error)
+    }
   }
 
-  const toggleLike = (postId: number) => {
-    setLikedPosts((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]))
+  const fetchReplies = async (questionId: number) => {
+    try {
+      setReplyLoading((prev) => ({ ...prev, [questionId]: true }))
+      const response = await replyApi.getRepliesByQuestionId(questionId)
+      setReplies((prev) => ({ ...prev, [questionId]: response.data || [] }))
+
+      for (const reply of response.data || []) {
+        await fetchUserVote(undefined, reply.id)
+      }
+    } catch (error) {
+      console.error('Error fetching replies:', error)
+      toast.error('Failed to load comments')
+    } finally {
+      setReplyLoading((prev) => ({ ...prev, [questionId]: false }))
+    }
+  }
+
+  const handleLike = async (questionId?: number, replyId?: number) => {
+    const voteKey = questionId ? `question_${questionId}` : `reply_${replyId}`
+    const existingVote = userLikes[voteKey]
+
+    try {
+      if (existingVote) {
+        // Unlike: Delete the vote
+        await voteApi.deleteVote(existingVote.id)
+        setUserLikes((prev) => {
+          const newLikes = { ...prev }
+          delete newLikes[voteKey]
+          return newLikes
+        })
+
+        // Update the question's vote count immediately for better UX
+        if (questionId) {
+          setQuestions((prev) =>
+            prev.map((q) =>
+              q.id === questionId ? { ...q, _count: { ...q._count, votes: (q._count?.votes || 1) - 1 } } : q
+            )
+          )
+        }
+        toast.success('Like removed')
+      } else {
+        // Like: Create a new vote
+        const voteData: VoteRequest = {
+          question_id: questionId,
+          reply_id: replyId,
+          vote_type: 'UP'
+        }
+        const response = await voteApi.createVote(voteData)
+        setUserLikes((prev) => ({ ...prev, [voteKey]: response.data }))
+
+        // Update the question's vote count immediately for better UX
+        if (questionId) {
+          setQuestions((prev) =>
+            prev.map((q) =>
+              q.id === questionId ? { ...q, _count: { ...q._count, votes: (q._count?.votes || 0) + 1 } } : q
+            )
+          )
+        }
+        toast.success('Liked!')
+      }
+
+      // Optionally refresh the data to ensure accuracy
+      // await fetchQuestions()
+    } catch (error) {
+      console.error('Error handling like:', error)
+      toast.error('Failed to like')
+    }
+  }
+
+  const handleCreateReply = async (question_id: number) => {
+    const content = newComment[question_id]?.trim()
+    if (!content) {
+      toast.error('Please enter a comment')
+      return
+    }
+
+    try {
+      const replyData: ReplyRequest = {
+        content,
+        question_id,
+        parent_reply_id: undefined,
+        author_type: localStorage.getItem('user_role') || 'CUSTOMER'
+      }
+
+      await replyApi.createReply(replyData)
+      setNewComment((prev) => ({ ...prev, [question_id]: '' }))
+      await fetchReplies(question_id)
+      toast.success('Comment added successfully!')
+    } catch (error) {
+      console.error('Error creating reply:', error)
+      toast.error('Failed to add comment')
+    }
+  }
+
+  const handleUpdateReply = async () => {
+    if (!editingReply || !editingReply.content.trim()) {
+      toast.error('Please enter comment content')
+      return
+    }
+
+    try {
+      const replyData = { content: editingReply.content }
+      await replyApi.updateReply(editingReply.replyId, replyData)
+      setEditingReply(null)
+
+      const refreshPromises = expandedComments.map((questionId) => fetchReplies(questionId))
+      await Promise.all(refreshPromises)
+      toast.success('Comment updated successfully!')
+    } catch (error) {
+      console.error('Error updating reply:', error)
+      toast.error('Failed to update comment')
+    }
+  }
+
+  const handleDeleteReply = async (replyId: number, questionId: number) => {
+    if (!confirm('Are you sure you want to delete this comment?')) return
+
+    try {
+      await replyApi.deleteReply(replyId)
+      await fetchReplies(questionId)
+      toast.success('Comment deleted successfully!')
+    } catch (error) {
+      console.error('Error deleting reply:', error)
+      toast.error('Failed to delete comment')
+    }
+  }
+
+  const handleCreateQuestion = async () => {
+    if (!newQuestion.title.trim() || !newQuestion.content.trim()) {
+      toast.error('Please fill in title and content')
+      return
+    }
+
+    try {
+      setCreating(true)
+      const formData = new FormData()
+      formData.append('title', newQuestion.title)
+      formData.append('content', newQuestion.content)
+      if (newQuestion.image) {
+        formData.append('image', newQuestion.image)
+      }
+
+      await questionApi.createQuestion(formData)
+      resetCreateForm()
+      await fetchQuestions()
+      toast.success('Post created successfully!')
+    } catch (error) {
+      console.error('Error creating question:', error)
+      toast.error('Failed to create post')
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  const handleUpdateQuestion = async () => {
+    if (!editQuestion.title.trim() || !editQuestion.content.trim() || !editingPost) {
+      toast.error('Please fill in title and content')
+      return
+    }
+
+    try {
+      setUpdating(true)
+      const formData = new FormData()
+      formData.append('title', editQuestion.title)
+      formData.append('content', editQuestion.content)
+      if (editQuestion.image) {
+        formData.append('image', editQuestion.image)
+      }
+
+      await questionApi.updateQuestion(editingPost.id, formData)
+      resetEditForm()
+      await fetchQuestions()
+      toast.success('Post updated successfully!')
+    } catch (error) {
+      console.error('Error updating question:', error)
+      toast.error('Failed to update post')
+    } finally {
+      setUpdating(false)
+    }
+  }
+
+  const handleDeleteQuestion = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this post?')) return
+
+    try {
+      await questionApi.deleteQuestion(id)
+      await fetchQuestions()
+      toast.success('Post deleted successfully!')
+    } catch (error) {
+      console.error('Error deleting question:', error)
+      toast.error('Failed to delete post')
+    }
+  }
+
+  // Utility Functions
+  const resetCreateForm = () => {
+    setNewQuestion({ title: '', content: '', image: undefined })
+    setShowCreatePost(false)
+  }
+
+  const resetEditForm = () => {
+    setEditQuestion({ title: '', content: '', image: undefined })
+    setEditingPost(null)
+    setShowEditPost(false)
+  }
+
+  const openEditModal = (question: QuestionData) => {
+    setEditingPost(question)
+    setEditQuestion({
+      title: question.title,
+      content: question.content,
+      image: undefined
+    })
+    setShowEditPost(true)
+  }
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, isEdit = false) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB')
+        return
+      }
+      if (isEdit) {
+        setEditQuestion((prev) => ({ ...prev, image: file }))
+      } else {
+        setNewQuestion((prev) => ({ ...prev, image: file }))
+      }
+    }
+  }
+
+  const toggleComments = async (questionId: number) => {
+    const isExpanding = !expandedComments.includes(questionId)
+    setExpandedComments((prev) =>
+      prev.includes(questionId) ? prev.filter((id) => id !== questionId) : [...prev, questionId]
+    )
+
+    if (isExpanding && !replies[questionId]) {
+      await fetchReplies(questionId)
+    }
+  }
+
+  const isLiked = (questionId?: number, replyId?: number) => {
+    const voteKey = questionId ? `question_${questionId}` : `reply_${replyId}`
+    return !!userLikes[voteKey]
+  }
+
+  if (loading) {
+    return <LoadingSpinner />
   }
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50'>
-      <div className='max-w-4xl mx-auto py-8 px-4'>
-        <div className='text-center mb-8'>
-          <h1 className='text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent pb-4'>
-            Gender's Health Forum Community
-          </h1>
-          <p className='text-gray-600 text-lg'>Share experiences, get support, and learn together</p>
-        </div>
+      <div className='container mx-auto max-w-4xl py-8 px-4'>
+        <ForumHeader />
 
-        <Card className='mb-8 shadow-lg border-0 bg-white/80 backdrop-blur-sm'>
-          <CardHeader>
-            <div className='flex items-center gap-4'>
-              <Avatar className='h-12 w-12 border-2 border-pink-200'>
-                <AvatarImage src='/placeholder.svg?height=48&width=48' alt='User' />
-                <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white text-lg'>
-                  JD
-                </AvatarFallback>
-              </Avatar>
-              <div className='flex-1'>
-                <Input
-                  placeholder="What's on your mind? Share your experience..."
-                  className='bg-gray-50 border-gray-200 cursor-pointer text-lg py-4 px-3'
-                  onClick={() => setShowCreatePost(true)}
-                  readOnly
-                />
-              </div>
-            </div>
-            <div className='flex gap-2 mt-4'>
-              <Button
-                onClick={() => setShowCreatePost(true)}
-                className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'
-              >
-                <Plus className='h-4 w-4 mr-2' />
-                Create Post
-              </Button>
-              <Button variant='outline' onClick={() => setShowCreatePost(true)}>
-                <ImageIcon className='h-4 w-4 mr-2' />
-                Photo
-              </Button>
-            </div>
-          </CardHeader>
-        </Card>
+        <CreatePostForm onCreateClick={() => setShowCreatePost(true)} />
 
-        {/* Create Post Modal */}
-        {showCreatePost && (
-          <div className='fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
-            <Card className='w-full max-w-2xl max-h-[90vh] overflow-y-auto'>
-              <CardHeader className='border-b'>
-                <div className='flex items-center justify-between'>
-                  <h3 className='text-xl font-semibold'>Create Post</h3>
-                  <Button variant='ghost' size='sm' onClick={() => setShowCreatePost(false)}>
-                    <X className='h-4 w-4' />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className='p-6'>
-                <div className='space-y-4'>
-                  <div className='flex items-center gap-3'>
-                    <Avatar className='h-10 w-10'>
-                      <AvatarImage src='/placeholder.svg?height=40&width=40' />
-                      <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white'>
-                        JD
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className='font-medium'>Jane Doe</p>
-                      <select className='text-sm text-gray-500 bg-transparent border-none outline-none'>
-                        <option>🩺 Menstrual Health</option>
-                        <option>🧠 Mental Health</option>
-                        <option>💪 Lifestyle</option>
-                        <option>👥 General Discussion</option>
-                      </select>
-                    </div>
-                  </div>
-                  <Input placeholder='Post title...' className='text-lg font-medium' />
-                  <Textarea
-                    placeholder='Share your thoughts, experiences, or ask questions...'
-                    className='min-h-[120px] resize-none'
-                  />
-                  <div className='flex gap-2'>
-                    <Button variant='outline' className='flex-1'>
-                      <ImageIcon className='h-4 w-4 mr-2' />
-                      Add Photo
-                    </Button>
-                  </div>
-                  <div className='flex gap-2 pt-4'>
-                    <Button className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white flex-1'>
-                      <Send className='h-4 w-4 mr-2' />
-                      Post
-                    </Button>
-                    <Button variant='outline' onClick={() => setShowCreatePost(false)}>
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        <div className='space-y-6'>
-          {posts.map((post) => (
-            <Card
-              key={post.id}
-              className='shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-200'
-            >
-              <CardContent className='p-6'>
-                <div className='flex items-start justify-between mb-4'>
-                  <div className='flex items-center space-x-3'>
-                    <Avatar className='h-10 w-10 border-2 border-pink-200'>
-                      <AvatarImage src={post.avatar} />
-                      <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white'>
-                        {post.author[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className='flex items-center gap-2'>
-                        <p className='font-semibold text-gray-900'>{post.author}</p>
-                        <Badge variant='secondary' className='text-xs bg-pink-100 text-pink-700'>
-                          {post.category}
-                        </Badge>
-                      </div>
-                      <p className='text-sm text-gray-500'>{post.time}</p>
-                    </div>
-                  </div>
-                  <Button variant='ghost' size='sm'>
-                    <MoreHorizontal className='h-4 w-4' />
-                  </Button>
-                </div>
-
-                {/* Post Title */}
-                <h2 className='text-xl font-semibold text-gray-900 mb-3 hover:text-pink-600 cursor-pointer transition-colors'>
-                  {post.title}
-                </h2>
-
-                {/* Post Content */}
-                <p className='text-gray-700 mb-4 leading-relaxed'>{post.content}</p>
-
-                {/* Post Image */}
-                {post.image && (
-                  <div className='mb-4'>
-                    <img
-                      src={post.image}
-                      alt='Post content'
-                      className='w-full h-auto rounded-xl border border-gray-200'
-                    />
-                  </div>
-                )}
-
-                {/* Post Actions */}
-                <div className='flex items-center justify-between pt-4 border-t border-gray-100'>
-                  <div className='flex items-center space-x-6'>
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      className={`flex items-center space-x-2 ${likedPosts.includes(post.id) ? 'text-pink-600' : 'text-gray-600'} hover:text-pink-600 transition-colors`}
-                      onClick={() => toggleLike(post.id)}
-                    >
-                      <Heart className={`h-5 w-5 ${likedPosts.includes(post.id) ? 'fill-current' : ''}`} />
-                      <span className='font-medium'>{post.likes + (likedPosts.includes(post.id) ? 1 : 0)}</span>
-                    </Button>
-
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      className='flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors'
-                      onClick={() => toggleComments(post.id)}
-                    >
-                      <MessageCircle className='h-5 w-5' />
-                      <span className='font-medium'>{post.comments}</span>
-                    </Button>
-
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      className='flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors'
-                    >
-                      <Share2 className='h-5 w-5' />
-                      <span className='font-medium'>Share</span>
-                    </Button>
-                  </div>
-
-                  <Button variant='ghost' size='sm' className='text-gray-600 hover:text-yellow-600 transition-colors'>
-                    <Bookmark className='h-5 w-5' />
-                  </Button>
-                </div>
-
-                {/* Comments Section */}
-                {expandedComments.includes(post.id) && (
-                  <div className='mt-6 pt-6 border-t border-gray-100'>
-                    {/* Add Comment */}
-                    <div className='flex space-x-3 mb-6'>
-                      <Avatar className='h-8 w-8'>
-                        <AvatarImage src='/placeholder.svg?height=32&width=32' />
-                        <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white text-sm'>
-                          U
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className='flex-1'>
-                        <Textarea
-                          placeholder='Add a supportive comment...'
-                          className='mb-2 resize-none bg-gray-50'
-                          rows={2}
-                        />
-                        <div className='flex justify-end'>
-                          <Button
-                            size='sm'
-                            className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white'
-                          >
-                            <Send className='h-3 w-3 mr-1' />
-                            Comment
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Existing Comments */}
-                    <div className='space-y-4'>
-                      {postComments[post.id as keyof typeof postComments]?.map((comment) => (
-                        <div key={comment.id} className='flex space-x-3 p-4 bg-gray-50 rounded-xl'>
-                          <Avatar className='h-8 w-8'>
-                            <AvatarImage src={comment.avatar} />
-                            <AvatarFallback className='bg-gradient-to-br from-blue-500 to-purple-500 text-white text-sm'>
-                              {comment.author[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className='flex-1'>
-                            <div className='flex items-center space-x-2 mb-1'>
-                              <span className='font-medium text-gray-900 text-sm'>{comment.author}</span>
-                              <span className='text-xs text-gray-500'>{comment.time}</span>
-                            </div>
-                            <p className='text-gray-700 text-sm mb-2'>{comment.content}</p>
-                            <div className='flex items-center space-x-4'>
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                className='text-xs text-gray-500 hover:text-pink-600 p-0 h-auto'
-                              >
-                                <Heart className='h-3 w-3 mr-1' />
-                                {comment.likes}
-                              </Button>
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                className='text-xs text-gray-500 hover:text-blue-600 p-0 h-auto'
-                              >
-                                Reply
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Show/Hide Comments Toggle */}
-                    <div className='text-center mt-4'>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        onClick={() => toggleComments(post.id)}
-                        className='text-gray-500 hover:text-gray-700'
-                      >
-                        <ChevronUp className='h-4 w-4 mr-1' />
-                        Hide Comments
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+        <div className='space-y-6 mt-8'>
+          {questions.map((question) => (
+            <PostCard
+              key={question.id}
+              question={question}
+              replies={replies[question.id] || []}
+              expandedComments={expandedComments}
+              replyLoading={replyLoading[question.id] || false}
+              newComment={newComment[question.id] || ''}
+              editingReply={editingReply}
+              isLiked={isLiked}
+              onLike={handleLike}
+              onToggleComments={toggleComments}
+              onEdit={openEditModal}
+              onDelete={handleDeleteQuestion}
+              onCreateReply={handleCreateReply}
+              onUpdateReply={handleUpdateReply}
+              onDeleteReply={handleDeleteReply}
+              onCommentChange={(questionId, value) => setNewComment((prev) => ({ ...prev, [questionId]: value }))}
+              onEditReply={setEditingReply}
+            />
           ))}
         </div>
+
+        {showCreatePost && (
+          <CreatePostModal
+            isOpen={showCreatePost}
+            onClose={resetCreateForm}
+            newQuestion={newQuestion}
+            creating={creating}
+            onQuestionChange={setNewQuestion}
+            onImageUpload={(e) => handleImageUpload(e, false)}
+            onSubmit={handleCreateQuestion}
+          />
+        )}
+
+        {showEditPost && editingPost && (
+          <EditPostModal
+            isOpen={showEditPost}
+            onClose={resetEditForm}
+            editQuestion={editQuestion}
+            editingPost={editingPost}
+            updating={updating}
+            onQuestionChange={setEditQuestion}
+            onImageUpload={(e) => handleImageUpload(e, true)}
+            onSubmit={handleUpdateQuestion}
+          />
+        )}
       </div>
     </div>
   )

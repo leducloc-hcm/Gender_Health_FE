@@ -5,6 +5,7 @@ const staffPath = {
   blogCreate: 'blog/create',
   blogEdit: 'blog/edit/:id',
   tag: 'tag',
+  tagEdit: 'tag/edit/:id',
   tagUpdate: 'tag/update/:id',
   tagCreate: 'tag/create',
   schedule: 'schedule'

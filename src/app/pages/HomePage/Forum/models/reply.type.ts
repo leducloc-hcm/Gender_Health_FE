@@ -2,8 +2,13 @@ import type { CustomerProfileQuestion } from '@/app/pages/HomePage/Forum/models/
 
 export interface ReplyRequest {
   content: string
-  parentReplyId?: number | null
-  questionId: number
+  parent_reply_id?: number | null
+  question_id: number
+  author_type: string
+}
+
+export interface ReplyRequestUpdate {
+  content: string
 }
 
 export interface ReplyResponse {
@@ -21,7 +26,7 @@ export interface ReplyData {
   content: string
   authorType: string
   image: string
-  customerProfileId: number
+  customerProfileId: number | null
   staffProfileId: number | null
   parentReplyId: number | null
   questionId: number
@@ -29,7 +34,7 @@ export interface ReplyData {
   updatedAt: string
   customerProfile: CustomerProfileQuestion
   staffProfile: StaffProfileReply | null
-  count: CountReply
+  _count: CountReply
 }
 
 export interface StaffProfileReply {

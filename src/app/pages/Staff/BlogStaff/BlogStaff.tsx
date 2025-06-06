@@ -17,6 +17,7 @@ export default function BlogStaffTable() {
     try {
       const res = await fetchBlogs(1, 1000) // lấy tất cả blogs (hoặc phân trang sau)
       setBlogs(res.data)
+      console.log('Blogs:', res.data)
     } catch (err) {
       console.error('Failed to load blogs:', err)
       toast.error('Không thể tải danh sách blog')
@@ -46,8 +47,8 @@ export default function BlogStaffTable() {
   }
 
   return (
-    <div className='container mx-auto py-10'>
-      <h1 className='text-3xl font-bold mb-6'>Manage Blogs</h1>
+    <div className='p-4'>
+      <h1 className='text-2xl font-bold mb-4'>Manage Blogs</h1>
 
       {isLoading ? (
         <p className='text-gray-500'>Đang tải dữ liệu...</p>
