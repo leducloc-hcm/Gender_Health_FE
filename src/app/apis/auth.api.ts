@@ -6,6 +6,8 @@ import type { ResetPasswordRequest } from '../pages/Auth/ResetPassword/models/Re
 import type { AuthApiResponse } from '../models/ApiResponse'
 import type { VerifyPasscodeRequest } from '../pages/Auth/VerifyPasscode/models/VerifyPasscode'
 import type { profileResponse } from '../pages/Customer/Profile/models/Profile'
+import type { StaffProfile } from '../pages/Staff/models/Staff'
+import type { profileConsultantResponse } from '../pages/Consultant/models/Consultant'
 
 export interface UserProfile {
   id: number
@@ -98,9 +100,18 @@ export const authApi = {
       throw error as AxiosError
     }
   },
-  getProfileConsultant: async (): Promise<profileResponse> => {
+  getProfileConsultant: async (): Promise<profileConsultantResponse> => {
     try {
-      const response: AxiosResponse<profileResponse> = await fetcher.get('/users/consultant/me')
+      const response: AxiosResponse<profileConsultantResponse> = await fetcher.get('/users/consultant/me')
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch consultant profile:', error)
+      throw error
+    }
+  },
+  getProfileStaff: async (): Promise<StaffProfile> => {
+    try {
+      const response: AxiosResponse<StaffProfile> = await fetcher.get('/users/staff/me')
       return response.data
     } catch (error) {
       console.error('Failed to fetch consultant profile:', error)

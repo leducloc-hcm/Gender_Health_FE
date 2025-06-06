@@ -29,8 +29,7 @@ export default function ForceLoginModal({ handleCloseModal }: ForceLoginModalPro
             <h2 className='text-2xl font-bold text-gray-900 mb-3'>Login Required</h2>
 
             <p className='text-gray-600 mb-6 leading-relaxed'>
-              To access your menstrual cycle tracking and get personalized health insights, please log in to your
-              account.
+              To book test packages, <br /> please log in to your account.
             </p>
 
             <div className='space-y-3'>
