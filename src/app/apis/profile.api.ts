@@ -12,8 +12,7 @@ export const profileApi = {
       throw error
     }
   },
-
-  dateProfile: async (data: Partial<UpdateProfileInput>): Promise<profileResponse> => {
+  updateProfile: async (data: Partial<UpdateProfileInput>): Promise<profileResponse> => {
     try {
       const response: AxiosResponse<profileResponse> = await fetcher.put('/users/update/me', data, {
         headers: {
