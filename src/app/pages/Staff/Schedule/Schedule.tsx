@@ -1,47 +1,54 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { scheduleApi } from '@/app/apis/Schedule.api'
 import { getScheduleColumns } from './partials/columns'
 import DataTable from '../BlogStaff/DataTable'
 import type { schedule } from './partials/Schedule'
+import { SocketContext } from '@/app/contexts/SocketContext'
+import { toast } from 'react-toastify'
+
+export interface WorkScheduleUpdate {
+  workScheduleId: number
+  status: string
+}
+
+interface NewWorkSchedule {
+  scheduleId: number
+}
 
 const Schedule = () => {
+  const { socket } = useContext(SocketContext)
   const [schedules, setSchedules] = useState<schedule[]>([])
-  const [isLoading, setIsLoading] = useState(false)
 
   const fetchConsultantSchedule = async () => {
-    setIsLoading(true)
     try {
       const response = await scheduleApi.getAllConsultantApproveSchedule()
-      console.log('response: ', response)
-      const normalizedData = Array.isArray(response?.data)
-        ? response.data.map((item: any) => ({
-            id: item.id,
-            consultantProfileId: item.consultantProfileId,
-            title: item.title,
-            description: item.description,
-            date: item.date,
-            startTime: item.startTime,
-            endTime: item.endTime,
-            status: item.status,
-            createdAt: item.createdAt,
-            acceptedAt: item.acceptedAt ?? null,
-            acceptedBy: item.acceptedBy ?? null,
-            bookedBy: item.bookedBy ?? null,
-            bookedAt: item.bookedAt ?? null
-          }))
-        : []
-      setSchedules(normalizedData)
-    } catch (error) {
+      const mappedSchedules = response.data.map((item) => ({
+        ...item,
+        acceptedBy: item.acceptedBy?.toString() || null
+      }))
+      setSchedules(mappedSchedules as schedule[])
+    } catch (error: unknown) {
       console.error('Error fetching schedules:', error)
       setSchedules([])
-    } finally {
-      setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchConsultantSchedule()
-  }, [])
+    if (!socket) return
+
+    const handleNewWorkSchedule = (data: NewWorkSchedule) => {
+      console.log('new_work_schedule_created received:', data)
+      // Refresh the schedule list when a new schedule is created
+      fetchConsultantSchedule()
+      toast.info('New schedule request received')
+    }
+
+    socket.on('new_work_schedule_created', handleNewWorkSchedule)
+
+    return () => {
+      socket.off('new_work_schedule_created', handleNewWorkSchedule)
+    }
+  }, [socket])
 
   return (
     <div className='p-4'>

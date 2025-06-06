@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -8,7 +8,7 @@ import { Calendar } from '@/app/components/ui/calendar'
 import { Input } from '@/app/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
 import { useForm } from 'react-hook-form'
-import type { CalendarEvent, ConsultantFormData } from '../models/Consultant'
+import type { ConsultantFormData } from '../models/Consultant'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/components/ui/form'
 import { Textarea } from '@/app/components/ui/textarea'
 import {
@@ -18,17 +18,35 @@ import {
   startTimeCalendarValidation,
   titleCalendarValidation
 } from '../modules/CalendarValidation'
-import { format, parse } from 'date-fns'
+import { parse } from 'date-fns'
 import { Button } from '@/app/components/ui/button'
 import { cn } from '@/app/lib/utils'
 import { scheduleApi } from '@/app/apis/Schedule.api'
 import { toast } from 'react-toastify'
 import { sConsultantProfile } from '@/app/hooks/sConsultantProfile'
 import { authApi } from '@/app/apis/auth.api'
+import { SocketContext } from '@/app/contexts/SocketContext'
 
-export interface ResponseCalendar {
-  message: string
-  data: DataResponseCalendar[]
+interface ScheduleResponse {
+  id: number
+  status: string
+  data: {
+    id: number
+    status: string
+  }
+}
+
+interface ExtendedProps {
+  status: string
+  description: string
+  fullTitle: string
+  id: number
+}
+
+interface BookedBy {
+  id: string
+  name: string
+  email?: string
 }
 
 export interface DataResponseCalendar {
@@ -43,29 +61,43 @@ export interface DataResponseCalendar {
   createdAt: string
   acceptedAt?: string
   acceptedBy?: number
-  bookedBy: any
-  bookedAt: any
+  bookedBy: BookedBy | null
+  bookedAt: string | null
+}
+
+interface CalendarEvent {
+  title: string
+  start: string
+  end: string
+  extendedProps: ExtendedProps
 }
 
 const CalendarBooking = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { socket } = useContext(SocketContext)
 
-  const mapToCalendarEvents = (apiData: any): CalendarEvent[] => {
-    return apiData.map((item: any) => {
+  const mapToCalendarEvents = (apiData: DataResponseCalendar[]): CalendarEvent[] => {
+    return apiData.map((item: DataResponseCalendar) => {
+      // Ensure date is in YYYY-MM-DD format
       const datePart = item.date.split('T')[0]
-      console.log('datePart: ', datePart)
-      // Combine date with startTime and endTime
       const start = `${datePart}T${item.startTime}:00`
       const end = `${datePart}T${item.endTime}:00`
 
       return {
         title: item.title,
         start,
-        end
+        end,
+        extendedProps: {
+          status: item.status,
+          description: item.description,
+          fullTitle: item.title,
+          id: item.id
+        } as ExtendedProps
       }
     })
   }
+
   const form = useForm<ConsultantFormData>({
     mode: 'onBlur',
     defaultValues: {
@@ -89,47 +121,99 @@ const CalendarBooking = () => {
 
   const onSubmit = async (data: ConsultantFormData) => {
     try {
-      // data.consultantProfileId = sConsultantProfile.value.consultant_profile_id
-      // console.log('data: ', data)
+      // Format date to YYYY-MM-DD for backend, preserving the local date
+      const date = new Date(data.date)
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
       const payload = {
         ...data,
         consultantProfileId: sConsultantProfile.value.consultant_profile_id,
-        date: new Date(data.date).toLocaleDateString('en-US', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        })
+        date: formattedDate
       }
-      console.log('payload: ', payload)
 
-      const response = await scheduleApi.creteConsultantSchedule(payload)
-      console.log('response: ', response)
+      const response = (await scheduleApi.creteConsultantSchedule(payload)) as unknown as ScheduleResponse
+
+      // Add the new event to the calendar immediately with proper date handling
+      const newEvent: CalendarEvent = {
+        title: data.title,
+        start: `${formattedDate}T${data.startTime}:00`,
+        end: `${formattedDate}T${data.endTime}:00`,
+        extendedProps: {
+          status: 'PENDING',
+          description: data.description,
+          fullTitle: data.title,
+          id: response.data.id
+        } as ExtendedProps
+      }
+
+      setEvents((prevEvents) => {
+        const updatedEvents = [...prevEvents, newEvent]
+        console.log('Updated events:', updatedEvents)
+        return updatedEvents
+      })
 
       toast.success('Event created successfully!')
       form.reset()
       setIsModalOpen(false)
+
+      await fetchCalendarSchedule()
     } catch (error) {
       console.error('Error creating event:', error)
+      toast.error('Failed to create event. Please try again.')
     }
   }
 
-  useEffect(() => {
-    const fetchCalendarSchedule = async () => {
-      try {
-        const profileResponse = await authApi.getProfileConsultant()
-        console.log('profileResponse: ', profileResponse)
-        const consultantProfileId = profileResponse.result.consultant_profile_id
-        console.log('consultantProfileId: ', consultantProfileId)
-        const reponse = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
-        console.log('reponse: ', reponse)
-        const mappedEvents = mapToCalendarEvents(reponse.data)
-        setEvents([...mappedEvents])
-      } catch (error) {
-        console.error('Error fetching calendar schedule:', error)
-      }
+  const fetchCalendarSchedule = async () => {
+    try {
+      const profileResponse = await authApi.getProfileConsultant()
+      const consultantProfileId = profileResponse.result.consultant_profile_id
+      const response = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
+      const mappedEvents = mapToCalendarEvents(response.data)
+      console.log('Fetched calendar schedule:', mappedEvents)
+      setEvents(mappedEvents)
+    } catch (error) {
+      console.error('Error fetching calendar schedule:', error)
     }
+  }
+
+  // Add initial data fetch
+  useEffect(() => {
     fetchCalendarSchedule()
   }, [])
+
+  useEffect(() => {
+    if (!socket) return
+
+    const handleWorkScheduleUpdate = (data: { workScheduleId: number; status: string }) => {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) => {
+          const extendedProps = event.extendedProps as ExtendedProps
+          if (extendedProps.id === data.workScheduleId) {
+            return {
+              ...event,
+              extendedProps: {
+                ...extendedProps,
+                status: data.status
+              }
+            }
+          }
+          return event
+        })
+      )
+
+      if (data.status === 'APPROVED') {
+        toast.success('Schedule has been approved!')
+      } else if (data.status === 'REJECTED') {
+        toast.error('Schedule has been rejected')
+      }
+    }
+
+    socket.on('work_schedule_status_update', handleWorkScheduleUpdate)
+
+    return () => {
+      socket.off('work_schedule_status_update', handleWorkScheduleUpdate)
+    }
+  }, [socket])
 
   const closeModal = () => {
     setIsModalOpen(false)
@@ -257,7 +341,11 @@ const CalendarBooking = () => {
                                   >
                                     <CalendarIcon className='mr-2 h-4 w-4' />
                                     {field.value ? (
-                                      new Date(field.value).toLocaleDateString('en-GB')
+                                      new Date(field.value).toLocaleDateString('en-GB', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric'
+                                      })
                                     ) : (
                                       <span>Pick a date</span>
                                     )}
@@ -393,12 +481,56 @@ const CalendarBooking = () => {
               eventClassNames='rounded-md shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-l-pink-400 bg-pink-100 hover:bg-pink-200 font-medium text-xs text-slate-800 truncate max-w-[95%] overflow-hidden whitespace-nowrap text-ellipsis py-1 px-2'
               eventBackgroundColor='#f9e8f0'
               eventBorderColor='#ec4899'
-              eventContent={(arg) => (
-                <div className='relative'>
-                  <div className='truncate'>{arg.event.title}</div>
-                  <div className='event-tooltip'>{arg.event.extendedProps.fullTitle}</div>
-                </div>
-              )}
+              eventContent={(arg) => {
+                const status = arg.event.extendedProps.status
+                let statusColors = {
+                  backgroundColor: '#f9e8f0',
+                  borderColor: '#ec4899',
+                  textColor: '#374151'
+                }
+
+                // Set colors based on status
+                switch (status) {
+                  case 'PENDING':
+                    statusColors = {
+                      backgroundColor: '#fef3c7', // yellow-100
+                      borderColor: '#f59e0b', // yellow-500
+                      textColor: '#92400e' // yellow-800
+                    }
+                    break
+                  case 'AVAILABLE':
+                    statusColors = {
+                      backgroundColor: '#dbeafe', // blue-100
+                      borderColor: '#3b82f6', // blue-500
+                      textColor: '#1e3a8a' // blue-800
+                    }
+                    break
+                  case 'REJECTED':
+                    statusColors = {
+                      backgroundColor: '#fee2e2', // red-100
+                      borderColor: '#ef4444', // red-500
+                      textColor: '#991b1b' // red-800
+                    }
+                    break
+                  default:
+                    // Keep default pink colors for unknown status
+                    break
+                }
+
+                return (
+                  <div
+                    className='relative rounded-md shadow-sm hover:shadow-md transition-all duration-200 font-medium text-xs truncate max-w-[95%] overflow-hidden whitespace-nowrap text-ellipsis py-1 px-2'
+                    style={{
+                      backgroundColor: statusColors.backgroundColor,
+                      borderLeft: `4px solid ${statusColors.borderColor}`,
+                      color: statusColors.textColor
+                    }}
+                  >
+                    <div className='truncate'>{arg.event.title}</div>
+                    <div className='text-xs opacity-75 truncate'>{status}</div>
+                  </div>
+                )
+              }}
             />
           </div>
         </div>

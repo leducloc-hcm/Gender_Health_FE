@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button } from '@/app/components/ui/button'
 import {
   DropdownMenu,
@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger
 } from '@/app/components/ui/dropdown-menu'
 import { Bell } from 'lucide-react'
-import { io, Socket } from 'socket.io-client'
 import { fetcher } from '@/app/apis/fetcher'
+import { SocketContext } from '@/app/contexts/SocketContext'
 
 type Notification = {
   id: number
@@ -21,9 +21,8 @@ type Notification = {
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const [connected, setConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const socketRef = useRef<Socket | null>(null)
+  const { socket, connected } = useContext(SocketContext)
 
   const fetchNotifications = (token: string) =>
     fetcher
@@ -46,19 +45,14 @@ const NotificationDropdown = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
-    if (!token) return
-    const socket = io(import.meta.env.VITE_API_BASE_URL, { auth: { token } })
-    socketRef.current = socket
+    if (!token || !socket) return
 
-    socket.on('connect', () => setConnected(true))
-    socket.on('disconnect', () => setConnected(false))
     socket.on('notification', () => fetchNotifications(token))
-    socket.on('connect_error', () => setConnected(false))
 
     return () => {
-      socket.disconnect()
+      socket.off('notification')
     }
-  }, [])
+  }, [socket])
 
   const handleMarkAsRead = async (notif: Notification) => {
     if (notif.status === 'READ') return
