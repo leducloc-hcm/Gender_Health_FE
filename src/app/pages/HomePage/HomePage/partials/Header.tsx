@@ -13,10 +13,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
 import { profileApi } from '@/app/apis/profile.api'
 import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
+import { clearUserProfileSignify, setUserProfileToSignify, sUserProfile } from '@/app/hooks/sUserProfile'
 
 export default function Header() {
   const nav = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  // const sUser = sUserProfile.use()
+
   const [userProfile, setUserProfile] = useState<getProfileResult>({
     id: 0,
     email: '',
@@ -32,21 +35,31 @@ export default function Header() {
     coverPhoto: '',
     date_of_birth: ''
   })
+
   const accessToken = localStorage.getItem('access_token')
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!accessToken) {
+        clearUserProfileSignify()
+        return
+      }
       try {
         const response = await profileApi.getProfile()
         console.log('response: ', response)
         setUserProfile(response.result)
-      } catch (error) {}
+        setUserProfileToSignify(response.result)
+      } catch (error) {
+        console.error('Failed to fetch profile:', error)
+      }
     }
     fetchProfile()
   }, [accessToken])
+
   return (
     <header className='sticky top-0 z-50 w-full border-b border-pink-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm'>
       <div className='container mx-auto px-4 md:px-8'>
+        <sUserProfile.DevTool name='sUser' color='red' />
         <div className='flex h-16 items-center justify-between'>
           <div className='flex items-center gap-2'>
             <Link to='/' className='flex items-center gap-2'>
@@ -60,11 +73,8 @@ export default function Header() {
             <Link to='/#features' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Features
             </Link>
-            <Link to='/#about' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              About
-            </Link>
-            <Link to='/#services' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Services
+            <Link to='/forum' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+              Forum
             </Link>
             <Link
               to='/menstrual-cycle'
@@ -80,9 +90,6 @@ export default function Header() {
               className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
             >
               Test Packages
-            </Link>
-            <Link to='/#contact' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Contact
             </Link>
           </nav>
           {accessToken ? (
@@ -138,6 +145,7 @@ export default function Header() {
                     localStorage.removeItem('access_token')
                     localStorage.removeItem('refresh_token')
                     localStorage.removeItem('user_role')
+                    clearUserProfileSignify()
                     nav('/')
                   }}
                 >
