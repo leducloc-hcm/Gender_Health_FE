@@ -49,12 +49,12 @@ export interface DataResponseCalendar {
 
 const CalendarBooking = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  console.log('events: ', events)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const mapToCalendarEvents = (apiData: any): CalendarEvent[] => {
     return apiData.map((item: any) => {
       const datePart = item.date.split('T')[0]
+      console.log('datePart: ', datePart)
       // Combine date with startTime and endTime
       const start = `${datePart}T${item.startTime}:00`
       const end = `${datePart}T${item.endTime}:00`
@@ -89,9 +89,16 @@ const CalendarBooking = () => {
 
   const onSubmit = async (data: ConsultantFormData) => {
     try {
-      data.consultantProfileId = sConsultantProfile.value.consultant_profile_id
-      console.log('data: ', data)
-      const response = await scheduleApi.creteConsultantSchedule(data)
+      // data.consultantProfileId = sConsultantProfile.value.consultant_profile_id
+      // console.log('data: ', data)
+      const payload = {
+        ...data,
+        consultantProfileId: sConsultantProfile.value.consultant_profile_id,
+        date: new Date(data.date).toLocaleDateString()
+      }
+      console.log('payload: ', payload)
+
+      const response = await scheduleApi.creteConsultantSchedule(payload)
       console.log('response: ', response)
 
       toast.success('Event created successfully!')
@@ -112,7 +119,7 @@ const CalendarBooking = () => {
         const reponse = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
         console.log('reponse: ', reponse)
         const mappedEvents = mapToCalendarEvents(reponse.data)
-        setEvents([...events, ...mappedEvents])
+        setEvents([...mappedEvents])
       } catch (error) {
         console.error('Error fetching calendar schedule:', error)
       }
@@ -245,7 +252,11 @@ const CalendarBooking = () => {
                                     )}
                                   >
                                     <CalendarIcon className='mr-2 h-4 w-4' />
-                                    {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                    {field.value ? (
+                                      new Date(field.value).toLocaleDateString('en-GB')
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
                                   </Button>
                                 </FormControl>
                               </PopoverTrigger>
