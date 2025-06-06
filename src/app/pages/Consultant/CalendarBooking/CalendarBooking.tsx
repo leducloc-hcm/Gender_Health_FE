@@ -94,7 +94,11 @@ const CalendarBooking = () => {
       const payload = {
         ...data,
         consultantProfileId: sConsultantProfile.value.consultant_profile_id,
-        date: new Date(data.date).toLocaleDateString()
+        date: new Date(data.date).toLocaleDateString('en-US', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
       }
       console.log('payload: ', payload)
 
