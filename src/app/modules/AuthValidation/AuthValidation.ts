@@ -55,3 +55,11 @@ export const otpValidation = {
   }
 }
 
+export const telValidation = {
+  required: 'Phone Number is required',
+  pattern: {
+    value: /^(0|\+84)\d{9,10}$/,
+    message: 'Invalid, must be vietnamese phone number!'
+  }
+}
+

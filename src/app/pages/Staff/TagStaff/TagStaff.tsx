@@ -13,6 +13,7 @@ export default function TagPage() {
     const loadData = async () => {
       try {
         const tags = await fetchTags()
+        console.log('tags: ', tags)
         setData(tags)
       } finally {
         setLoading(false)

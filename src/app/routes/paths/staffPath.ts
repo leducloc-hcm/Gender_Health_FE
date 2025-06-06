@@ -6,7 +6,8 @@ const staffPath = {
   blogEdit: 'blog/edit/:id',
   tag: 'tag',
   tagUpdate: 'tag/update/:id',
-  tagCreate: 'tag/create'
+  tagCreate: 'tag/create',
+  schedule: 'schedule'
 }
 
 export default staffPath
