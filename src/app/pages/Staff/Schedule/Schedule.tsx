@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { scheduleApi } from '@/app/apis/Schedule.api'
 import { getScheduleColumns } from './partials/columns'
 import DataTable from '../BlogStaff/DataTable'
 import type { schedule } from './partials/Schedule'
-import { SocketContext } from '@/app/contexts/SocketContext'
 import { toast } from 'react-toastify'
+import { useSocket } from '@/app/hooks/useSocket'
 
 export interface WorkScheduleUpdate {
   workScheduleId: number
@@ -16,7 +16,7 @@ interface NewWorkSchedule {
 }
 
 const Schedule = () => {
-  const { socket } = useContext(SocketContext)
+  const { socket, reinitializeSocket } = useSocket()
   const [schedules, setSchedules] = useState<schedule[]>([])
 
   const fetchConsultantSchedule = async () => {
@@ -32,7 +32,10 @@ const Schedule = () => {
       setSchedules([])
     }
   }
-
+  useEffect(() => {
+    fetchConsultantSchedule()
+    reinitializeSocket()
+  }, [])
   useEffect(() => {
     if (!socket) return
 

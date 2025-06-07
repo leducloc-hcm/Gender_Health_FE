@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/app/components/ui/button'
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
 } from '@/app/components/ui/dropdown-menu'
 import { Bell } from 'lucide-react'
 import { fetcher } from '@/app/apis/fetcher'
-import { SocketContext } from '@/app/contexts/SocketContext'
+import { useSocket } from '@/app/hooks/useSocket'
 
 type Notification = {
   id: number
@@ -22,8 +22,7 @@ type Notification = {
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const { socket, connected } = useContext(SocketContext)
-
+  const { socket } = useSocket()
   const fetchNotifications = (token: string) =>
     fetcher
       .get('/notifications', { headers: { Authorization: `Bearer ${token}` } })
@@ -44,10 +43,13 @@ const NotificationDropdown = () => {
   }, [])
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    if (!token || !socket) return
+    if (!socket) return
 
-    socket.on('notification', () => fetchNotifications(token))
+    socket.on('notification', () => {
+      const token = localStorage.getItem('access_token')
+      if (!token) return
+      fetchNotifications(token)
+    })
 
     return () => {
       socket.off('notification')

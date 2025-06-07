@@ -65,6 +65,8 @@ export default function LoginPage() {
       if (responseData.result?.access_token) {
         localStorage.setItem('access_token', responseData.result.access_token)
         console.log('Access token stored:', responseData.result.access_token)
+        // Dispatch custom event for socket reinitialization
+        window.dispatchEvent(new Event('userLogin'))
       }
 
       if (responseData.result?.refresh_token) {

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -25,7 +25,7 @@ import { scheduleApi } from '@/app/apis/Schedule.api'
 import { toast } from 'react-toastify'
 import { sConsultantProfile } from '@/app/hooks/sConsultantProfile'
 import { authApi } from '@/app/apis/auth.api'
-import { SocketContext } from '@/app/contexts/SocketContext'
+import { useSocket } from '@/app/hooks/useSocket'
 
 interface ScheduleResponse {
   id: number
@@ -75,7 +75,7 @@ interface CalendarEvent {
 const CalendarBooking = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { socket } = useContext(SocketContext)
+  const { socket, reinitializeSocket } = useSocket()
 
   const mapToCalendarEvents = (apiData: DataResponseCalendar[]): CalendarEvent[] => {
     return apiData.map((item: DataResponseCalendar) => {
@@ -169,7 +169,6 @@ const CalendarBooking = () => {
       const consultantProfileId = profileResponse.result.consultant_profile_id
       const response = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
       const mappedEvents = mapToCalendarEvents(response.data)
-      console.log('Fetched calendar schedule:', mappedEvents)
       setEvents(mappedEvents)
     } catch (error) {
       console.error('Error fetching calendar schedule:', error)
@@ -179,6 +178,7 @@ const CalendarBooking = () => {
   // Add initial data fetch
   useEffect(() => {
     fetchCalendarSchedule()
+    reinitializeSocket()
   }, [])
 
   useEffect(() => {
