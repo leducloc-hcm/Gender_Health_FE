@@ -13,8 +13,8 @@ export interface scheduleData {
   endTime: string
   status: string
   createdAt: string
-  acceptedAt?: string
-  acceptedBy?: number
-  bookedBy: any
-  bookedAt: any
+  acceptedAt: string | null
+  acceptedBy: string | null
+  bookedBy: string | null
+  bookedAt: string | null
 }

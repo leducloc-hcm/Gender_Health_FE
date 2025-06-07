@@ -31,7 +31,6 @@ const NotificationDropdown = () => {
       .get('/notifications', { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         const data = Array.isArray(res?.data) ? res.data : Array.isArray(res?.data?.data) ? res.data.data : []
-        console.log('data: ', data)
         setNotifications(data)
         setStaffSchedule(data)
       })
