@@ -109,7 +109,6 @@ export default function Forum() {
 
     try {
       if (existingVote) {
-        // Unlike: Delete the vote
         await voteApi.deleteVote(existingVote.id)
         setUserLikes((prev) => {
           const newLikes = { ...prev }
@@ -117,7 +116,6 @@ export default function Forum() {
           return newLikes
         })
 
-        // Update the question's vote count immediately for better UX
         if (questionId) {
           setQuestions((prev) =>
             prev.map((q) =>
@@ -280,7 +278,6 @@ export default function Forum() {
     }
   }
 
-  // Utility Functions
   const resetCreateForm = () => {
     setNewQuestion({ title: '', content: '', image: undefined })
     setShowCreatePost(false)
@@ -330,6 +327,8 @@ export default function Forum() {
 
   const isLiked = (questionId?: number, replyId?: number) => {
     const voteKey = questionId ? `question_${questionId}` : `reply_${replyId}`
+    console.log(voteKey)
+
     return !!userLikes[voteKey]
   }
 
