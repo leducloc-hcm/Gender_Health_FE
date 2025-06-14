@@ -40,6 +40,7 @@ import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
 import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
 import Schedule from '../pages/Staff/Schedule/Schedule'
+import BookingConsultant from '../pages/HomePage/HomePage/BookingConsultant/BookingConsultant'
 export default function MainRoutes() {
   return (
     <>
@@ -59,6 +60,7 @@ export default function MainRoutes() {
         <Route path='/' element={<HomePageLayout />}>
           <Route path='/' element={<HomePage />} />
           <Route path='/test-packages' element={<TestPackages />} />
+          <Route path='/booking-consultant' element={<BookingConsultant />} />
           <Route path='/menstrual-cycle' element={<MenstrualCycle />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/blog' element={<Blog />} />

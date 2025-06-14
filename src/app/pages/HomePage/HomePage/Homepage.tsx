@@ -3,14 +3,16 @@ import BlogSection from '@/app/pages/HomePage/HomePage/partials/BlogSection'
 import AboutSection from './partials/AboutSection'
 import FeaturesSection from './partials/FeaturesSection'
 import HeroSection from './partials/HeroSection'
+import BookingConsultantSection from './partials/BookingConsultantSection'
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
       <FeaturesSection />
-      <AboutSection />
+      <BookingConsultantSection />
       <BlogSection />
+      <AboutSection />
     </>
   )
 }
