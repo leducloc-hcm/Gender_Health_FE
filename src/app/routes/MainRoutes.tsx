@@ -41,6 +41,7 @@ import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
 import Schedule from '../pages/Staff/Schedule/Schedule'
 import BookingConsultant from '../pages/HomePage/HomePage/BookingConsultant/BookingConsultant'
+import ProfileConsultantManagement from '../pages/Staff/ProfileConsultantManagement/ProfileConsultantManagement'
 export default function MainRoutes() {
   return (
     <>
@@ -110,6 +111,7 @@ export default function MainRoutes() {
           <Route path={staffPath.tagCreate} element={<CreateTag />} />
           <Route path={staffPath.tagEdit} element={<EditTag />} />
           <Route path={staffPath.schedule} element={<Schedule />} />
+          <Route path={staffPath.ConsultantProfileManagement} element={<ProfileConsultantManagement />} />
         </Route>
       </Routes>
     </>

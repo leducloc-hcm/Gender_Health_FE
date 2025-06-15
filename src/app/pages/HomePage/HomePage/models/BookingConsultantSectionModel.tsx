@@ -17,16 +17,25 @@ export interface Schedule {
 export interface ConsultantProfile {
   id: number
   name: string
-  bio: string | null
-  location: string | null
+  bio: string
+  location: string
   username: string
-  avatar: string | null
-  coverPhoto: string | null
-  description: string | null
+  avatar: string
+  coverPhoto: string
+  description: string
   phoneNumber: string
-  dateOfBirth: string | null
-  website: string | null
+  dateOfBirth: string
+  website: string
+  rating: number
+  totalReviews: number
+  experience: string
+  specialties: string[]
+  languages: string[]
+  responseTime: string
+  degree: string
+  hospital: string
   userId: number
+  consultationFee?: number
 }
 
 export interface Consultant {

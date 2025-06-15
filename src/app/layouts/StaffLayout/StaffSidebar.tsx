@@ -27,6 +27,11 @@ const navigationItems = [
     icon: Home
   },
   {
+    title: 'Consultant Profile Management',
+    url: '/staff/consultant-profile-management',
+    icon: User
+  },
+  {
     title: 'Blog & Articles',
     url: '/staff/blog',
     icon: BookOpen
