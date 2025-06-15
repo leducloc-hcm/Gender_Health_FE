@@ -91,6 +91,12 @@ export default function Header() {
             >
               Test Packages
             </Link>
+            <Link
+              to='/booking-consultant'
+              className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'
+            >
+              Booking Consultant
+            </Link>
           </nav>
           {accessToken ? (
             <DropdownMenu>

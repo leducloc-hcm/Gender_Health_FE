@@ -8,7 +8,8 @@ const staffPath = {
   tagEdit: 'tag/edit/:id',
   tagUpdate: 'tag/update/:id',
   tagCreate: 'tag/create',
-  schedule: 'schedule'
+  schedule: 'schedule',
+  ConsultantProfileManagement: 'consultant-profile-management'
 }
 
 export default staffPath
