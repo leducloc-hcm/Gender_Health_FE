@@ -1,6 +1,6 @@
-import { signify } from 'react-signify'
+import { signify } from "react-signify"
 
-export const sStaffProfile = signify({
+export const sAdminProfile = signify({
   id: 0,
   email: '',
   role: '',
@@ -20,8 +20,8 @@ export const sStaffProfile = signify({
   description: null
 })
 
-export const setStaffProfileToSignify = (profile: any) => {
-  sStaffProfile.set((prev) => {
+export const setAdminProfileToSignify = (profile: any) => {
+  sAdminProfile.set((prev) => {
     prev.value = profile
   })
 }
