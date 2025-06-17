@@ -14,6 +14,7 @@ import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
 import { profileApi } from '@/app/apis/profile.api'
 import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
 import { clearUserProfileSignify, setUserProfileToSignify, sUserProfile } from '@/app/hooks/sUserProfile'
+import { ROLE_ROUTES } from '@/app/pages/Auth/Login/Login'
 
 export default function Header() {
   const nav = useNavigate()
@@ -37,6 +38,16 @@ export default function Header() {
   })
 
   const accessToken = localStorage.getItem('access_token')
+
+  const handleNavigateProfile = () => {
+    const userRole = localStorage.getItem('user_role')?.toUpperCase()
+
+    if (userRole === 'ADMIN') {
+      nav(ROLE_ROUTES[userRole])
+    } else {
+      nav('/profile')
+    }
+  }
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -124,12 +135,15 @@ export default function Header() {
                   </div>
                 </div>
                 <DropdownMenuSeparator className='bg-pink-100' />
-                <Link to='/profile'>
-                  <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'>
-                    <User className='mr-3 h-4 w-4 text-pink-500' />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                </Link>
+                <DropdownMenuItem
+                  onClick={() => {
+                    handleNavigateProfile()
+                  }}
+                  className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
+                >
+                  <User className='mr-3 h-4 w-4 text-pink-500' />
+                  <span>Profile</span>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
                   onClick={() => nav('/orders')}
