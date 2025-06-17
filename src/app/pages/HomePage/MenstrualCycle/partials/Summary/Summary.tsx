@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/ca
 import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import type { PredictionData } from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/models/summary.type'
 import { addDays, differenceInDays, format, isWithinInterval } from 'date-fns'
-import { Activity, Baby, Calendar, Clock, Droplets, Loader2, Sparkles, Target, TrendingUp } from 'lucide-react'
+import { Activity, Baby, Calendar, Clock, Droplets, Loader2, Plus, Sparkles, Target, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -336,7 +336,7 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
   )
 }
 
-export default function Summary() {
+export default function Summary({ onStartNewCycle }: any) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [predictionData, setPredictionData] = useState<PredictionData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -617,6 +617,15 @@ export default function Summary() {
             </Card>
           </div>
         )}
+      </div>
+      <div className='fixed bottom-6 right-6 z-50'>
+        <Button
+          onClick={onStartNewCycle}
+          className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center'
+          title='Start New Cycle'
+        >
+          <Plus className='w-6 h-6' />
+        </Button>
       </div>
     </div>
   )
