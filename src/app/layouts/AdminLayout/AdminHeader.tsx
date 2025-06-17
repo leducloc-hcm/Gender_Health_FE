@@ -1,0 +1,21 @@
+import { SidebarTrigger } from "@/app/components/ui/sidebar";
+import UserDropdown from "./partials/UserDropdown";
+
+export default function AdminHeader() {
+  return (
+    <>
+      <header className='flex h-20 shrink-0 items-center gap-2 bg-white border-b border-pink-100'>
+        <div className='flex items-center gap-4 px-6'>
+          <SidebarTrigger className='h-8 w-8 rounded-lg hover:bg-pink-50 transition-colors' />
+          <div className='h-6 w-px bg-pink-200' />
+          <div>
+            <p className='text-xl font-bold text-pink-600'>Welcome back, admin duy...!</p>
+          </div>
+        </div>
+        <div className='ml-auto flex items-center gap-3 px-6'>
+          <UserDropdown />
+        </div>
+      </header>
+    </>
+  )
+}

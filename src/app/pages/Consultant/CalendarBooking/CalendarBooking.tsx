@@ -3,12 +3,12 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { Clock, Plus, X, CheckCircle, CalendarIcon } from 'lucide-react'
+import { Clock, Plus, X, CheckCircle, CalendarIcon, Clock3, AlertCircle, Info } from 'lucide-react'
 import { Calendar } from '@/app/components/ui/calendar'
 import { Input } from '@/app/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
 import { useForm } from 'react-hook-form'
-import type { CalendarEvent, ConsultantFormData } from '../models/Consultant'
+import type { ConsultantFormData } from '../models/Consultant'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/components/ui/form'
 import { Textarea } from '@/app/components/ui/textarea'
 import {
@@ -18,51 +18,65 @@ import {
   startTimeCalendarValidation,
   titleCalendarValidation
 } from '../modules/CalendarValidation'
-import { format, parse } from 'date-fns'
+import { parse } from 'date-fns'
 import { Button } from '@/app/components/ui/button'
 import { cn } from '@/app/lib/utils'
 import { scheduleApi } from '@/app/apis/Schedule.api'
 import { toast } from 'react-toastify'
 import { sConsultantProfile } from '@/app/hooks/sConsultantProfile'
 import { authApi } from '@/app/apis/auth.api'
-
-export interface ResponseCalendar {
-  message: string
-  data: DataResponseCalendar[]
-}
-
-export interface DataResponseCalendar {
-  id: number
-  consultantProfileId: number
-  title: string
-  description: string
-  date: string
-  startTime: string
-  endTime: string
-  status: string
-  createdAt: string
-  acceptedAt?: string
-  acceptedBy?: number
-  bookedBy: any
-  bookedAt: any
-}
+import { useSocket } from '@/app/hooks/useSocket'
+import type { CalendarEvent, DataResponseCalendar, ExtendedProps, ScheduleResponse } from '../models/Calendar'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const CalendarBooking = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  console.log('events: ', events)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { socket, reinitializeSocket } = useSocket()
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<any>(null)
 
-  const mapToCalendarEvents = (apiData: any): CalendarEvent[] => {
-    return apiData.map((item: any) => {
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return <CheckCircle className='h-4 w-4 text-pink-500' />
+      case 'pending':
+        return <Clock3 className='h-4 w-4 text-amber-500' />
+      case 'cancelled':
+        return <AlertCircle className='h-4 w-4 text-red-500' />
+      default:
+        return <Info className='h-4 w-4 text-blue-500' />
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return 'bg-pink-50 text-pink-700 border-pink-200'
+      case 'pending':
+        return 'bg-amber-50 text-amber-700 border-amber-200'
+      case 'cancelled':
+        return 'bg-red-50 text-red-700 border-red-200'
+      default:
+        return 'bg-blue-50 text-blue-700 border-blue-200'
+    }
+  }
+  const mapToCalendarEvents = (apiData: DataResponseCalendar[]): CalendarEvent[] => {
+    return apiData.map((item: DataResponseCalendar) => {
       const datePart = item.date.split('T')[0]
-      // Combine date with startTime and endTime
       const start = `${datePart}T${item.startTime}:00`
       const end = `${datePart}T${item.endTime}:00`
 
       return {
         title: item.title,
         start,
-        end
+        end,
+        extendedProps: {
+          status: item.status,
+          description: item.description,
+          fullTitle: item.title,
+          id: item.id
+        } as ExtendedProps
       }
     })
   }
@@ -89,37 +103,89 @@ const CalendarBooking = () => {
 
   const onSubmit = async (data: ConsultantFormData) => {
     try {
-      data.consultantProfileId = sConsultantProfile.value.consultant_profile_id
-      console.log('data: ', data)
-      const response = await scheduleApi.creteConsultantSchedule(data)
-      console.log('response: ', response)
+      const date = new Date(data.date)
+      const formatDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+      const payload = {
+        ...data,
+        consultantProfileId: sConsultantProfile.value.consultant_profile_id,
+        date: formatDate
+      }
 
+      const response = (await scheduleApi.creteConsultantSchedule(payload)) as unknown as ScheduleResponse
+
+      const newEvent: CalendarEvent = {
+        title: data.title,
+        start: `${formatDate}T${data.startTime}:00`,
+        end: `${formatDate}T${data.endTime}:00`,
+        extendedProps: {
+          status: 'PENDING',
+          description: data.description,
+          fullTitle: data.title,
+          id: response.data.id
+        } as ExtendedProps
+      }
+      setEvents((preEvent) => {
+        const updateEvent = [...preEvent, newEvent]
+        return updateEvent
+      })
       toast.success('Event created successfully!')
       form.reset()
       setIsModalOpen(false)
+      await fetchCalendarSchedule()
     } catch (error) {
       console.error('Error creating event:', error)
     }
   }
-
-  useEffect(() => {
-    const fetchCalendarSchedule = async () => {
-      try {
-        const profileResponse = await authApi.getProfileConsultant()
-        console.log('profileResponse: ', profileResponse)
-        const consultantProfileId = profileResponse.result.consultant_profile_id
-        console.log('consultantProfileId: ', consultantProfileId)
-        const reponse = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
-        console.log('reponse: ', reponse)
-        const mappedEvents = mapToCalendarEvents(reponse.data)
-        setEvents([...events, ...mappedEvents])
-      } catch (error) {
-        console.error('Error fetching calendar schedule:', error)
-      }
+  const fetchCalendarSchedule = async () => {
+    try {
+      const profileResponse = await authApi.getProfileConsultant()
+      const consultantProfileId = profileResponse.result.consultant_profile_id
+      const response = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
+      const mappedEvents = mapToCalendarEvents(response.data)
+      setEvents(mappedEvents)
+    } catch (error) {
+      console.error('Error fetching calendar schedule:', error)
     }
+  }
+  useEffect(() => {
     fetchCalendarSchedule()
+    reinitializeSocket()
   }, [])
 
+  useEffect(() => {
+    if (!socket) return
+
+    const handleWorkScheduleUpdate = (data: { workScheduleId: number; status: string }) => {
+      setEvents((prevEvents) => {
+        return prevEvents.map((event) => {
+          const extendedProps = event.extendedProps as ExtendedProps
+          if (extendedProps.id === data.workScheduleId) {
+            return {
+              ...event,
+              extendedProps: {
+                ...extendedProps,
+                status: data.status
+              }
+            }
+          }
+          return event
+        })
+      })
+
+      if (data.status === 'APPROVED') {
+        toast.success('Schedule has been approved!')
+      } else if (data.status === 'REJECTED') {
+        toast.error('Schedule has been rejected')
+      }
+    }
+
+    console.log('socket: ', socket)
+    socket.on('work_schedule_status_update', handleWorkScheduleUpdate)
+
+    return () => {
+      socket.off('work_schedule_status_update', handleWorkScheduleUpdate)
+    }
+  }, [socket])
   const closeModal = () => {
     setIsModalOpen(false)
     reset()
@@ -245,7 +311,11 @@ const CalendarBooking = () => {
                                     )}
                                   >
                                     <CalendarIcon className='mr-2 h-4 w-4' />
-                                    {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                    {field.value ? (
+                                      new Date(field.value).toLocaleDateString('en-GB')
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
                                   </Button>
                                 </FormControl>
                               </PopoverTrigger>
@@ -361,9 +431,14 @@ const CalendarBooking = () => {
                 setValue('date', selectedDate)
               }}
               eventClick={(info) => {
-                alert(
-                  `Event: ${info.event.title}\nStart: ${info.event.start?.toISOString()}\nEnd: ${info.event.end?.toISOString() || 'No end time'}`
-                )
+                setSelectedEvent({
+                  title: info.event.title,
+                  start: info.event.start?.toLocaleString(),
+                  end: info.event.end?.toLocaleString() || 'No end time',
+                  status: info.event.extendedProps.status,
+                  description: info.event.extendedProps.description
+                })
+                setIsEventModalOpen(true)
               }}
               eventTimeFormat={{
                 hour: '2-digit',
@@ -375,18 +450,212 @@ const CalendarBooking = () => {
               viewClassNames='bg-white'
               dayCellClassNames='border-b border-slate-100 hover:bg-emerald-50 transition-colors duration-200'
               slotLabelClassNames='text-slate-600 font-medium'
-              eventClassNames='rounded-md shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-l-pink-400 bg-pink-100 hover:bg-pink-200 font-medium text-xs text-slate-800 truncate max-w-[95%] overflow-hidden whitespace-nowrap text-ellipsis py-1 px-2'
               eventBackgroundColor='#f9e8f0'
               eventBorderColor='#ec4899'
-              eventContent={(arg) => (
-                <div className='relative'>
-                  <div className='truncate'>{arg.event.title}</div>
-                  <div className='event-tooltip'>{arg.event.extendedProps.fullTitle}</div>
-                </div>
-              )}
+              eventContent={(arg) => {
+                const status = arg.event.extendedProps.status
+                let statusColors = {
+                  backgroundColor: '#f9e8f0',
+                  borderColor: '#ec4899',
+                  textColor: '#374151'
+                }
+
+                // Set colors based on status
+                switch (status) {
+                  case 'PENDING':
+                    statusColors = {
+                      backgroundColor: '#fef3c7', // yellow-100
+                      borderColor: '#f59e0b', // yellow-500
+                      textColor: '#92400e' // yellow-800
+                    }
+                    break
+                  case 'AVAILABLE':
+                    statusColors = {
+                      backgroundColor: '#dbeafe', // blue-100
+                      borderColor: '#3b82f6', // blue-500
+                      textColor: '#1e3a8a' // blue-800
+                    }
+                    break
+                  case 'REJECTED':
+                    statusColors = {
+                      backgroundColor: '#fee2e2', // red-100
+                      borderColor: '#ef4444', // red-500
+                      textColor: '#991b1b' // red-800
+                    }
+                    break
+                  default:
+                    // Keep default pink colors for unknown status
+                    break
+                }
+
+                return (
+                  <div
+                    className='relative rounded-md shadow-sm hover:shadow-md transition-all duration-200 font-medium text-xs truncate max-w-[95%] overflow-hidden whitespace-nowrap text-ellipsis py-1 px-2 cursor-pointer'
+                    style={{
+                      backgroundColor: statusColors.backgroundColor,
+                      borderLeft: `4px solid ${statusColors.borderColor}`,
+                      color: statusColors.textColor
+                    }}
+                  >
+                    <div className='truncate'>{arg.event.title}</div>
+                    <div className='text-xs opacity-75 truncate'>{status}</div>
+                  </div>
+                )
+              }}
             />
           </div>
         </div>
+        <AnimatePresence>
+          {isEventModalOpen && selectedEvent && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className='fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4'
+              onClick={() => setIsEventModalOpen(false)}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ duration: 0.3, type: 'spring', damping: 25, stiffness: 300 }}
+                className='bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden'
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header with gradient background */}
+                <div className='relative bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 p-6'>
+                  <div className='absolute inset-0 bg-black/10'></div>
+                  <div className='relative flex items-center justify-between'>
+                    <div>
+                      <h2 className='text-2xl font-bold text-white'>Event Details</h2>
+                      <p className='text-pink-100 text-sm mt-1'>View event information</p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.1, rotate: 90 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setIsEventModalOpen(false)}
+                      className='p-2 hover:bg-white/20 rounded-xl transition-all duration-200 backdrop-blur-sm'
+                    >
+                      <X className='h-6 w-6 text-white' />
+                    </motion.button>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className='p-6 space-y-6'>
+                  {/* Title */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className='space-y-2'
+                  >
+                    <div className='flex items-center gap-2'>
+                      <label className='text-sm font-semibold text-slate-700 uppercase tracking-wide'>Title</label>
+                    </div>
+                    <p className='text-xl font-bold text-slate-900 bg-slate-50 p-4 rounded-xl border border-slate-200'>
+                      {selectedEvent.title}
+                    </p>
+                  </motion.div>
+
+                  {/* Time Information */}
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className='space-y-2'
+                    >
+                      <div className='flex items-center gap-2'>
+                        <Clock className='h-4 w-4 text-emerald-600' />
+                        <label className='text-sm font-semibold text-slate-700 uppercase tracking-wide'>
+                          Start Time
+                        </label>
+                      </div>
+                      <p className='text-slate-900 bg-pink-50 p-3 rounded-lg border border-pink-200 font-medium'>
+                        {selectedEvent.start}
+                      </p>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className='space-y-2'
+                    >
+                      <div className='flex items-center gap-2'>
+                        <Clock className='h-4 w-4 text-red-600' />
+                        <label className='text-sm font-semibold text-slate-700 uppercase tracking-wide'>End Time</label>
+                      </div>
+                      <p className='text-slate-900 bg-rose-50 p-3 rounded-lg border border-rose-200 font-medium'>
+                        {selectedEvent.end}
+                      </p>
+                    </motion.div>
+                  </div>
+
+                  {/* Status */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className='space-y-2'
+                  >
+                    <div className='flex items-center gap-2'>
+                      {getStatusIcon(selectedEvent.status)}
+                      <label className='text-sm font-semibold text-slate-700 uppercase tracking-wide'>Status</label>
+                    </div>
+                    <div
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border font-medium capitalize ${getStatusColor(selectedEvent.status)}`}
+                    >
+                      {getStatusIcon(selectedEvent.status)}
+                      {selectedEvent.status}
+                    </div>
+                  </motion.div>
+
+                  {/* Description */}
+                  {selectedEvent.description && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className='space-y-2'
+                    >
+                      <div className='flex items-center gap-2'>
+                        <Info className='h-4 w-4 text-rose-600' />
+                        <label className='text-sm font-semibold text-slate-700 uppercase tracking-wide'>
+                          Description
+                        </label>
+                      </div>
+                      <div className='bg-gradient-to-r from-rose-50 to-pink-50 p-4 rounded-xl border border-rose-200'>
+                        <p className='text-slate-800 leading-relaxed'>{selectedEvent.description}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className='bg-gradient-to-r from-slate-50 to-slate-100 p-6 border-t border-slate-200'
+                >
+                  <div className='flex justify-end gap-3'>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setIsEventModalOpen(false)}
+                      className='px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-xl hover:from-slate-700 hover:to-slate-800 transition-all duration-200 shadow-lg hover:shadow-xl font-medium'
+                    >
+                      Close
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

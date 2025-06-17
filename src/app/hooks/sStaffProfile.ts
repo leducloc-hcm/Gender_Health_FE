@@ -19,6 +19,7 @@ export const sStaffProfile = signify({
   phone_number: '',
   description: null
 })
+
 export const setStaffProfileToSignify = (profile: any) => {
   sStaffProfile.set((prev) => {
     prev.value = profile

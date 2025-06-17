@@ -6,7 +6,7 @@ import { ArrowUpDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { TagBlog } from '../../Auth/Login/models/tag'
 
-export const tagColumns: ColumnDef<TagBlog>[] = [
+export const getTagColumns = (onDelete: (id: number, name: string) => void): ColumnDef<TagBlog>[] => [
   {
     accessorKey: 'name',
     header: ({ column }) => (
@@ -29,16 +29,15 @@ export const tagColumns: ColumnDef<TagBlog>[] = [
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const id = row.original.id
+      const { id, name } = row.original
       return (
         <div className='flex gap-2 justify-center items-center'>
-          <Link to={`/staff/blog/edit/${id}`}>
-            <Button className='bg-pink-400 hover:bg-pink-500 text-white' size='sm'>
+          <Link to={`/staff/tag/edit/${id}`}>
+            <Button className='bg-yellow-500 hover:bg-yellow-600 text-white' size='sm'>
               Edit
             </Button>
           </Link>
-
-          <Button className='bg-pink-400 hover:bg-pink-500 text-white' size='sm'>
+          <Button className='bg-red-500 hover:bg-red-600 text-white' size='sm' onClick={() => onDelete(id, name)}>
             Delete
           </Button>
         </div>

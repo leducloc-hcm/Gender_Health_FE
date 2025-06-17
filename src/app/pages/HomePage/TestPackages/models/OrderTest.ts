@@ -1,11 +1,18 @@
 // Order form request
+export interface OrderFormData {
+  address: string
+  phone: string
+  note: string
+  test_date: Date | undefined
+}
+
 export interface OrderFormRequest {
   address: string
   phone: string
   note: string
   customer_profile_id: number | string
   test_package_id: number
-  test_date: Date | undefined
+  test_date: string | undefined
 }
 
 // Order form response
