@@ -11,9 +11,9 @@ import {
 // import { setConsultantProfileToSignify } from '@/app/hooks/sConsultantProfile'
 import { clearUserProfileSignify } from '@/app/hooks/sUserProfile'
 // import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
-import { LogOut, Settings, User } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 // import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const UserDropdown = () => {
   // const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -79,19 +79,6 @@ const UserDropdown = () => {
             </p>
           </div>
         </div>
-        <DropdownMenuSeparator className='bg-pink-100' />
-        <Link to={`/admin/account-settings`}>
-          <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
-            <User className='mr-3 h-4 w-4 text-pink-500' />
-            <span>Profile</span>
-          </DropdownMenuItem>
-        </Link>
-        <Link to={`/admin/account-settings`}>
-          <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
-            <Settings className='mr-3 h-4 w-4 text-pink-500' />
-            <span>Settings</span>
-          </DropdownMenuItem>
-        </Link>
         <DropdownMenuSeparator className='bg-pink-100' />
         <DropdownMenuItem
           className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'

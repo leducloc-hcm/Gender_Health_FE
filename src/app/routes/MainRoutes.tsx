@@ -46,7 +46,8 @@ import AccountManagement from '../pages/Admin/AccountManagement/AccountManagemen
 import PaymentManagement from '../pages/Admin/PaymentManagement/PaymentManagement'
 import TestPackageManagement from '../pages/Admin/TestPackageManagement/TestPackageManagement'
 import TypeOfTestManagement from '../pages/Admin/TypeOfTestManagement/TypeOfTestManagement'
-import AccountSettings from '../pages/Admin/AccountSettings/AccountSettings'
+import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
+
 export default function MainRoutes() {
   return (
     <>
@@ -100,9 +101,9 @@ export default function MainRoutes() {
           <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
           <Route path={adminPath.account} element={<AccountManagement />} />
           <Route path={adminPath.payment} element={<PaymentManagement />} />
+          <Route path={adminPath.order} element={<OrderManagement />} />
           <Route path={adminPath.testPackge} element={<TestPackageManagement />} />
           <Route path={adminPath.typeOfTest} element={<TypeOfTestManagement />} />
-          <Route path={adminPath.accountSettings} element={<AccountSettings />} />
         </Route>
 
         <Route path='/consultant' element={<Consultant />}>
