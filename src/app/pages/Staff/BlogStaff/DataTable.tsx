@@ -97,7 +97,7 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
           </Button>
         </Link>
       </div>
-      <div className='rounded-md border'>
+      <div className='min-h-[625px]'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -124,15 +124,6 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
                         </div>
                       </TableCell>
                     ))}
-                  </TableRow>
-                ))}
-
-                {/* 🧩 Dòng trống nếu ít hơn pageSize */}
-                {Array.from({
-                  length: table.getState().pagination.pageSize - table.getRowModel().rows.length
-                }).map((_, idx) => (
-                  <TableRow key={`empty-${idx}`} className='h-[50px]'>
-                    <TableCell colSpan={columns.length} />
                   </TableRow>
                 ))}
               </>
