@@ -37,10 +37,19 @@ import EditBlog from '../pages/Staff/BlogStaff/EditBlog'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import Forum from '@/app/pages/HomePage/Forum/Forum'
 import CreateTag from '../pages/Staff/TagStaff/CreateTag'
+import EditTag from '../pages/Staff/TagStaff/EditTag'
 import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
 import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
 import Schedule from '../pages/Staff/Schedule/Schedule'
+import BookingConsultant from '../pages/HomePage/HomePage/BookingConsultant/BookingConsultant'
+import ProfileConsultantManagement from '../pages/Staff/ProfileConsultantManagement/ProfileConsultantManagement'
+import AccountManagement from '../pages/Admin/AccountManagement/AccountManagement'
+import PaymentManagement from '../pages/Admin/PaymentManagement/PaymentManagement'
+import TestPackageManagement from '../pages/Admin/TestPackageManagement/TestPackageManagement'
+import TypeOfTestManagement from '../pages/Admin/TypeOfTestManagement/TypeOfTestManagement'
+import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
+
 export default function MainRoutes() {
   return (
     <>
@@ -60,6 +69,7 @@ export default function MainRoutes() {
         <Route path='/' element={<HomePageLayout />}>
           <Route path='/' element={<HomePage />} />
           <Route path='/test-packages' element={<TestPackages />} />
+          <Route path='/booking-consultant' element={<BookingConsultant />} />
           <Route path='/menstrual-cycle' element={<MenstrualCycle />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/blog' element={<Blog />} />
@@ -77,9 +87,7 @@ export default function MainRoutes() {
           <Route path={authPath.register} element={<Register />} />
           <Route path={authPath.forgotPassword} element={<ForgetPassword />} />
           <Route path={authPath.resetPassword} element={<ResetPassword />} />
-          {/* Route for verify/reset user click from email */}
           <Route path={authPath.verifyEmail} element={<VerifyEmail />} />
-          {/* Route for verify otp */}
           <Route path={authPath.verifyPasscode} element={<VerifyPasscode />} />
         </Route>
         <Route path='/chat' element={<ChatFlow />} />
@@ -94,6 +102,11 @@ export default function MainRoutes() {
         <Route path='/admin' element={<Admin />}>
           <Route index element={<Navigate to={adminPath.dashboard} replace />} />
           <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
+          <Route path={adminPath.account} element={<AccountManagement />} />
+          <Route path={adminPath.payment} element={<PaymentManagement />} />
+          <Route path={adminPath.order} element={<OrderManagement />} />
+          <Route path={adminPath.testPackge} element={<TestPackageManagement />} />
+          <Route path={adminPath.typeOfTest} element={<TypeOfTestManagement />} />
         </Route>
 
         <Route path='/consultant' element={<Consultant />}>
@@ -110,7 +123,9 @@ export default function MainRoutes() {
           <Route path={staffPath.blogEdit} element={<EditBlog />} />
           <Route path={staffPath.tag} element={<TagStaff />} />
           <Route path={staffPath.tagCreate} element={<CreateTag />} />
+          <Route path={staffPath.tagEdit} element={<EditTag />} />
           <Route path={staffPath.schedule} element={<Schedule />} />
+          <Route path={staffPath.ConsultantProfileManagement} element={<ProfileConsultantManagement />} />
         </Route>
       </Routes>
     </>

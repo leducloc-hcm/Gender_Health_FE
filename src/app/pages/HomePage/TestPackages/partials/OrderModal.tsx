@@ -1,26 +1,26 @@
-import { profileApi } from '@/app/apis/profile.api'
-import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
-import { useForm } from 'react-hook-form'
-import type { TestPackageItem } from '../models/TestPackages'
-import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { orderApi } from '@/app/apis/order.api'
+import { paymentApi } from '@/app/apis/payment.api'
+import { testApi } from '@/app/apis/test.api'
 import { Button } from '@/app/components/ui/button'
 import { Calendar } from '@/app/components/ui/calendar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Form, FormControl, FormField, FormItem } from '@/app/components/ui/form'
 import { Input } from '@/app/components/ui/input'
-import { toast } from 'react-toastify'
-import { CalendarIcon, X } from 'lucide-react'
 import { Label } from '@/app/components/ui/label'
-import { testApi } from '@/app/apis/test.api'
-import { Textarea } from '@/app/components/ui/textarea'
-import { cn } from '@/app/lib/utils'
 import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
 import { Skeleton } from '@/app/components/ui/skeleton'
+import { Textarea } from '@/app/components/ui/textarea'
+import { sUserProfile } from '@/app/hooks/sUserProfile'
+import { cn } from '@/app/lib/utils'
 import { telValidation } from '@/app/modules/AuthValidation/AuthValidation'
-import { orderApi } from '@/app/apis/order.api'
-import type { OrderFormRequest, OrderFormResponse } from '../models/OrderTest'
+import dayjs from 'dayjs'
+import { CalendarIcon, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import type { OrderFormData, OrderFormRequest, OrderFormResponse } from '../models/OrderTest'
 import type { PaymentRequest, PaymentResponse } from '../models/PaymentTest'
-import { paymentApi } from '@/app/apis/payment.api'
+import type { TestPackageItem } from '../models/TestPackages'
 
 type OrderModalProps = {
   id: number
@@ -31,10 +31,9 @@ type OrderModalProps = {
 export default function OrderModal({ id, handleCloseModal, isOpen }: OrderModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isLoadingOrder, setIsLoadingOrder] = useState<boolean>(false)
-  const [userProfile, setUserProfile] = useState<getProfileResult | null>(null)
   const [packageDetail, setPackgeDetail] = useState<TestPackageItem | null>(null)
 
-  const form = useForm<OrderFormRequest>({
+  const form = useForm<OrderFormData>({
     mode: 'onBlur',
     defaultValues: {
       address: '',
@@ -52,14 +51,14 @@ export default function OrderModal({ id, handleCloseModal, isOpen }: OrderModalP
   } = form
 
   // Function onSubmit
-  const onSubmit = async (data: OrderFormRequest) => {
+  const onSubmit = async (data: OrderFormData) => {
     setIsLoadingOrder(true)
     try {
       const orderPayload: OrderFormRequest = {
         ...data,
-        test_date: data.test_date ? new Date(data.test_date) : undefined,
+        test_date: data.test_date ? dayjs(data.test_date).format('YYYY-MM-DD') : undefined,
         test_package_id: id,
-        customer_profile_id: userProfile ? userProfile?.id : 0
+        customer_profile_id: sUserProfile.value ? sUserProfile.value?.customer_profile_id : 0
       }
       console.log('Submitting payload:', orderPayload)
       const orderResponse: OrderFormResponse = await orderApi.createOrder(orderPayload)
@@ -103,13 +102,12 @@ export default function OrderModal({ id, handleCloseModal, isOpen }: OrderModalP
     try {
       setIsLoading(true)
 
-      const [packageRes, profileRes] = await Promise.all([testApi.getDetailTestPackage(id), profileApi.getProfile()])
-      setUserProfile(profileRes.result)
+      const packageRes = await testApi.getDetailTestPackage(id);
       setPackgeDetail(packageRes.data)
 
       reset({
-        phone: profileRes.result.phone_number || '',
-        address: profileRes.result.location || '',
+        phone: sUserProfile.value?.phone_number || '',
+        address: sUserProfile.value?.location || '',
         test_date: undefined,
         note: ''
       })
@@ -170,7 +168,7 @@ export default function OrderModal({ id, handleCloseModal, isOpen }: OrderModalP
                         <>
                           <Input
                             readOnly
-                            defaultValue={userProfile?.name}
+                            defaultValue={sUserProfile.value?.name}
                             className='w-full px-3 py-3 border border-gray-300 rounded-lg'
                           />
                           <p className='text-xs min-h-[3px] mt-1 invisible'>placeholder</p>

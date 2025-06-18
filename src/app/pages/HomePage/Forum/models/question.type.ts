@@ -1,17 +1,17 @@
 export interface questionResquest {
   title: string
   content: string
-  image: File
+  image?: File
 }
 
 export interface questionResponseCreate {
   message: string
-  result: QuestionData
+  data: QuestionData
 }
 
 export interface questionResponse {
   message: string
-  result: QuestionData[]
+  data: QuestionData[]
 }
 
 export interface QuestionData {
@@ -23,7 +23,7 @@ export interface QuestionData {
   createdAt: string
   updateAt: string
   customerProfile: CustomerProfileQuestion
-  count: Count
+  _count: Count
 }
 
 export interface CustomerProfileQuestion {

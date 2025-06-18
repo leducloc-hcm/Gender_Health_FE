@@ -13,7 +13,9 @@ export const sUserProfile = signify({
   username: '',
   avatar: '',
   coverPhoto: '',
-  date_of_birth: ''
+  date_of_birth: '',
+  customer_profile_id: 0,
+  phone_number: ''
 })
 
 export const setUserProfileToSignify = (profile: any) => {
@@ -37,7 +39,9 @@ export const clearUserProfileSignify = () => {
       username: '',
       avatar: '',
       coverPhoto: '',
-      date_of_birth: ''
+      date_of_birth: '',
+      customer_profile_id: 0,
+      phone_number: ''
     }
   })
 }

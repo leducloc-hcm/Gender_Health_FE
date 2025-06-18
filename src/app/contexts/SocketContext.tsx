@@ -19,7 +19,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socketRef = useRef<Socket | null>(null)
 
   const initializeSocket = (token: string) => {
-    // Disconnect existing socket if any
     if (socketRef.current) {
       socketRef.current.disconnect()
       socketRef.current = null

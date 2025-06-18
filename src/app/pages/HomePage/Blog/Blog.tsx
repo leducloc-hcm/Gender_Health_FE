@@ -144,10 +144,15 @@ export default function BlogPage() {
                   <Card className='h-full overflow-hidden rounded-2xl cursor-pointer hover:shadow-lg transition-shadow'>
                     <div className='w-full h-[220px] overflow-hidden rounded-t-2xl'>
                       <img
-                        src={post.image || '/placeholder.jpg'}
+                        src={
+                          typeof post.image === 'string'
+                            ? post.image
+                            : post.image instanceof File
+                              ? URL.createObjectURL(post.image)
+                              : '/placeholder.svg'
+                        }
                         alt={post.title}
                         className='w-full h-full object-cover'
-                        loading='lazy'
                       />
                     </div>
                     <CardHeader>
@@ -158,7 +163,21 @@ export default function BlogPage() {
                       <CardTitle className='line-clamp-2'>{post.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className='text-muted-foreground mb-4 line-clamp-3'>{post.content}</p>
+                      <p className='text-muted-foreground mb-4 line-clamp-3'>
+                        {(() => {
+                          try {
+                            const raw = JSON.parse(post.content)
+                            return (
+                              raw.blocks
+                                .map((b: any) => b.text)
+                                .join(' ')
+                                .slice(0, 200) + '...'
+                            )
+                          } catch {
+                            return post.content.slice(0, 200) + '...'
+                          }
+                        })()}
+                      </p>
                       <div className='flex flex-wrap gap-2'>
                         {post.tags?.map((t, index) => (
                           <Badge

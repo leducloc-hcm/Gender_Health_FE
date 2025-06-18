@@ -5,7 +5,6 @@ import type { ForgotPasswordFormData } from '../pages/Auth/ForgetPassword/models
 import type { ResetPasswordRequest } from '../pages/Auth/ResetPassword/models/ResetPassword'
 import type { AuthApiResponse } from '../models/ApiResponse'
 import type { VerifyPasscodeRequest } from '../pages/Auth/VerifyPasscode/models/VerifyPasscode'
-import type { profileResponse } from '../pages/Customer/Profile/models/Profile'
 import type { StaffProfile } from '../pages/Staff/models/Staff'
 import type { profileConsultantResponse } from '../pages/Consultant/models/Consultant'
 
@@ -100,6 +99,7 @@ export const authApi = {
       throw error as AxiosError
     }
   },
+
   getProfileConsultant: async (): Promise<profileConsultantResponse> => {
     try {
       const response: AxiosResponse<profileConsultantResponse> = await fetcher.get('/users/consultant/me')
@@ -109,6 +109,7 @@ export const authApi = {
       throw error
     }
   },
+
   getProfileStaff: async (): Promise<StaffProfile> => {
     try {
       const response: AxiosResponse<StaffProfile> = await fetcher.get('/users/staff/me')

@@ -8,15 +8,6 @@ export interface ConsultantFormData {
   consultant_profile_id?: number
 }
 
-export interface CalendarEvent {
-  title: string
-  start: string
-  end: string
-  extendedProps?: {
-    description: string
-  }
-}
-
 export interface ConsultantApproveResponse {
   message: string
   data: Data

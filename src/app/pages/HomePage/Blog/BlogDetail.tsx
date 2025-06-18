@@ -6,7 +6,7 @@ import { Button } from '@/app/components/ui/button'
 import { Badge } from '@/app/components/ui/badge'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/app/components/ui/carousel'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
-
+import draftToHtml from 'draftjs-to-html'
 interface BlogTag {
   tag: {
     id: number
@@ -17,7 +17,7 @@ interface BlogTag {
 interface BlogItem {
   id: number
   title: string
-  image: string
+  image: File
   date: string
   tags: BlogTag[]
 }
@@ -72,7 +72,7 @@ export default function BlogDetail() {
   }
 
   return (
-    <div className='container mx-auto px-4 py-8 max-w-7xl'>
+    <div className=' container mx-auto px-4 py-10 '>
       <Button variant='outline' className='mb-6' asChild>
         <Link to='/blog'>
           <ArrowLeft className='w-4 h-4 mr-2' /> Back to Blog
@@ -82,9 +82,15 @@ export default function BlogDetail() {
       <article className='space-y-6'>
         <div className='rounded-xl overflow-hidden'>
           <img
-            src={blog.image || '/placeholder.jpg'}
+            src={
+              typeof blog.image === 'string'
+                ? blog.image
+                : blog.image instanceof File
+                  ? URL.createObjectURL(blog.image)
+                  : '/placeholder.svg'
+            }
             alt={blog.title}
-            className='w-full h-[400px] object-cover rounded-xl'
+            className='w-[900px] h-auto object-cover rounded-xl mx-auto'
           />
         </div>
 
@@ -109,7 +115,20 @@ export default function BlogDetail() {
         <h1 className='text-4xl font-bold leading-tight'>{blog.title}</h1>
 
         <div className='prose prose-lg max-w-none text-gray-800 whitespace-pre-line break-words '>
-          <p>{blog.content}</p>
+          <div
+            className='prose prose-lg max-w-none text-gray-800'
+            dangerouslySetInnerHTML={{
+              __html: (() => {
+                try {
+                  const isJson = blog.content.trim().startsWith('{') && blog.content.trim().endsWith('}')
+                  return isJson ? draftToHtml(JSON.parse(blog.content)) : `<p>${blog.content}</p>`
+                } catch (e) {
+                  console.error('Failed to parse blog content:', e)
+                  return '<p>Nội dung không hiển thị được.</p>'
+                }
+              })()
+            }}
+          />
         </div>
       </article>
 
@@ -126,7 +145,13 @@ export default function BlogDetail() {
                       <Card className='rounded-xl hover:shadow-lg transition-shadow h-[320px]'>
                         <div className='h-[160px] overflow-hidden rounded-t-xl'>
                           <img
-                            src={item.image || '/placeholder.jpg'}
+                            src={
+                              typeof item.image === 'string'
+                                ? item.image
+                                : item.image instanceof File
+                                  ? URL.createObjectURL(item.image)
+                                  : '/placeholder.svg'
+                            }
                             alt={item.title}
                             className='w-full h-full object-cover'
                           />

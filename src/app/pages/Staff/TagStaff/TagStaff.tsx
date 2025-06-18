@@ -1,33 +1,40 @@
-import React from 'react'
+import { fetchTags, deleteTag } from '@/app/apis/tag.api'
+import { toast } from 'react-toastify'
+import { useEffect, useState } from 'react'
 
-import { fetchTags } from '@/app/apis/tag.api'
 import DataTableTags from './DataTableTags'
-import { tagColumns } from './tagColumns'
+import { getTagColumns } from './tagColumns'
 import type { TagBlog } from '../../Auth/Login/models/tag'
 
 export default function TagPage() {
-  const [data, setData] = React.useState<TagBlog[]>([])
-  const [loading, setLoading] = React.useState(true)
+  const [tags, setTags] = useState<TagBlog[]>([])
 
-  React.useEffect(() => {
-    const loadData = async () => {
-      try {
-        const tags = await fetchTags()
-        console.log('tags: ', tags)
-        setData(tags)
-      } finally {
-        setLoading(false)
-      }
+  const loadTags = async () => {
+    const data = await fetchTags()
+    setTags(data)
+  }
+
+  const handleDelete = async (id: number, name: string) => {
+    const confirm = window.confirm(`Are you sure you want to delete "${name}"?`)
+    if (!confirm) return
+
+    try {
+      await deleteTag(id.toString())
+      toast.success(`Tag "${name}" deleted successfully!`)
+      await loadTags()
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
+      toast.error(error?.response?.data?.message || 'Failed to delete tag.')
     }
-    loadData()
+  }
+
+  useEffect(() => {
+    loadTags()
   }, [])
-
-  if (loading) return <div className='text-center py-10'>Loading...</div>
-
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Tags Management</h1>
-      <DataTableTags columns={tagColumns} data={data} />
+    <div className='p-6'>
+      <h1 className='text-2xl font-bold mb-4'>Tags</h1>
+      <DataTableTags columns={getTagColumns(handleDelete)} data={tags} />
     </div>
   )
 }
