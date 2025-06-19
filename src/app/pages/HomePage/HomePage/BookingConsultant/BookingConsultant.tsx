@@ -90,7 +90,10 @@ const BookingConsultant = () => {
     if (!selectedConsultant || !selectedSchedule || !userProfile?.id) return
 
     try {
-      await customerApi.bookSchedule(selectedSchedule.id, userProfile.id)
+      console.log('selectedSchedule:', selectedSchedule.id)
+      console.log('selectedUserProfile:', userProfile.customer_profile_id)
+      console.log('selectedSchedule: ', selectedSchedule)
+      await customerApi.bookSchedule(selectedSchedule.id, userProfile.customer_profile_id)
       await fetchConsultants()
       toast.success('Schedule booked successfully!')
       setSelectedConsultant(null)
