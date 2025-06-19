@@ -1,9 +1,18 @@
 // TestCategory
-interface TestCategory {
+export interface TestCategory {
   id: number
   name: string
   code: string
   description: string
+  created_at?: string
+  updated_at?: string
+  type_of_test_id?: number
+  type_of_test?: any
+  test_range?: any[]
+}
+export interface TestCategoryResponse {
+  message: string
+  data: TestCategory[]
 }
 
 // Test package
@@ -26,6 +35,14 @@ export interface TestPackageItemResponse {
 export interface TestPackageResponse {
   message: string
   data: TestPackageItem[]
+}
+
+export interface EditTestPackageItem {
+  name?: string
+  code?: string
+  description?: string
+  priceList?: number
+  tests?: string[]
 }
 
 // Test type
