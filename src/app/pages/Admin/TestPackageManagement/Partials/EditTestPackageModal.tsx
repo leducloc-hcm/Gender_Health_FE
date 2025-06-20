@@ -27,8 +27,6 @@ export default function EditTestPackageModal({
   handleCancel,
   handleEdit
 }: DataEditModalProps) {
-  // console.log('🚀 ~ EditTestPackageModal ~ editItem:', editItem)
-
   const areTestArraysEqual = (a: TestCategory[], b: TestCategory[]) => {
     const aIds = a.map((t) => t.id).sort()
     const bIds = b.map((t) => t.id).sort()
@@ -170,7 +168,7 @@ export default function EditTestPackageModal({
                   Saving...
                 </div>
               ) : (
-                ' Save changes'
+                'Save changes'
               )}
             </Button>
           </DialogFooter>
