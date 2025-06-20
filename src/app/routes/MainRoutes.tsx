@@ -47,6 +47,7 @@ import PaymentManagement from '../pages/Admin/PaymentManagement/PaymentManagemen
 import TestPackageManagement from '../pages/Admin/TestPackageManagement/TestPackageManagement'
 import TypeOfTestManagement from '../pages/Admin/TypeOfTestManagement/TypeOfTestManagement'
 import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
+import TestManagement from '../pages/Admin/TestManagement/TestManagement'
 
 export default function MainRoutes() {
   return (
@@ -104,6 +105,7 @@ export default function MainRoutes() {
           <Route path={adminPath.order} element={<OrderManagement />} />
           <Route path={adminPath.testPackge} element={<TestPackageManagement />} />
           <Route path={adminPath.typeOfTest} element={<TypeOfTestManagement />} />
+          <Route path={adminPath.test} element={<TestManagement />} />
         </Route>
 
         <Route path='/consultant' element={<Consultant />}>

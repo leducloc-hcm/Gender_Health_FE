@@ -12,9 +12,10 @@ import {
   User,
   LayoutDashboard,
   CreditCard,
-  PackageSearch,
   FlaskConical,
-  ShoppingBagIcon
+  ShoppingCart,
+  Boxes,
+  FileText
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -37,16 +38,21 @@ const navigationItems = [
   {
     title: 'Order',
     url: '/admin/manage-order',
-    icon: ShoppingBagIcon
+    icon: ShoppingCart
   },
   {
     title: 'Test Packages',
     url: '/admin/manage-test-packages',
-    icon: PackageSearch
+    icon: Boxes
   },
   {
     title: 'Type of test',
     url: '/admin/manage-type-of-test',
+    icon: FileText
+  },
+  {
+    title: 'Test',
+    url: '/admin/manage-test',
     icon: FlaskConical
   }
 ]
