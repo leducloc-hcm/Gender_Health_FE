@@ -59,6 +59,12 @@ export interface TestTypeResponse {
   data: TestTypeItem[]
 }
 
+export interface AddUpdateTestTypeItem {
+  code?: string
+  name?: string
+  description?: string
+}
+
 // Modified Test Category
 interface MergedTestCategory {
   id: number | string
