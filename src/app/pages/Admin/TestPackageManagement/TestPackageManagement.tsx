@@ -67,7 +67,10 @@ export default function TestPackageManagement() {
       accessorKey: 'description',
       header: 'Description',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
+        <div
+          title={row.original.description || 'No description'}
+          className='truncate text-sm text-gray-700 max-w-xs flex text-start'
+        >
           {row.original.description || 'No description'}
         </div>
       )

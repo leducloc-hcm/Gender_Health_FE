@@ -1,6 +1,7 @@
 import { fetcher } from '@/app/apis/fetcher'
 import type { AxiosError, AxiosResponse } from 'axios'
 import type {
+  AddUpdateTestCategory,
   AddUpdateTestTypeItem,
   EditTestPackageItem,
   TestCategoryResponse,
@@ -93,6 +94,39 @@ export const testApi = {
   getAllTestCategory: async (): Promise<TestCategoryResponse> => {
     try {
       const response: AxiosResponse<TestCategoryResponse> = await fetcher.get(`/test`)
+
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
+
+  postCreateTestCategory: async (payload: AddUpdateTestCategory): Promise<any> => {
+    try {
+      const response: AxiosResponse<any> = await fetcher.post(`/test/create`, payload)
+
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
+
+  putUpdateTestCategory: async (id: number, payload: AddUpdateTestCategory): Promise<any> => {
+    try {
+      const response: AxiosResponse<any> = await fetcher.put(`/test/update/${id}`, payload)
+
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
+
+  deleteTestCategory: async (id: number): Promise<any> => {
+    try {
+      const response: AxiosResponse<any> = await fetcher.delete(`/test/delete/${id}`)
 
       return response.data
     } catch (error) {

@@ -53,7 +53,8 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
   return (
     <>
       {/* search filter */}
-      <div className='flex items-center py-4'>
+      <div className='flex items-center justify-start gap-2 py-4'>
+        {/* Search */}
         <Input
           placeholder='Search by name...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -62,7 +63,7 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
         />
       </div>
       {/* Table content */}
-      <div>
+      <div className='min-h-[530px]'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

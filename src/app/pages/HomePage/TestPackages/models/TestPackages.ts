@@ -1,4 +1,13 @@
 // TestCategory
+interface TypeOfTest {
+  id: number
+  code: string
+  name: string
+  description: string
+  created_at: string
+  updated_at: string
+}
+
 export interface TestCategory {
   id: number
   name: string
@@ -7,12 +16,20 @@ export interface TestCategory {
   created_at?: string
   updated_at?: string
   type_of_test_id?: number
-  type_of_test?: any
+  type_of_test?: TypeOfTest
   test_range?: any[]
 }
 export interface TestCategoryResponse {
   message: string
   data: TestCategory[]
+}
+
+export interface AddUpdateTestCategory {
+  code?: string
+  name?: string
+  description?: string
+  type_of_test_id?: number
+  testPackages?: number[]
 }
 
 // Test package
