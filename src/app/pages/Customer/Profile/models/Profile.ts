@@ -8,6 +8,7 @@ export interface UserProfile {
   username: string
   avatar: string
   cover_photo?: string
+  customer_profile_id: number
   email?: string
   bio?: string
   website?: string
@@ -100,4 +101,64 @@ export interface getConsultantProfileResult {
 export interface UpdateProfileConsultantResponse {
   message: string
   result: getConsultantProfileResult
+}
+export interface historyConsulting {
+  message: string
+  data: historyConsultingData[]
+}
+export interface historyConsultingData {
+  id: number
+  consultantProfileId: number
+  customerProfileId: number
+  scheduleAt: string
+  startedAt: string
+  endedAt: string
+  status: string
+  rating: string
+  feedback: string
+  consultantNote: string
+  customerNote: string
+  meetingLink: string
+  meetingPlatform: string
+  createdAt: string
+  updatedAt: string
+  consultantProfile: ConsultantProfile
+  customerProfile: CustomerProfile
+}
+
+export interface ConsultantProfile {
+  id: number
+  name: string
+  bio: string
+  location: string
+  username: string
+  avatar: string
+  coverPhoto: string
+  description: string
+  phoneNumber: string
+  dateOfBirth: string
+  website: string
+  rating: number
+  totalReviews: string
+  experience: string
+  specialties: string[]
+  languages: string[]
+  responseTime: string
+  degree: string
+  hospital: string
+  userId: number
+}
+export interface CustomerProfile {
+  id: number
+  name: string
+  bio: string
+  location: string
+  username: string
+  avatar: string
+  coverPhoto: string
+  description: string
+  phoneNumber: string
+  dateOfBirth: string
+  website: string
+  userId: number
 }

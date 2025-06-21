@@ -90,9 +90,6 @@ const BookingConsultant = () => {
     if (!selectedConsultant || !selectedSchedule || !userProfile?.id) return
 
     try {
-      console.log('selectedSchedule:', selectedSchedule.id)
-      console.log('selectedUserProfile:', userProfile.customer_profile_id)
-      console.log('selectedSchedule: ', selectedSchedule)
       await customerApi.bookSchedule(selectedSchedule.id, userProfile.customer_profile_id)
       await fetchConsultants()
       toast.success('Schedule booked successfully!')
@@ -102,7 +99,7 @@ const BookingConsultant = () => {
       console.error('Failed to book schedule:', error)
       toast.error('Failed to book schedule. Please try again.')
     }
-  }, [selectedConsultant, selectedSchedule, userProfile?.id, fetchConsultants])
+  }, [selectedConsultant, selectedSchedule, userProfile?.id, userProfile.customer_profile_id, fetchConsultants])
 
   const clearFilters = useCallback(() => {
     setSearchTerm('')

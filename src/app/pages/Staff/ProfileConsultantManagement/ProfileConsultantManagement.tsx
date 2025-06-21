@@ -344,7 +344,6 @@ const ProfileConsultantManagement = () => {
     setOriginalConsultant({ ...consultant })
     setSelectedConsultant({ ...consultant })
     setIsEditModalOpen(true)
-    toast.info(`Editing consultant ID: ${consultant.id}`, { position: 'top-right', autoClose: 1000 })
   }, [])
 
   const handleView = useCallback((consultant: ProfileConsultantResult) => {
@@ -493,6 +492,7 @@ const ProfileConsultantManagement = () => {
       }
 
       const formData = createFormDataFromChanges(changes)
+      console.log('selectedConsultant: ', selectedConsultant)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await profileApi.updateProfileConsultant(selectedConsultant.id, formData as any)
 

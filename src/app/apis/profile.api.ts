@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios'
 import type {
+  historyConsulting,
   PasswordForm,
   profileResponse,
   UpdateProfileConsultantInput,
@@ -57,6 +58,17 @@ export const profileApi = {
       return response.data
     } catch (error) {
       console.error('Failed to update consultant profile:', error)
+      throw error
+    }
+  },
+  getHistoryConsulating: async (consultantId: number): Promise<historyConsulting> => {
+    console.log('consultantId: ', consultantId)
+    try {
+      const response = await fetcher.get(`consulting-history/customer/${consultantId}`)
+      console.log('response123123: ', response.data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch history consulting:', error)
       throw error
     }
   }

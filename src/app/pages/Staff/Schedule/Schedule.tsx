@@ -40,7 +40,6 @@ const Schedule = () => {
     if (!socket) return
 
     const handleNewWorkSchedule = (data: NewWorkSchedule) => {
-      console.log('new_work_schedule_created received:', data)
       // Refresh the schedule list when a new schedule is created
       fetchConsultantSchedule()
       toast.info('New schedule request received')
