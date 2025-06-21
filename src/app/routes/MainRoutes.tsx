@@ -48,6 +48,7 @@ import TestPackageManagement from '../pages/Admin/TestPackageManagement/TestPack
 import TypeOfTestManagement from '../pages/Admin/TypeOfTestManagement/TypeOfTestManagement'
 import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
 import TestManagement from '../pages/Admin/TestManagement/TestManagement'
+import StiTracking from '@/app/pages/Staff/StiTracking/StiTracking'
 
 export default function MainRoutes() {
   return (
@@ -125,6 +126,7 @@ export default function MainRoutes() {
           <Route path={staffPath.tagEdit} element={<EditTag />} />
           <Route path={staffPath.schedule} element={<Schedule />} />
           <Route path={staffPath.ConsultantProfileManagement} element={<ProfileConsultantManagement />} />
+          <Route path={staffPath.stisTracking} element={<StiTracking />} />
         </Route>
       </Routes>
     </>

@@ -9,7 +9,8 @@ const staffPath = {
   tagUpdate: 'tag/update/:id',
   tagCreate: 'tag/create',
   schedule: 'schedule',
-  ConsultantProfileManagement: 'consultant-profile-management'
+  ConsultantProfileManagement: 'consultant-profile-management',
+  stisTracking: 'stis-tracking'
 }
 
 export default staffPath
