@@ -1,6 +1,5 @@
 import { customerApi } from '@/app/apis/customer.api'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import { Button } from '@/app/components/ui/button'
 import { Badge } from '@/app/components/ui/badge'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
@@ -151,14 +150,6 @@ const BookingConsultantSection = () => {
                           <span>{consultant.degree}</span>
                         </div>
                       )}
-
-                      {/* Action Button */}
-                      <Button
-                        className='w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-medium mt-4'
-                        onClick={() => setSelectedConsultant(consultant)}
-                      >
-                        View All Schedules
-                      </Button>
                     </CardContent>
                   </Card>
                 </CarouselItem>
