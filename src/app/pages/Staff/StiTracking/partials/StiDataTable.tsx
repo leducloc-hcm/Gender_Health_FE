@@ -56,27 +56,26 @@ export default function StiDataTable<TData>({ columns, data }: DataTableProps<TD
       {/* Filters */}
       <div className='flex items-center justify-between space-x-4'>
         <div className='relative flex-1 justify-between max-w-sm'>
-          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
+          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400  h-4 w-4' />
           <Input
-            placeholder='Search by test name or customer name...'
-            value={(table.getColumn('customer')?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn('customer')?.setFilterValue(event.target.value)}
-            className='pl-10 border-gray-300'
+            placeholder='Search by customer name...'
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+            className='pl-10 border-gray-300 bg-white'
           />
         </div>
 
-        <Badge variant='outline' className='flex items-center py-1'>
+        <Badge variant='outline' className='flex items-center py-1 bg-white'>
           <Filter className='h-3 w-3' />
           <span>{table.getFilteredRowModel().rows.length} results</span>
         </Badge>
       </div>
 
-      {/* Table */}
-      <div className='bg-white rounded-lg border shadow-sm overflow-hidden'>
+      <div className='rounded-lg min-h-[625px]'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='bg-gray-50'>
+              <TableRow key={headerGroup.id} className='bg-gray-100'>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className='font-semibold text-gray-700'>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
@@ -85,15 +84,12 @@ export default function StiDataTable<TData>({ columns, data }: DataTableProps<TD
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className=''>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}
-                >
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className='py-4'>
+                    <TableCell key={cell.id} className='py-4 px-4 text-sm text-gray-700'>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
