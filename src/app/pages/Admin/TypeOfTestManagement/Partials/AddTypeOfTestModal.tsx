@@ -40,7 +40,7 @@ export default function AddTypeOfTestModal({ isModalOpen, openModal, closeModal,
     <Dialog open={isModalOpen} onOpenChange={(open) => (open ? openModal() : closeModal())}>
       <DialogContent className='min-w-[500px] max-h-[95vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle className='font-bold text-2xl'>Add new type of test</DialogTitle>
+          <DialogTitle className='font-bold text-2xl'>Create new type of test</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
