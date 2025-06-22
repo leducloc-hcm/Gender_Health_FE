@@ -17,7 +17,6 @@ import { Badge } from '@/app/components/ui/badge'
 
 import { customerApi } from '@/app/apis/customer.api'
 import { sUserProfile } from '@/app/hooks/sUserProfile'
-import { debounce } from 'lodash'
 import { Activity, Award, Clock, Globe, Heart, MapPin, Phone, Search, Star, Stethoscope, Users } from 'lucide-react'
 import { toast } from 'react-toastify'
 import type { Consultant, ConsultantsData, Schedule } from '../models/BookingConsultantSectionModel'
@@ -83,10 +82,6 @@ const BookingConsultant = () => {
     })
   }
 
-  const debouncedSetSearchTerm = debounce((value: string) => {
-    setSearchTerm(value)
-  }, 300)
-
   const filteredConsultants = useMemo(() => {
     return (
       consultantsData?.data?.filter((consultant) => {
@@ -116,7 +111,7 @@ const BookingConsultant = () => {
       toast.error('Failed to book schedule. Please try again.')
     }
   }
-
+  console.log(confirmBooking)
   return (
     <div className='min-h-screen bg-white'>
       {/* Header */}

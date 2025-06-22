@@ -24,7 +24,7 @@ const NotificationDropdown = () => {
   const [connected, setConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const socketRef = useRef<Socket | null>(null)
-
+  console.log(connected)
   const fetchNotifications = (token: string) =>
     fetcher
       .get('/notifications', { headers: { Authorization: `Bearer ${token}` } })

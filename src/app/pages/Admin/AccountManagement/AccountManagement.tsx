@@ -1,7 +1,3 @@
-import React from 'react'
-
 export default function AccountManagement() {
-  return (
-    <div>AccountManagement</div>
-  )
+  return <div>AccountManagement</div>
 }
