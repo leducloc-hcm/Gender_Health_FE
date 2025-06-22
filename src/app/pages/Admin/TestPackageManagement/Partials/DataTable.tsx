@@ -73,7 +73,7 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array.from({ length: 5 }).map((_, idx) => (
+              Array.from({ length: 10 }).map((_, idx) => (
                 <TableRow key={`loading-${idx}`}>
                   {columns.map((_, colIdx) => (
                     <TableCell key={colIdx}>

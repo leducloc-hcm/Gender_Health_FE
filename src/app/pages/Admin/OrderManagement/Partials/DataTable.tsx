@@ -56,9 +56,9 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
       <div className='flex items-center justify-start gap-2 py-4'>
         {/* Search */}
         <Input
-          placeholder='Search by name...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+          placeholder='Search by address...'
+          value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn('address')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
       </div>
