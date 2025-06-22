@@ -9,7 +9,7 @@ export default function StaffHeader() {
     const fetchUserProfile = async () => {
       try {
         const response = await authApi.getProfileStaff()
-        sStaffProfile.set(response.result)
+        sStaffProfile.set(response.result as any)
       } catch (error) {
         console.log('error: ', error)
       }

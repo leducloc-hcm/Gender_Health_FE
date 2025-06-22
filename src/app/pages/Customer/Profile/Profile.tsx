@@ -14,12 +14,19 @@ import {
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Progress } from '@/app/components/ui/progress'
+import { clearUserProfileSignify, setUserProfileToSignify } from '@/app/hooks/sUserProfile'
+import dayjs from 'dayjs'
 import { Edit3, Eye, EyeOff, Heart, MapPin, Save, Upload, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import type { getProfileResult, PasswordForm, UpdateProfileInput, UserProfile } from './models/Profile'
-import { clearUserProfileSignify, setUserProfileToSignify } from '@/app/hooks/sUserProfile'
+import type {
+  getProfileResult,
+  historyConsultingData,
+  PasswordForm,
+  UpdateProfileInput,
+  UserProfile
+} from './models/Profile'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -47,7 +54,7 @@ export default function Profile() {
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
+  const [userConsultingHistory, setUserConsultingHistory] = useState<historyConsultingData[]>([])
   const {
     register,
     handleSubmit,
@@ -83,23 +90,30 @@ export default function Profile() {
 
   const passwordStrength = calculatePasswordStrength(password)
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await profileApi.getProfile()
-        const profile = response.result
-        setUserProfileToSignify(profile)
-
-        setUserProfile(profile)
-        reset(profile)
-      } catch (error) {
-        toast.error('Failed to load profile.')
-        console.log(error)
-        clearUserProfileSignify()
+  const fetchProfile = async () => {
+    try {
+      const response = await profileApi.getProfile()
+      const profile = response?.result
+      if (profile) {
+        const consultingHistoryResponse = await profileApi.getHistoryConsulating(profile.customer_profile_id as number)
+        setUserConsultingHistory(consultingHistoryResponse.data)
       }
+
+      setUserProfileToSignify(profile)
+      setUserProfile(profile)
+      return profile
+
+      reset(profile)
+    } catch (error) {
+      toast.error('Failed to load profile.')
+      console.log(error)
+      clearUserProfileSignify()
     }
+  }
+
+  useEffect(() => {
     fetchProfile()
-  }, [reset])
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -134,7 +148,6 @@ export default function Profile() {
         const response = await profileApi.updateProfile(updateData)
         const profile = response.result
         const fetchedProfile = await profileApi.getProfile()
-        console.log('fetchedProfile: ', fetchedProfile)
         setUserProfile(fetchedProfile.result)
         reset(profile)
         toast.success('Profile updated successfully!')
@@ -526,37 +539,28 @@ export default function Profile() {
               </div>
 
               <div className='space-y-4'>
-                <div className='p-4 bg-rose-50 rounded-lg border border-rose-200'>
-                  <div className='flex items-center justify-between mb-2'>
-                    <div className='font-medium text-gray-900'>Tư vấn tâm lý</div>
-                    <Badge className='bg-green-100 text-green-700'>Sắp tới</Badge>
-                  </div>
-                  <div className='text-sm text-gray-600 mb-1'>Bác sĩ: Dr. Sarah Johnson</div>
-                  <div className='text-sm text-rose-600 font-medium'>28/01/2024 - 14:00</div>
-                  <div className='text-xs text-gray-500 mt-2'>Phòng 205, Tầng 2</div>
-                </div>
-
-                <div className='p-4 bg-gray-50 rounded-lg border border-gray-200'>
-                  <div className='flex items-center justify-between mb-2'>
-                    <div className='font-medium text-gray-900'>Kiểm tra định kỳ</div>
-                    <Badge variant='secondary' className='bg-gray-100 text-gray-600'>
-                      Hoàn thành
-                    </Badge>
-                  </div>
-                  <div className='text-sm text-gray-600 mb-1'>Bác sĩ: Dr. Michael Chen</div>
-                  <div className='text-sm text-gray-600'>15/01/2024 - 10:30</div>
-                  <div className='text-xs text-gray-500 mt-2'>Đã hoàn thành - Kết quả tốt</div>
-                </div>
-
-                <div className='p-4 bg-blue-50 rounded-lg border border-blue-200'>
-                  <div className='flex items-center justify-between mb-2'>
-                    <div className='font-medium text-gray-900'>Hormone Therapy</div>
-                    <Badge className='bg-blue-100 text-blue-700'>Đã đặt</Badge>
-                  </div>
-                  <div className='text-sm text-gray-600 mb-1'>Bác sĩ: Dr. Emily Rodriguez</div>
-                  <div className='text-sm text-blue-600 font-medium'>05/02/2024 - 09:00</div>
-                  <div className='text-xs text-gray-500 mt-2'>Phòng 301, Tầng 3</div>
-                </div>
+                {userConsultingHistory.length > 0 ? (
+                  userConsultingHistory.map((history) => (
+                    <div className='p-4 bg-rose-50 rounded-lg border border-rose-200'>
+                      <div className='flex items-center justify-between mb-2'>
+                        <div className='font-medium text-gray-900'>Cuộc hẹn tư vấn</div>
+                        {new Date(history.scheduleAt) < new Date() ? (
+                          <Badge className='bg-green-100 text-green-700'>Comming</Badge>
+                        ) : (
+                          <Badge className='bg-red-100 text-red-700'>Completed</Badge>
+                        )}
+                      </div>
+                      <div className='text-sm text-gray-600 mb-1'>Consultant: {history.consultantProfile.name}</div>
+                      <div className='text-sm text-rose-600 font-medium'>
+                        {dayjs(history.scheduleAt).format('DD/MM/YYYY ')}- {dayjs(history.startedAt).format('HH:mm')} -
+                        {dayjs(history.endedAt).format('HH:mm')}
+                      </div>
+                      <div className='text-xs text-gray-500 mt-2'>Phòng 205, Tầng 2</div>
+                    </div>
+                  ))
+                ) : (
+                  <div className='text-gray-500 text-sm'>Bạn chưa có lịch hẹn nào.</div>
+                )}
               </div>
 
               <div className='grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-rose-100'>

@@ -1,16 +1,26 @@
-import { useEffect, useState } from 'react'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { Clock, Plus, X, CheckCircle, CalendarIcon, Clock3, AlertCircle, Info } from 'lucide-react'
+import { authApi } from '@/app/apis/auth.api'
+import { scheduleApi } from '@/app/apis/Schedule.api'
+import { Button } from '@/app/components/ui/button'
 import { Calendar } from '@/app/components/ui/calendar'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/components/ui/form'
 import { Input } from '@/app/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
-import { useForm } from 'react-hook-form'
-import type { ConsultantFormData } from '../models/Consultant'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/components/ui/form'
 import { Textarea } from '@/app/components/ui/textarea'
+import { sConsultantProfile } from '@/app/hooks/sConsultantProfile'
+import { useSocket } from '@/app/hooks/useSocket'
+import { cn } from '@/app/lib/utils'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import FullCalendar from '@fullcalendar/react'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import { parse } from 'date-fns'
+import { AnimatePresence, motion } from 'framer-motion'
+import { AlertCircle, CalendarIcon, CheckCircle, Clock, Clock3, Info, Plus, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import type { CalendarEvent, ExtendedProps, ScheduleResponse, SieuNhanDo } from '../models/Calendar'
+import type { ConsultantFormData } from '../models/Consultant'
 import {
   dateCalendarValidation,
   descriptionCalendarValidation,
@@ -18,16 +28,6 @@ import {
   startTimeCalendarValidation,
   titleCalendarValidation
 } from '../modules/CalendarValidation'
-import { parse } from 'date-fns'
-import { Button } from '@/app/components/ui/button'
-import { cn } from '@/app/lib/utils'
-import { scheduleApi } from '@/app/apis/Schedule.api'
-import { toast } from 'react-toastify'
-import { sConsultantProfile } from '@/app/hooks/sConsultantProfile'
-import { authApi } from '@/app/apis/auth.api'
-import { useSocket } from '@/app/hooks/useSocket'
-import type { CalendarEvent, DataResponseCalendar, ExtendedProps, ScheduleResponse } from '../models/Calendar'
-import { AnimatePresence, motion } from 'framer-motion'
 
 const CalendarBooking = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([])
@@ -61,8 +61,8 @@ const CalendarBooking = () => {
         return 'bg-blue-50 text-blue-700 border-blue-200'
     }
   }
-  const mapToCalendarEvents = (apiData: DataResponseCalendar[]): CalendarEvent[] => {
-    return apiData.map((item: DataResponseCalendar) => {
+  const mapToCalendarEvents = (apiData: SieuNhanDo[]): CalendarEvent[] => {
+    return apiData.map((item: SieuNhanDo) => {
       const datePart = item.date.split('T')[0]
       const start = `${datePart}T${item.startTime}:00`
       const end = `${datePart}T${item.endTime}:00`
@@ -141,7 +141,7 @@ const CalendarBooking = () => {
       const profileResponse = await authApi.getProfileConsultant()
       const consultantProfileId = profileResponse.result.consultant_profile_id
       const response = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
-      const mappedEvents = mapToCalendarEvents(response.data)
+      const mappedEvents = mapToCalendarEvents(response.data as any[])
       setEvents(mappedEvents)
     } catch (error) {
       console.error('Error fetching calendar schedule:', error)

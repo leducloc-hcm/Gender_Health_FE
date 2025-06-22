@@ -1,14 +1,12 @@
 import { menstrualApi } from '@/app/apis/menstrual.api'
-import { profileApi } from '@/app/apis/profile.api'
 import { Button } from '@/app/components/ui/button'
 import { sUserProfile } from '@/app/hooks/sUserProfile'
-import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
 import type {
   CycleInputProps,
   FormData
 } from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/models/cycleinput.type'
-import { Calendar, Heart, Loader2, Info } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Calendar, Info, Loader2 } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 

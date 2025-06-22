@@ -1,16 +1,18 @@
 import type { ColumnDef } from '@tanstack/react-table'
-import { format } from 'date-fns'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { ArrowUpDown } from 'lucide-react'
-import type { ProfileConsultantResult } from '../models/ProfleConsultantManagement' // Typo: Should be ProfileConsultantManagement
+import type { ProfileConsultantResult } from '../ProfileConsultantManagement'
+import { Avatar } from '@/app/components/ui/avatar'
+import { AvatarImage, AvatarFallback } from '@radix-ui/react-avatar'
 
 // Define the props for getScheduleColumns
 interface ScheduleColumnsProps {
   onEdit: (consultant: ProfileConsultantResult) => void
+  onView: (consultant: ProfileConsultantResult) => void // Added for view action
 }
 
-export const getScheduleColumns = ({ onEdit }: ScheduleColumnsProps): ColumnDef<ProfileConsultantResult>[] => {
+export const getScheduleColumns = ({ onEdit, onView }: ScheduleColumnsProps): ColumnDef<ProfileConsultantResult>[] => {
   return [
     {
       accessorKey: 'name',
@@ -34,18 +36,14 @@ export const getScheduleColumns = ({ onEdit }: ScheduleColumnsProps): ColumnDef<
       )
     },
     {
-      accessorKey: 'description',
-      header: 'Description',
+      accessorKey: 'avatar',
+      header: 'Avatar',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
-          {row.original.description || 'No description'}
-        </div>
+        <Avatar className='w-10 h-10 rounded-none'>
+          <AvatarImage src={`${row.original.avatar}`} />
+          <AvatarFallback>{row.original.name || 'N/A'}</AvatarFallback>
+        </Avatar>
       )
-    },
-    {
-      accessorKey: 'consultant_profile_id',
-      header: 'Consultant ID',
-      cell: ({ row }) => row.original.consultant_profile_id || 'Unknown'
     },
     {
       accessorKey: 'specialties',
@@ -57,41 +55,12 @@ export const getScheduleColumns = ({ onEdit }: ScheduleColumnsProps): ColumnDef<
       )
     },
     {
-      accessorKey: 'languages',
-      header: 'Languages',
-      cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
-          {row.original.languages?.length > 0 ? row.original.languages.join(', ') : 'No languages'}
-        </div>
-      )
-    },
-    {
-      accessorKey: 'rating',
-      header: 'Rating',
-      cell: ({ row }) => (
-        <div className='text-sm text-gray-700'>
-          {row.original.rating ? row.original.rating.toFixed(1) : 'No rating'}
-        </div>
-      )
-    },
-    {
-      accessorKey: 'created_at',
-      header: 'Created At',
-      cell: ({ row }) => {
-        try {
-          return format(new Date(row.original.created_at), 'dd MMM yyyy HH:mm')
-        } catch {
-          return 'Invalid Date'
-        }
-      }
-    },
-    {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => (
         <Badge
           className={`text-xs ${
-            row.original.status === 'APPROVED'
+            row.original.status === 'VERIFIED'
               ? 'bg-green-500'
               : row.original.status === 'REJECT'
                 ? 'bg-red-500'
@@ -110,9 +79,12 @@ export const getScheduleColumns = ({ onEdit }: ScheduleColumnsProps): ColumnDef<
       cell: ({ row }) => {
         const consultant = row.original
         return (
-          <div className='flex gap-2'>
+          <div className='flex gap-2 justify-center'>
             <Button onClick={() => onEdit(consultant)} className='bg-blue-500 hover:bg-blue-600 text-white' size='sm'>
               Edit
+            </Button>
+            <Button onClick={() => onView(consultant)} className='bg-gray-500 hover:bg-gray-600 text-white' size='sm'>
+              View
             </Button>
           </div>
         )

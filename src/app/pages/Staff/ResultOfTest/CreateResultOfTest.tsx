@@ -106,16 +106,16 @@ export default function CreateResultOfTest() {
     }
   }
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Not set'
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+  // const formatDate = (dateString: string | null) => {
+  //   if (!dateString) return 'Not set'
+  //   return new Date(dateString).toLocaleDateString('en-US', {
+  //     year: 'numeric',
+  //     month: 'long',
+  //     day: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit'
+  //   })
+  // }
 
   // Loading state
   if (loading) {

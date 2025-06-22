@@ -10,7 +10,6 @@ import type { schedule } from './Schedule'
 
 export const getScheduleColumns = (fetchConsultantSchedule: () => Promise<void>): ColumnDef<schedule>[] => {
   const staffId = sStaffProfile.use()
-  console.log('staffId: ', staffId?.id)
 
   const handleReject = async (id: number) => {
     if (!staffId?.id) {
@@ -20,7 +19,7 @@ export const getScheduleColumns = (fetchConsultantSchedule: () => Promise<void>)
     try {
       const data = {
         scheduleId: id,
-        staffProfileId: staffId.id,
+        staffProfileId: staffId.staff_profile_id,
         status: 'REJECT'
       }
       await scheduleApi.approveConsultantSchedule(data)
@@ -43,7 +42,7 @@ export const getScheduleColumns = (fetchConsultantSchedule: () => Promise<void>)
     try {
       const data = {
         scheduleId: id,
-        staffProfileId: staffId.id,
+        staffProfileId: staffId.staff_profile_id,
         status: 'APPROVED'
       }
       await scheduleApi.approveConsultantSchedule(data)

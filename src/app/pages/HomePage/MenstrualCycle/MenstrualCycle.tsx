@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 export default function MenstrualCycle() {
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [menstrualCycleId, setMenstrualCycleId] = useState<number | null>(null)
-  const [predictionData, setPredictionData] = useState<PredictionData>(null)
+  const [predictionData, setPredictionData] = useState<PredictionData>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -23,6 +23,7 @@ export default function MenstrualCycle() {
         const customerProfileId = sUserProfile.value.customer_profile_id
         const response = await fetcher.get(`/prediction/${customerProfileId}`)
         const predictData = response.data
+        console.log(predictionData)
 
         if (predictData) {
           setPredictionData(predictData)

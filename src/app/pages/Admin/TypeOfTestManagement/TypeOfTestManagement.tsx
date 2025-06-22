@@ -59,7 +59,10 @@ export default function TypeOfTestManagement() {
       accessorKey: 'description',
       header: 'Description',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
+        <div
+          title={row.original.description || 'No description'}
+          className='truncate text-sm text-gray-700 max-w-xs flex text-start'
+        >
           {row.original.description || 'No description'}
         </div>
       )
@@ -223,7 +226,7 @@ export default function TypeOfTestManagement() {
             size='lg'
           >
             <PlusSquare className='h-6 w-6' />
-            Add new
+            Create new
           </Button>
         </div>
         <div className='table-container'>

@@ -14,6 +14,11 @@ export interface BookedBy {
 }
 
 export interface DataResponseCalendar {
+  message: string
+  data: SieuNhanDo[]
+}
+
+export interface SieuNhanDo {
   id: number
   consultantProfileId: number
   title: string
@@ -41,4 +46,8 @@ export interface ExtendedProps {
   description: string
   fullTitle: string
   id: number
+}
+export interface ConsultantScheduleResponse {
+  message: string
+  data: DataResponseCalendar[]
 }

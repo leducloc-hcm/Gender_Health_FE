@@ -1,10 +1,23 @@
-import type { BookingResponse, ConsultantsData } from '../pages/HomePage/HomePage/models/BookingConsultantSectionModel'
+import type {
+  allConsultantResponse,
+  BookingResponse,
+  ConsultantsData
+} from '../pages/HomePage/HomePage/models/BookingConsultantSectionModel'
 import { fetcher } from './fetcher'
 
 export const customerApi = {
   getConsultantWorkSchedule: async (): Promise<ConsultantsData> => {
     try {
       const response = await fetcher.get('/consultant-work-schedule')
+      return response.data
+    } catch (error) {
+      console.error('Failed to create symptom:', error)
+      throw error
+    }
+  },
+  getAllConsultant: async (): Promise<allConsultantResponse> => {
+    try {
+      const response = await fetcher.get('users/consultant/all')
       return response.data
     } catch (error) {
       console.error('Failed to create symptom:', error)

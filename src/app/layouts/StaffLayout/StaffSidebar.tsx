@@ -17,8 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { url } from 'inspector'
-import { BookOpen, ChevronDown, Home, LogOut, Settings, ShoppingBag, Tags, User, CalendarFold } from 'lucide-react'
+import { BookOpen, CalendarFold, ChevronDown, Home, LogOut, Settings, ShoppingBag, Tags, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [

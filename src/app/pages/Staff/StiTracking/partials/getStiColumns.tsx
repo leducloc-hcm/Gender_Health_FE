@@ -1,8 +1,7 @@
-import type { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/app/components/ui/button'
-import { Badge } from '@/app/components/ui/badge'
-import { ArrowUpDown, CheckCircle, Clock, User, TestTube, FileText } from 'lucide-react'
 import type { Data } from '@/app/pages/Staff/StiTracking/models/sti.type'
+import type { ColumnDef } from '@tanstack/react-table'
+import { ArrowUpDown, CheckCircle, FileText, TestTube, User } from 'lucide-react'
 
 interface StiColumnsProps {
   onPscVisited: (id: number) => void

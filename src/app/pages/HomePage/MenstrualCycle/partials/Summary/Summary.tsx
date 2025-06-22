@@ -6,7 +6,7 @@ import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import type { PredictionData } from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/models/summary.type'
 import { addDays, differenceInDays, format, isWithinInterval } from 'date-fns'
-import { Activity, Baby, Calendar, Clock, Droplets, Loader2, Plus, Sparkles, Target, TrendingUp } from 'lucide-react'
+import { Activity, Baby, Calendar, Clock, Droplets, Plus, Target, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 

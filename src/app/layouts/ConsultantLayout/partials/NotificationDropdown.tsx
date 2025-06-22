@@ -22,9 +22,10 @@ type Notification = {
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [connected, setConnected] = useState(false)
+  console.log('connected: ', connected)
   const [isLoading, setIsLoading] = useState(false)
   const socketRef = useRef<Socket | null>(null)
-
+  console.log(connected)
   const fetchNotifications = (token: string) =>
     fetcher
       .get('/notifications', { headers: { Authorization: `Bearer ${token}` } })

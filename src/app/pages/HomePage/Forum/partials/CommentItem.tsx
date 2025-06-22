@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Button } from '@/app/components/ui/button'
 import { Textarea } from '@/app/components/ui/textarea'
-import { Edit, Trash2, Heart, Clock, Shield } from 'lucide-react'
 import type { ReplyData } from '@/app/pages/HomePage/Forum/models/reply.type'
+import { Clock, Edit, Heart, Shield, Trash2 } from 'lucide-react'
 
 interface CommentItemProps {
   reply: ReplyData
