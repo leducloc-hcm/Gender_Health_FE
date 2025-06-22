@@ -46,6 +46,8 @@ export default function AddTestModal({
 
   const onSubmit = (data: AddUpdateTestCategory) => {
     if (!data) return
+    // console.log('data.type_of_test_id.', typeof data.type_of_test_id)
+    // console.log('data.type_of_test_id.', data.type_of_test_id)
     handleCreate(data)
   }
 
@@ -132,12 +134,22 @@ export default function AddTestModal({
             <Label className='text-base'>
               Type of tests {errors.type_of_test_id && <span className='text-red-500 font-semibold'>*Required</span>}
             </Label>
+
+            {/* input ẩn để validate */}
+            <input
+              type='hidden'
+              {...register('type_of_test_id', {
+                validate: (value) => (value ? true : false)
+              })}
+            />
+
             {testTypes.map((type) => (
               <Label key={type.id} className='flex items-center gap-2'>
                 <input
                   type='radio'
                   value={type.id}
-                  {...register('type_of_test_id', { required: true })}
+                  checked={watch('type_of_test_id') === type.id}
+                  onChange={() => setValue('type_of_test_id', type.id, { shouldValidate: true })}
                   className='form-radio h-4 w-4 text-rose-600'
                 />
                 <span className='text-sm'>{type.name}</span>

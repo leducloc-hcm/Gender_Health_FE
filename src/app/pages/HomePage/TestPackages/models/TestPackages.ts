@@ -18,6 +18,7 @@ export interface TestCategory {
   type_of_test_id?: number
   type_of_test?: TypeOfTest
   test_range?: any[]
+  testPackages?: number[]
 }
 export interface TestCategoryResponse {
   message: string

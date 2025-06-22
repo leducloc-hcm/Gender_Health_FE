@@ -138,31 +138,31 @@ export default function TestManagement() {
       code: item.code,
       description: item.description,
       type_of_test_id: item.type_of_test_id,
-      testPackages: []
+      testPackages: item.testPackages
     }
     console.log('Form submitted with payload:', payload)
-    // setIsUpdating(true)
-    // try {
-    //   const response = await testApi.putUpdateTypeOfTest(item.id, payload)
-    //   console.log('🚀 ~ handleEdit ~ response:', response)
+    setIsUpdating(true)
+    try {
+      const response = await testApi.putUpdateTestCategory(item.id, payload)
+      console.log('🚀 ~ handleEdit ~ response:', response)
 
-    //   toast.success('Update successfully!', {
-    //     position: 'top-right',
-    //     autoClose: 1500
-    //   })
-    //   handleCancelEdit()
-    //   fetchData()
-    // } catch (error: any) {
-    //   console.log('🚀 ~ handleEdit ~ error:', error)
-    //   if (axios.isAxiosError(error)) {
-    //     const errorMessage = error.message || 'Failed. Please try again!'
-    //     toast.error(errorMessage)
-    //   } else {
-    //     toast.error('An unexpected error occurred. Please try again.')
-    //   }
-    // } finally {
-    //   setIsUpdating(false)
-    // }
+      toast.success('Update successfully!', {
+        position: 'top-right',
+        autoClose: 1500
+      })
+      handleCancelEdit()
+      fetchData()
+    } catch (error: any) {
+      console.log('🚀 ~ handleEdit ~ error:', error)
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.message || 'Failed. Please try again!'
+        toast.error(errorMessage)
+      } else {
+        toast.error('An unexpected error occurred. Please try again.')
+      }
+    } finally {
+      setIsUpdating(false)
+    }
   }
 
   const handleDelete = async (id: number) => {
