@@ -34,9 +34,9 @@ export const testApi = {
     }
   },
 
-  putUpdateTestPackage: async (id: number, payload: EditTestPackageItem): Promise<any> => {
+  putUpdateTestPackage: async (id: number, payload: EditTestPackageItem): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.put(`/test-package/update/${id}`, payload)
+      const response: AxiosResponse = await fetcher.put(`/test-package/update/${id}`, payload)
 
       return response.data
     } catch (error) {
@@ -57,9 +57,9 @@ export const testApi = {
     }
   },
 
-  postCreateTypeOfTest: async (payload: AddUpdateTestTypeItem): Promise<any> => {
+  postCreateTypeOfTest: async (payload: AddUpdateTestTypeItem): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.post(`/type-of-test/create`, payload)
+      const response: AxiosResponse = await fetcher.post(`/type-of-test/create`, payload)
 
       return response.data
     } catch (error) {
@@ -68,9 +68,9 @@ export const testApi = {
     }
   },
 
-  putUpdateTypeOfTest: async (id: number, payload: AddUpdateTestTypeItem): Promise<any> => {
+  putUpdateTypeOfTest: async (id: number, payload: AddUpdateTestTypeItem): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.put(`/type-of-test/update/${id}`, payload)
+      const response: AxiosResponse = await fetcher.put(`/type-of-test/update/${id}`, payload)
 
       return response.data
     } catch (error) {
@@ -79,9 +79,9 @@ export const testApi = {
     }
   },
 
-  deleteTypeOfTest: async (id: number): Promise<any> => {
+  deleteTypeOfTest: async (id: number): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.delete(`/type-of-test/delete/${id}`)
+      const response: AxiosResponse = await fetcher.delete(`/type-of-test/delete/${id}`)
 
       return response.data
     } catch (error) {
@@ -102,9 +102,9 @@ export const testApi = {
     }
   },
 
-  postCreateTestCategory: async (payload: AddUpdateTestCategory): Promise<any> => {
+  postCreateTestCategory: async (payload: AddUpdateTestCategory): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.post(`/test/create`, payload)
+      const response: AxiosResponse = await fetcher.post(`/test/create`, payload)
 
       return response.data
     } catch (error) {
@@ -113,9 +113,9 @@ export const testApi = {
     }
   },
 
-  putUpdateTestCategory: async (id: number, payload: AddUpdateTestCategory): Promise<any> => {
+  putUpdateTestCategory: async (id: number, payload: AddUpdateTestCategory): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.put(`/test/update/${id}`, payload)
+      const response: AxiosResponse = await fetcher.put(`/test/update/${id}`, payload)
 
       return response.data
     } catch (error) {
@@ -124,9 +124,9 @@ export const testApi = {
     }
   },
 
-  deleteTestCategory: async (id: number): Promise<any> => {
+  deleteTestCategory: async (id: number): Promise<AxiosResponse> => {
     try {
-      const response: AxiosResponse<any> = await fetcher.delete(`/test/delete/${id}`)
+      const response: AxiosResponse = await fetcher.delete(`/test/delete/${id}`)
 
       return response.data
     } catch (error) {
