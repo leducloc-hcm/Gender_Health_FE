@@ -2,7 +2,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { ArrowUpDown } from 'lucide-react'
-import type { ProfileConsultantResult } from '../models/ProfleConsultantManagement'
+import type { ProfileConsultantResult } from '../ProfileConsultantManagement'
 import { Avatar } from '@/app/components/ui/avatar'
 import { AvatarImage, AvatarFallback } from '@radix-ui/react-avatar'
 
@@ -79,7 +79,7 @@ export const getScheduleColumns = ({ onEdit, onView }: ScheduleColumnsProps): Co
       cell: ({ row }) => {
         const consultant = row.original
         return (
-          <div className='flex gap-2'>
+          <div className='flex gap-2 justify-center'>
             <Button onClick={() => onEdit(consultant)} className='bg-blue-500 hover:bg-blue-600 text-white' size='sm'>
               Edit
             </Button>

@@ -11,19 +11,13 @@ import { toast } from 'react-toastify'
 import { getScheduleColumns } from './partials/columns'
 import DataTable from './partials/DataTable'
 
-// Import types from a single source
-// Import types from a single source
 import type { ProfileConsultantResult as OriginalProfileConsultantResult } from '@/app/pages/Staff/ProfileConsultantManagement/models/ProfleConsultantManagement'
 
-// Extended type to handle File uploads in the form
 export interface ProfileConsultantResult extends Omit<OriginalProfileConsultantResult, 'avatar' | 'coverPhoto'> {
   avatar: string | File | null
   coverPhoto: string | File | null
 }
 
-// Type definitions for API
-
-// Interface for EditConsultantModalProps
 interface EditConsultantModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
@@ -33,7 +27,6 @@ interface EditConsultantModalProps {
   onCancel: () => void
 }
 
-// Interface for ViewConsultantModalProps
 interface ViewConsultantModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
@@ -67,7 +60,7 @@ const EditConsultantModal = memo(
         return () => URL.revokeObjectURL(url)
       }
       setAvatarPreview(typeof selectedConsultant.avatar === 'string' ? selectedConsultant.avatar : null)
-    }, [selectedConsultant?.avatar])
+    }, [selectedConsultant])
 
     useEffect(() => {
       if (!selectedConsultant) {
@@ -80,7 +73,7 @@ const EditConsultantModal = memo(
         return () => URL.revokeObjectURL(url)
       }
       setCoverPhotoPreview(typeof selectedConsultant.coverPhoto === 'string' ? selectedConsultant.coverPhoto : null)
-    }, [selectedConsultant?.coverPhoto])
+    }, [selectedConsultant])
 
     if (!selectedConsultant) return null
 
@@ -140,7 +133,7 @@ const EditConsultantModal = memo(
               },
               { id: 'experience', label: 'Experience (Years)', type: 'text' },
               { id: 'response_time', label: 'Response Time (Mins)', type: 'text' }
-            ].map(({ id, label, type, props, formatter, parser }) => (
+            ].map(({ id, label, type, props, parser }) => (
               <div key={id} className='grid grid-cols-4 items-center gap-4'>
                 <Label htmlFor={id} className='text-right'>
                   {label}
@@ -148,11 +141,25 @@ const EditConsultantModal = memo(
                 <Input
                   id={id}
                   type={type}
-                  value={
-                    formatter
-                      ? formatter(selectedConsultant[id as keyof ProfileConsultantResult] as any)
-                      : (selectedConsultant[id as keyof ProfileConsultantResult] ?? '')
-                  }
+                  value={(() => {
+                    const fieldValue = selectedConsultant[id as keyof ProfileConsultantResult]
+
+                    // Handle specific formatters
+                    if (id === 'date_of_birth' && fieldValue && typeof fieldValue === 'string') {
+                      return format(new Date(fieldValue), 'yyyy-MM-dd')
+                    }
+                    if (id === 'specialties' && Array.isArray(fieldValue)) {
+                      return fieldValue.join(', ')
+                    }
+                    if (id === 'languages' && Array.isArray(fieldValue)) {
+                      return fieldValue.join(', ')
+                    }
+
+                    if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
+                      return String(fieldValue)
+                    }
+                    return ''
+                  })()}
                   onChange={(e) =>
                     handleInputChange(
                       id as keyof ProfileConsultantResult,
@@ -363,10 +370,9 @@ const ProfileConsultantManagement = () => {
     }
     return []
   }, [])
-
   const getChangedFields = useCallback(
     (original: ProfileConsultantResult, updated: ProfileConsultantResult) => {
-      const changes: Partial<ProfileConsultantResult> = {}
+      const changes: Record<string, string | number | string[] | File | null | undefined> = {}
 
       // Check basic fields
       const fieldsToCheck: (keyof ProfileConsultantResult)[] = [
@@ -514,7 +520,7 @@ const ProfileConsultantManagement = () => {
         autoClose: 2000
       })
     }
-  }, [selectedConsultant, originalConsultant, getChangedFields, createFormDataFromChanges])
+  }, [selectedConsultant, originalConsultant, getChangedFields, createFormDataFromChanges, fetchData])
   const handleCancel = useCallback(() => {
     setIsEditModalOpen(false)
     setSelectedConsultant(null)

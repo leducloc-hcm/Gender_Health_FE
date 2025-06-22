@@ -11,10 +11,6 @@ export interface WorkScheduleUpdate {
   status: string
 }
 
-interface NewWorkSchedule {
-  scheduleId: number
-}
-
 const Schedule = () => {
   const { socket, reinitializeSocket } = useSocket()
   const [schedules, setSchedules] = useState<schedule[]>([])
@@ -39,7 +35,7 @@ const Schedule = () => {
   useEffect(() => {
     if (!socket) return
 
-    const handleNewWorkSchedule = (data: NewWorkSchedule) => {
+    const handleNewWorkSchedule = () => {
       // Refresh the schedule list when a new schedule is created
       fetchConsultantSchedule()
       toast.info('New schedule request received')
