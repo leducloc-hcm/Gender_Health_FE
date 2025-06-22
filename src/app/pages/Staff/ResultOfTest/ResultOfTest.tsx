@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { stiApi } from '@/app/apis/sti.api'
-import type { StiTrackingResponse, Data } from '@/app/pages/Staff/StiTracking/models/sti.type'
-import { toast } from 'react-toastify'
-import { Plus, FileText, TestTube, User, Search, Filter, RefreshCw, Eye } from 'lucide-react'
-import { Button } from '@/app/components/ui/button'
 import { Badge } from '@/app/components/ui/badge'
+import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
+import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
+import type { Data, StiTrackingResponse } from '@/app/pages/Staff/StiTracking/models/sti.type'
+import { FileText, Filter, Plus, RefreshCw, Search } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function ResultOfTest() {
   const navigate = useNavigate()
@@ -54,22 +55,11 @@ export default function ResultOfTest() {
     (test) =>
       test.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       test.orderItem.order.customerProfile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      test.id.toString().includes(searchTerm)
+      test.orderItem.name.toString().includes(searchTerm)
   )
 
   if (loading) {
-    return (
-      <div className='min-h-screen bg-gray-50 p-6'>
-        <div className='max-w-7xl mx-auto'>
-          <div className='bg-white rounded-lg shadow-sm p-12'>
-            <div className='flex flex-col items-center justify-center space-y-4'>
-              <div className='w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin'></div>
-              <p className='text-gray-500'>Loading report ready tests...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
   return (
@@ -100,50 +90,9 @@ export default function ResultOfTest() {
           </div>
         </div>
 
-        {/* Statistics */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          <div className='bg-gradient-to-r from-indigo-50 to-blue-100 p-4 rounded-lg border border-indigo-200'>
-            <div className='flex items-center space-x-3'>
-              <div className='p-2 bg-indigo-500 rounded-lg'>
-                <FileText className='h-5 w-5 text-white' />
-              </div>
-              <div>
-                <p className='text-sm font-medium text-indigo-600'>Report Ready Tests</p>
-                <p className='text-2xl font-bold text-indigo-900'>{stiData.length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className='bg-gradient-to-r from-green-50 to-emerald-100 p-4 rounded-lg border border-green-200'>
-            <div className='flex items-center space-x-3'>
-              <div className='p-2 bg-green-500 rounded-lg'>
-                <TestTube className='h-5 w-5 text-white' />
-              </div>
-              <div>
-                <p className='text-sm font-medium text-green-600'>Ready for Results</p>
-                <p className='text-2xl font-bold text-green-900'>{filteredData.length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className='bg-gradient-to-r from-purple-50 to-violet-100 p-4 rounded-lg border border-purple-200'>
-            <div className='flex items-center space-x-3'>
-              <div className='p-2 bg-purple-500 rounded-lg'>
-                <User className='h-5 w-5 text-white' />
-              </div>
-              <div>
-                <p className='text-sm font-medium text-purple-600'>Unique Customers</p>
-                <p className='text-2xl font-bold text-purple-900'>
-                  {new Set(stiData.map((test) => test.orderItem.order.customerProfile.id)).size}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Search and Filters */}
         <div className='bg-white p-4 rounded-lg border shadow-sm'>
-          <div className='flex items-center space-x-4'>
+          <div className='flex items-center justify-between space-x-4'>
             <div className='relative flex-1 max-w-sm'>
               <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
               <Input
@@ -161,14 +110,13 @@ export default function ResultOfTest() {
           </div>
         </div>
 
-        {/* Table */}
         <div className='bg-white rounded-lg border shadow-sm overflow-hidden'>
           <Table>
             <TableHeader>
               <TableRow className='bg-gray-50'>
                 <TableHead className='font-semibold text-gray-700'>Customer Info</TableHead>
                 <TableHead className='font-semibold text-gray-700'>Test Details</TableHead>
-                <TableHead className='font-semibold text-gray-700'>Test ID</TableHead>
+                <TableHead className='font-semibold text-gray-700'>Test Id</TableHead>
                 <TableHead className='font-semibold text-gray-700'>Status</TableHead>
                 <TableHead className='font-semibold text-gray-700'>Report Date</TableHead>
                 <TableHead className='font-semibold text-gray-700'>Actions</TableHead>
@@ -198,8 +146,8 @@ export default function ResultOfTest() {
                     </TableCell>
                     <TableCell>
                       <div className='space-y-1'>
-                        <div className='text-sm font-semibold text-gray-900'>{test.name}</div>
-                        <div className='text-xs text-gray-500'>Order: {test.orderItem.name}</div>
+                        <div className='text-sm font-semibold text-gray-900'>{test.orderItem.name}</div>
+                        <div className='text-xs text-gray-500'> {test.orderItem.description}</div>
                       </div>
                     </TableCell>
                     <TableCell>

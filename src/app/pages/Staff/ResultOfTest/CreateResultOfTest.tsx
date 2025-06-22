@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
 import { stiApi } from '@/app/apis/sti.api'
-import type { StiTrackingByIdResponse, ResultOfTestForm } from '@/app/pages/Staff/ResultOfTest/models/result.type'
-import { toast } from 'react-toastify'
-import { ArrowLeft, Save, TestTube, FileText, AlertCircle, RefreshCw } from 'lucide-react'
-import { Button } from '@/app/components/ui/button'
 import { Badge } from '@/app/components/ui/badge'
-import { Input } from '@/app/components/ui/input'
+import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Input } from '@/app/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
+import type { ResultOfTestForm, StiTrackingByIdResponse } from '@/app/pages/Staff/ResultOfTest/models/result.type'
+import { AlertCircle, ArrowLeft, RefreshCw, Save, TestTube } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function CreateResultOfTest() {
   const { id } = useParams<{ id: string }>()
@@ -41,7 +41,6 @@ export default function CreateResultOfTest() {
 
       setTestData(response)
 
-      // Initialize form data based on available tests from testPackages
       if (response.data.testPackages?.tests && response.data.testPackages.tests.length > 0) {
         const initialForms: ResultOfTestForm[] = response.data.testPackages.tests.map((testItem) => ({
           testCode: testItem.test?.code || '',
@@ -218,7 +217,7 @@ export default function CreateResultOfTest() {
               </div>
               <div>
                 <h1 className='text-2xl font-bold text-gray-900'>Create Test Results</h1>
-                <p className='text-gray-600 mt-1'>Create results for {testData.data.stisTracking?.name || 'Test'}</p>
+                <p className='text-gray-600 mt-1'>Create results for Stis Tracking</p>
               </div>
             </div>
           </div>
@@ -375,7 +374,6 @@ export default function CreateResultOfTest() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className='flex justify-end space-x-3 pt-6 border-t border-gray-200'>
                 <Button type='button' variant='outline' onClick={() => navigate('/staff/result-of-test')}>
                   Cancel
@@ -407,28 +405,6 @@ export default function CreateResultOfTest() {
             </form>
           </CardContent>
         </Card>
-
-        {/* Preview JSON Output */}
-        {resultForms.some((form) => form.value > 0 && form.abbreviation.trim() !== '') && (
-          <Card>
-            <CardHeader>
-              <CardTitle className='text-lg flex items-center gap-2'>
-                <FileText className='w-5 h-5 text-gray-600' />
-                Preview - JSON Output
-              </CardTitle>
-              <CardDescription>This will be submitted to the API</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <pre className='bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto max-h-96 overflow-y-auto'>
-                {JSON.stringify(
-                  resultForms.filter((form) => form.value > 0 && form.abbreviation.trim() !== ''),
-                  null,
-                  2
-                )}
-              </pre>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   )

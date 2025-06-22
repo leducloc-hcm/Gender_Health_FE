@@ -1,22 +1,22 @@
-import React from 'react'
 import {
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type SortingState,
   type ColumnFiltersState,
-  getFilteredRowModel,
+  type SortingState,
   type VisibilityState
 } from '@tanstack/react-table'
+import React from 'react'
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
+import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
-import { Badge } from '@/app/components/ui/badge'
-import { Search, Filter, TestTube } from 'lucide-react'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
+import { Filter, Search, TestTube } from 'lucide-react'
 
 type DataTableProps<TData> = {
   columns: ColumnDef<TData>[]
