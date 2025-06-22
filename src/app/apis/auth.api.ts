@@ -99,6 +99,7 @@ export const authApi = {
       throw error as AxiosError
     }
   },
+
   getProfileConsultant: async (): Promise<profileConsultantResponse> => {
     try {
       const response: AxiosResponse<profileConsultantResponse> = await fetcher.get('/users/consultant/me')
@@ -108,6 +109,7 @@ export const authApi = {
       throw error
     }
   },
+
   getProfileStaff: async (): Promise<StaffProfile> => {
     try {
       const response: AxiosResponse<StaffProfile> = await fetcher.get('/users/staff/me')

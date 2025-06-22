@@ -28,7 +28,7 @@ const getGoogleAuthUrl = () => {
 }
 const googleOAuthUrl = getGoogleAuthUrl()
 
-const ROLE_ROUTES = {
+export const ROLE_ROUTES = {
   CUSTOMER: '/',
   ADMIN: '/admin',
   STAFF: '/staff',

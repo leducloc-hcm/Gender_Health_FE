@@ -1,92 +1,68 @@
-import React from 'react'
+import { Button } from '@/app/components/ui/button'
+import { Input } from '@/app/components/ui/input'
+import { Skeleton } from '@/app/components/ui/skeleton'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
 import {
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type SortingState,
   type ColumnFiltersState,
-  getFilteredRowModel,
+  type SortingState,
   type VisibilityState
 } from '@tanstack/react-table'
-
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
-import { Button } from '@/app/components/ui/button'
-import { Input } from '@/app/components/ui/input'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger
-} from '@/app/components/ui/dropdown-menu'
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 type DataTableProps<TData> = {
   columns: ColumnDef<TData>[]
   data: TData[]
+  isLoading: boolean
 }
 
-export default function DataTableTags<TData>({ columns, data }: DataTableProps<TData>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 })
+export default function DataTable<TData>({ columns, data, isLoading }: DataTableProps<TData>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10
+  })
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, pagination, columnFilters, columnVisibility },
+    state: {
+      sorting,
+      pagination,
+      columnFilters,
+      columnVisibility
+    },
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
+    onColumnVisibilityChange: setColumnVisibility
   })
 
   return (
-    <div>
-      <div className='flex items-center py-4 space-x-2'>
+    <>
+      {/* search filter */}
+      <div className='flex items-center py-4'>
         <Input
-          placeholder='Filter name...'
+          placeholder='Search by name...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='outline' className='ml-auto'>
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className='capitalize'
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Link to='/staff/tag/create'>
-          <Button variant='default' className='bg-pink-400 hover:bg-pink-500 text-white'>
-            + Create Tag
-          </Button>
-        </Link>
       </div>
-
-      <div className='min-h-[625px]'>
+      {/* Table content */}
+      <div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -102,7 +78,17 @@ export default function DataTableTags<TData>({ columns, data }: DataTableProps<T
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, idx) => (
+                <TableRow key={`loading-${idx}`}>
+                  {columns.map((_, colIdx) => (
+                    <TableCell key={colIdx}>
+                      <Skeleton className='h-4 w-full rounded' />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows.length ? (
               <>
                 {table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
@@ -126,7 +112,7 @@ export default function DataTableTags<TData>({ columns, data }: DataTableProps<T
           </TableBody>
         </Table>
       </div>
-
+      {/* Pagination */}
       <div className='flex items-center justify-between py-4'>
         <div className='text-sm text-muted-foreground'>
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
@@ -145,6 +131,6 @@ export default function DataTableTags<TData>({ columns, data }: DataTableProps<T
           </Button>
         </div>
       </div>
-    </div>
+    </>
   )
 }

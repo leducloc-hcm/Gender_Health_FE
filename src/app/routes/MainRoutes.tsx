@@ -42,6 +42,13 @@ import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking
 import Schedule from '../pages/Staff/Schedule/Schedule'
 import BookingConsultant from '../pages/HomePage/HomePage/BookingConsultant/BookingConsultant'
 import ProfileConsultantManagement from '../pages/Staff/ProfileConsultantManagement/ProfileConsultantManagement'
+import AccountManagement from '../pages/Admin/AccountManagement/AccountManagement'
+import PaymentManagement from '../pages/Admin/PaymentManagement/PaymentManagement'
+import TestPackageManagement from '../pages/Admin/TestPackageManagement/TestPackageManagement'
+import TypeOfTestManagement from '../pages/Admin/TypeOfTestManagement/TypeOfTestManagement'
+import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
+import TestManagement from '../pages/Admin/TestManagement/TestManagement'
+
 export default function MainRoutes() {
   return (
     <>
@@ -93,6 +100,12 @@ export default function MainRoutes() {
         <Route path='/admin' element={<Admin />}>
           <Route index element={<Navigate to={adminPath.dashboard} replace />} />
           <Route path={adminPath.dashboard} element={<DashboardAdmin />} />
+          <Route path={adminPath.account} element={<AccountManagement />} />
+          <Route path={adminPath.payment} element={<PaymentManagement />} />
+          <Route path={adminPath.order} element={<OrderManagement />} />
+          <Route path={adminPath.testPackge} element={<TestPackageManagement />} />
+          <Route path={adminPath.typeOfTest} element={<TypeOfTestManagement />} />
+          <Route path={adminPath.test} element={<TestManagement />} />
         </Route>
 
         <Route path='/consultant' element={<Consultant />}>
