@@ -24,6 +24,7 @@ export interface Data {
 
 export interface OrderItem {
   id: number
+  name: string
   order: Order
 }
 

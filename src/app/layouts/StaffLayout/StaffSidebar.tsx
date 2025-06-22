@@ -51,6 +51,11 @@ const navigationItems = [
     title: 'Stis-Tracking',
     url: '/staff/stis-tracking',
     icon: BookOpen
+  },
+  {
+    title: 'Result Of Test',
+    url: '/staff/result-of-test',
+    icon: BookOpen
   }
 ]
 

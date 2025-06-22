@@ -1,4 +1,5 @@
 import { fetcher } from '@/app/apis/fetcher'
+import type { ResultOfTestReq, StiTrackingByIdResponse } from '@/app/pages/Staff/ResultOfTest/models/result.type'
 import type { StiTrackingPostResponse, StiTrackingResponse } from '@/app/pages/Staff/StiTracking/models/sti.type'
 import type { AxiosError, AxiosResponse } from 'axios'
 
@@ -23,9 +24,9 @@ export const stiApi = {
       throw axiosError
     }
   },
-  getStiById: async (id: number): Promise<StiTrackingResponse> => {
+  getStiById: async (id: number): Promise<StiTrackingByIdResponse> => {
     try {
-      const response: AxiosResponse<StiTrackingResponse> = await fetcher.get(`/stis-tracking/${id}`)
+      const response: AxiosResponse<StiTrackingByIdResponse> = await fetcher.get(`/stis-tracking/${id}`)
       return response.data
     } catch (error) {
       const axiosError = error as AxiosError
@@ -62,6 +63,15 @@ export const stiApi = {
         `/stis-tracking/${id}/report-date`,
         data
       )
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
+  createTestResult: async (data: ResultOfTestReq): Promise<any> => {
+    try {
+      const response: AxiosResponse<any> = await fetcher.post(`/result-of-test`, data)
       return response.data
     } catch (error) {
       const axiosError = error as AxiosError

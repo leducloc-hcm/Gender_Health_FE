@@ -50,6 +50,8 @@ import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
 import TestManagement from '../pages/Admin/TestManagement/TestManagement'
 import StiTrackingStaff from '@/app/pages/Staff/StiTracking/StiTracking'
 import StiTracking from '@/app/pages/HomePage/StiTracking/StiTracking'
+import ResultOfTest from '@/app/pages/Staff/ResultOfTest/ResultOfTest'
+import CreateResultOfTest from '@/app/pages/Staff/ResultOfTest/CreateResultOfTest'
 
 export default function MainRoutes() {
   return (
@@ -129,6 +131,8 @@ export default function MainRoutes() {
           <Route path={staffPath.schedule} element={<Schedule />} />
           <Route path={staffPath.ConsultantProfileManagement} element={<ProfileConsultantManagement />} />
           <Route path={staffPath.stisTracking} element={<StiTrackingStaff />} />
+          <Route path={staffPath.resultOfTest} element={<ResultOfTest />} />
+          <Route path={staffPath.createResultOfTest} element={<CreateResultOfTest />} />
         </Route>
       </Routes>
     </>

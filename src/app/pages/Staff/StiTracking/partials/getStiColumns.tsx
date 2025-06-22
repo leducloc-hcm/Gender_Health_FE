@@ -21,46 +21,6 @@ const formatDate = (dateString: string | null) => {
   })
 }
 
-const getStatusBadge = (status: string) => {
-  const statusConfig = {
-    WAITING_FOR_PSC_VISIT: {
-      color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-      icon: Clock,
-      text: 'WAITING FOR PSC VISIT'
-    },
-    PSC_VISITED: {
-      color: 'bg-blue-50 text-blue-700 border-blue-200',
-      icon: User,
-      text: 'PSC VISITED'
-    },
-    COLLECTED: {
-      color: 'bg-purple-50 text-purple-700 border-purple-200',
-      icon: TestTube,
-      text: 'SAMPLE COLLECTED'
-    },
-    REPORT_READY: {
-      color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      icon: FileText,
-      text: 'REPORT READY'
-    },
-    RESULT_AVAILABLE: {
-      color: 'bg-green-50 text-green-700 border-green-200',
-      icon: CheckCircle,
-      text: 'RESULT AVAILABLE'
-    }
-  }
-
-  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.WAITING_FOR_PSC_VISIT
-  const IconComponent = config.icon
-
-  return (
-    <Badge className={`${config.color} border px-2 py-1 flex items-center gap-1 w-fit`}>
-      <IconComponent className='w-3 h-3' />
-      {config.text}
-    </Badge>
-  )
-}
-
 const ProgressStep = ({
   isCompleted,
   isActive,
@@ -196,7 +156,7 @@ export const getStiColumns = ({
   {
     id: 'testId',
     header: () => <div className='flex justify-center'>Test Packages</div>,
-    cell: ({ row }) => <div className='flex justify-center'>{row.original.id}</div>
+    cell: ({ row }) => <div className='flex justify-center'>{row.original.orderItem.name}</div>
   },
   {
     id: 'progress',
