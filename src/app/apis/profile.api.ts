@@ -1,5 +1,12 @@
 import type { AxiosResponse } from 'axios'
-import type { PasswordForm, profileResponse, UpdateProfileInput } from '../pages/Customer/Profile/models/Profile'
+import type {
+  historyConsulting,
+  PasswordForm,
+  profileResponse,
+  UpdateProfileConsultantInput,
+  UpdateProfileConsultantResponse,
+  UpdateProfileInput
+} from '../pages/Customer/Profile/models/Profile'
 import { fetcher } from '@/app/apis/fetcher'
 
 export const profileApi = {
@@ -35,6 +42,33 @@ export const profileApi = {
       return response.data
     } catch (error) {
       console.error('Failed to update password:', error)
+      throw error
+    }
+  },
+  updateProfileConsultant: async (
+    consultantId: number,
+    data: Partial<UpdateProfileConsultantInput>
+  ): Promise<UpdateProfileConsultantResponse> => {
+    try {
+      const response = await fetcher.put(`users/consultant/${consultantId}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Failed to update consultant profile:', error)
+      throw error
+    }
+  },
+  getHistoryConsulating: async (consultantId: number): Promise<historyConsulting> => {
+    console.log('consultantId: ', consultantId)
+    try {
+      const response = await fetcher.get(`consulting-history/customer/${consultantId}`)
+      console.log('response123123: ', response.data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch history consulting:', error)
       throw error
     }
   }

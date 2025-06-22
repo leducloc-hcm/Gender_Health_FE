@@ -8,17 +8,17 @@ export interface Result {
   email: string
   role: string
   status: string
-  consultant_profile_id: number
+  staff_profile_id: number
   created_at: string
   updated_at: string
   name: string
-  bio: any
-  location: any
+  bio: string | null
+  location: string | null
   username: string
-  avatar: any
-  coverPhoto: any
-  date_of_birth: any
-  website: any
-  phone_number: string
-  description: any
+  avatar: string | null
+  coverPhoto: string | null
+  date_of_birth: string
+  website: string | null
+  phone_number: string | null
+  description: string | null
 }

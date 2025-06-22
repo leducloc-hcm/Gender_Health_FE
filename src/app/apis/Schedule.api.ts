@@ -1,8 +1,9 @@
 import type { DataResponseCalendar } from '@/app/pages/Consultant/models/Calendar'
 import type { AxiosError } from 'axios'
 import type { ConsultantApproveResponse, ConsultantFormData } from '../pages/Consultant/models/Consultant'
-import type { scheduleResponse } from '../pages/Staff/Schedule/models/Schedule'
 import { fetcher } from './fetcher'
+import type { scheduleResponse } from '../pages/Staff/Schedule/models/Schedule'
+import type { ConsultantScheduleResponse } from '../pages/Consultant/models/Calendar'
 
 export const scheduleApi = {
   creteConsultantSchedule: async (data: ConsultantFormData): Promise<ConsultantFormData> => {
@@ -14,7 +15,7 @@ export const scheduleApi = {
       throw axiosError
     }
   },
-  getConsultantSchedule: async (consultantId: Number): Promise<DataResponseCalendar> => {
+  getConsultantSchedule: async (consultantId: number): Promise<ConsultantScheduleResponse> => {
     try {
       const response = await fetcher.get(`consultant-work-schedule/consultant/${consultantId}`)
       return response.data

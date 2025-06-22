@@ -5,7 +5,7 @@ export const sStaffProfile = signify({
   email: '',
   role: '',
   status: '',
-  consultant_profile_id: 0,
+  staff_profile_id: 0,
   created_at: '',
   updated_at: '',
   name: '',

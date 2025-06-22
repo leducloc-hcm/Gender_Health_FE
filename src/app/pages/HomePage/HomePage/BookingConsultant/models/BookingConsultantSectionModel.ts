@@ -12,6 +12,9 @@ export interface Schedule {
   acceptedBy: number
   bookedBy: number | null
   bookedAt: string | null
+  duration?: number
+  consultationType?: string
+  price?: number
 }
 
 export interface ConsultantProfile {
@@ -22,9 +25,8 @@ export interface ConsultantProfile {
   username: string
   avatar: string
   coverPhoto: string
-  consultant_profile_id: number
   description: string
-  phone_number: string
+  phoneNumber: string
   dateOfBirth: string
   website: string
   rating: number
@@ -36,6 +38,7 @@ export interface ConsultantProfile {
   degree: string
   hospital: string
   userId: number
+  consultationFee?: number
 }
 
 export interface Consultant {
@@ -66,8 +69,4 @@ export interface dataBookingResponse {
   acceptedAt: string
   acceptedBy: number
   bookedBy: number
-}
-export interface allConsultantResponse {
-  message: string
-  result: ConsultantProfile[]
 }

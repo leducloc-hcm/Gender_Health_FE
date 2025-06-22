@@ -47,3 +47,7 @@ export interface ExtendedProps {
   fullTitle: string
   id: number
 }
+export interface ConsultantScheduleResponse {
+  message: string
+  data: DataResponseCalendar[]
+}
