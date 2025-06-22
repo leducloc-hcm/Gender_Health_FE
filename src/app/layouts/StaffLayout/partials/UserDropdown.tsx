@@ -39,9 +39,11 @@ const UserDropdown = () => {
     const fetchProfile = async () => {
       try {
         const response = await authApi.getProfileStaff()
-        setUserProfile(response.result)
+        setUserProfile(response.result as any)
         setConsultantProfileToSignify(response.result)
-      } catch (error) {}
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error)
+      }
     }
     fetchProfile()
   }, [accessToken])

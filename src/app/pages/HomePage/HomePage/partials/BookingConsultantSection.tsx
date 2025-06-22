@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import type { Consultant, ConsultantProfile } from '../models/BookingConsultantSectionModel'
 
 const BookingConsultantSection = () => {
-  const [selectedConsultant, setSelectedConsultant] = useState<Consultant | null>(null)
+  const [selectedConsultant] = useState<Consultant | null>(null)
   console.log('selectedConsultant: ', selectedConsultant)
   const [consultantsData, setConsultantsData] = useState<ConsultantProfile[]>()
 

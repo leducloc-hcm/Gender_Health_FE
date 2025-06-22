@@ -14,6 +14,8 @@ import {
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Progress } from '@/app/components/ui/progress'
+import { clearUserProfileSignify, setUserProfileToSignify } from '@/app/hooks/sUserProfile'
+import dayjs from 'dayjs'
 import { Edit3, Eye, EyeOff, Heart, MapPin, Save, Upload, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,8 +27,6 @@ import type {
   UpdateProfileInput,
   UserProfile
 } from './models/Profile'
-import { clearUserProfileSignify, setUserProfileToSignify, sUserProfile } from '@/app/hooks/sUserProfile'
-import dayjs from 'dayjs'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -54,7 +54,6 @@ export default function Profile() {
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const userProfileToSignify = sUserProfile.value
   const [userConsultingHistory, setUserConsultingHistory] = useState<historyConsultingData[]>([])
   const {
     register,

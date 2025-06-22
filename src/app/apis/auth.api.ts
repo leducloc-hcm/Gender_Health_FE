@@ -1,13 +1,12 @@
-import type { AxiosError, AxiosResponse } from 'axios'
 import { fetcher } from '@/app/apis/fetcher'
 import type { LoginFormData, LoginResponse } from '@/app/pages/Auth/Login/models/login'
+import type { AxiosError, AxiosResponse } from 'axios'
+import type { AuthApiResponse } from '../models/ApiResponse'
 import type { ForgotPasswordFormData } from '../pages/Auth/ForgetPassword/models/ForgetPassword'
 import type { ResetPasswordRequest } from '../pages/Auth/ResetPassword/models/ResetPassword'
-import type { AuthApiResponse } from '../models/ApiResponse'
 import type { VerifyPasscodeRequest } from '../pages/Auth/VerifyPasscode/models/VerifyPasscode'
-import type { profileResponse } from '../pages/Customer/Profile/models/Profile'
-import type { StaffProfile } from '../pages/Staff/models/Staff'
 import type { profileConsultantResponse } from '../pages/Consultant/models/Consultant'
+import type { StaffProfile } from '../pages/Staff/models/Staff'
 
 export interface UserProfile {
   id: number

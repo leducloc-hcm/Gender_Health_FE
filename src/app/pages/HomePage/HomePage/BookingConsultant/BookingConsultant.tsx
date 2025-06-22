@@ -35,7 +35,7 @@ const BookingConsultant = () => {
     setError(null)
     try {
       const response = await customerApi.getConsultantWorkSchedule()
-      setConsultantsData(response)
+      setConsultantsData(response as any)
     } catch (error) {
       console.error('Failed to fetch consultants:', error)
       setError('Failed to load consultants. Please try again.')
