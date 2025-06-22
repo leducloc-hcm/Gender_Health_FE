@@ -144,7 +144,6 @@ const EditConsultantModal = memo(
                   value={(() => {
                     const fieldValue = selectedConsultant[id as keyof ProfileConsultantResult]
 
-                    // Handle specific formatters
                     if (id === 'date_of_birth' && fieldValue && typeof fieldValue === 'string') {
                       return format(new Date(fieldValue), 'yyyy-MM-dd')
                     }
