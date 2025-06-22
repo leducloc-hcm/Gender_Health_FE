@@ -153,10 +153,10 @@ export default function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
-                  onClick={() => nav('/settings')}
+                  onClick={() => nav('/sti-tracking')}
                 >
                   <Settings className='mr-3 h-4 w-4 text-pink-500' />
-                  <span>Settings</span>
+                  <span>STI Tracking</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className='bg-pink-100' />
                 <DropdownMenuItem

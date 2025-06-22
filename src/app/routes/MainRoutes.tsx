@@ -48,7 +48,8 @@ import TestPackageManagement from '../pages/Admin/TestPackageManagement/TestPack
 import TypeOfTestManagement from '../pages/Admin/TypeOfTestManagement/TypeOfTestManagement'
 import OrderManagement from '../pages/Admin/OrderManagement/OrderManagement'
 import TestManagement from '../pages/Admin/TestManagement/TestManagement'
-import StiTracking from '@/app/pages/Staff/StiTracking/StiTracking'
+import StiTrackingStaff from '@/app/pages/Staff/StiTracking/StiTracking'
+import StiTracking from '@/app/pages/HomePage/StiTracking/StiTracking'
 
 export default function MainRoutes() {
   return (
@@ -77,6 +78,7 @@ export default function MainRoutes() {
           <Route path='/forum' element={<Forum />} />
           <Route path='/payment/success' element={<PaymentSuccess />} />
           <Route path='/payment/failed' element={<PaymentFailed />} />
+          <Route path='/sti-tracking' element={<StiTracking />} />
         </Route>
 
         <Route path='/login/oauth' element={<OauthLogin />} />
@@ -126,7 +128,7 @@ export default function MainRoutes() {
           <Route path={staffPath.tagEdit} element={<EditTag />} />
           <Route path={staffPath.schedule} element={<Schedule />} />
           <Route path={staffPath.ConsultantProfileManagement} element={<ProfileConsultantManagement />} />
-          <Route path={staffPath.stisTracking} element={<StiTracking />} />
+          <Route path={staffPath.stisTracking} element={<StiTrackingStaff />} />
         </Route>
       </Routes>
     </>

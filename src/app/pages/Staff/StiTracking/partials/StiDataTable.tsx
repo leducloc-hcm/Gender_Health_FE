@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
 import { Badge } from '@/app/components/ui/badge'
-import { Search, Filter, Users, TestTube, FileBarChart } from 'lucide-react'
+import { Search, Filter, TestTube } from 'lucide-react'
 
 type DataTableProps<TData> = {
   columns: ColumnDef<TData>[]
