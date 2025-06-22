@@ -3,46 +3,14 @@ import type {
   CreateMenstrualCycleData,
   MenstrualCycleResponse
 } from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/models/cycleinput.type'
+import type { CreateFertilityData } from '@/app/pages/HomePage/MenstrualCycle/partials/Fertility/models/fertility.type'
+import type { CreateMedicationData } from '@/app/pages/HomePage/MenstrualCycle/partials/Medication/models/medication.type'
+import type { CreateMoodData } from '@/app/pages/HomePage/MenstrualCycle/partials/Mood/models/mood.type'
+import type {
+  CreateSymptomData,
+  DailySymptomResponse
+} from '@/app/pages/HomePage/MenstrualCycle/partials/Symtomps/models/symtomps.type'
 import type { AxiosResponse } from 'axios'
-
-export interface CreateSymptomData {
-  menstrual_cycle_id: number
-  date: string
-  symptomType: string
-  description?: string
-}
-
-export interface CreateFertilityData {
-  menstrual_cycle_id: number
-  temperature: number
-  weight: number
-  description?: string
-  cervicalMucus?: string
-}
-
-export interface CreateMedicationData {
-  menstrual_cycle_id: number
-  name: string
-  dosage: string
-  frequency: string
-  startDate: string
-  endDate: string
-  notes?: string
-}
-
-export interface CreateMoodData {
-  menstrual_cycle_id: number
-  moodType: string
-  description: string
-}
-
-export interface DailySymptomResponse {
-  message: string
-  data: {
-    id: number
-    menstrualCycleId: number
-  }
-}
 
 export const menstrualApi = {
   createMenstrualCycle: async (data: CreateMenstrualCycleData): Promise<MenstrualCycleResponse> => {

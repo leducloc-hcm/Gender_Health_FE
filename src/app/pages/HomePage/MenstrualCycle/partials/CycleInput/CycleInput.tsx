@@ -1,19 +1,16 @@
 import { menstrualApi } from '@/app/apis/menstrual.api'
-import { profileApi } from '@/app/apis/profile.api'
 import { Button } from '@/app/components/ui/button'
-import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
+import { sUserProfile } from '@/app/hooks/sUserProfile'
 import type {
   CycleInputProps,
   FormData
 } from '@/app/pages/HomePage/MenstrualCycle/partials/CycleInput/models/cycleinput.type'
-import { Calendar, Heart, Loader2, Info } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Calendar, Info, Loader2 } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 export default function CycleInput({ onNext }: CycleInputProps) {
-  const [userProfile, setUserProfile] = useState<getProfileResult | null>(null)
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -28,34 +25,15 @@ export default function CycleInput({ onNext }: CycleInputProps) {
     }
   })
 
-  useEffect(() => {
-    const getUserProfile = async () => {
-      try {
-        setIsLoadingProfile(true)
-        const response = await profileApi.getProfile()
-        setUserProfile(response.result)
-      } catch (error: any) {
-        console.error('Failed to fetch user profile:', error)
-        toast.error(error.response?.data?.message || 'Failed to load user profile')
-      } finally {
-        setIsLoadingProfile(false)
-      }
-    }
-
-    getUserProfile()
-  }, [])
-
   const onSubmit = async (data: FormData) => {
-    if (!userProfile?.customer_profile_id) {
+    if (!sUserProfile?.value.customer_profile_id) {
       toast.error('User profile not found')
       return
     }
-
     try {
       setIsSubmitting(true)
-
       const requestData = {
-        customer_profile_id: userProfile.customer_profile_id,
+        customer_profile_id: sUserProfile.value.customer_profile_id,
         startDate: data.startDate,
         cycleLength: data.cycleLength,
         periodLength: data.periodLength
@@ -72,26 +50,6 @@ export default function CycleInput({ onNext }: CycleInputProps) {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  if (isLoadingProfile) {
-    return (
-      <div className='w-full max-w-md mx-auto'>
-        <div className='bg-white rounded-2xl shadow-lg border border-pink-100'>
-          <div className='flex items-center justify-center py-12'>
-            <div className='flex flex-col items-center space-y-3'>
-              <div className='relative'>
-                <div className='w-12 h-12 bg-gradient-to-r from-pink-100 to-rose-100 rounded-full flex items-center justify-center'>
-                  <Heart className='w-6 h-6 text-pink-500' />
-                </div>
-                <Loader2 className='w-4 h-4 animate-spin text-pink-500 absolute -top-1 -right-1' />
-              </div>
-              <p className='text-gray-600 text-sm font-medium'>Loading your profile...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (

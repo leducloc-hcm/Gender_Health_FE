@@ -2,10 +2,11 @@ import { fetcher } from '@/app/apis/fetcher'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
+import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import type { UserProfile } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import type { PredictionData } from '@/app/pages/HomePage/MenstrualCycle/partials/Summary/models/summary.type'
 import { addDays, differenceInDays, format, isWithinInterval } from 'date-fns'
-import { Activity, Baby, Calendar, Clock, Droplets, Loader2, Sparkles, Target, TrendingUp } from 'lucide-react'
+import { Activity, Baby, Calendar, Clock, Droplets, Plus, Target, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -336,7 +337,7 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
   )
 }
 
-export default function Summary() {
+export default function Summary({ onStartNewCycle }: any) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [predictionData, setPredictionData] = useState<PredictionData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -397,28 +398,7 @@ export default function Summary() {
   }
 
   if (isLoading) {
-    return (
-      <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center'>
-        <Card className='w-full max-w-md mx-auto shadow-2xl border-0 bg-white/90 backdrop-blur-sm'>
-          <CardContent className='p-8'>
-            <div className='flex flex-col items-center justify-center space-y-6'>
-              <div className='relative'>
-                <div className='w-16 h-16 bg-gradient-to-r from-pink-400 to-rose-500 rounded-full flex items-center justify-center'>
-                  <Loader2 className='w-8 h-8 animate-spin text-white' />
-                </div>
-                <Sparkles className='w-6 h-6 text-yellow-400 absolute -top-2 -right-2 animate-bounce' />
-              </div>
-              <div className='text-center'>
-                <h3 className='text-xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent'>
-                  Creating Your Cycle Summary
-                </h3>
-                <p className='text-gray-600 mt-2'>Analyzing your personal data...</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
   if (error) {
@@ -617,6 +597,15 @@ export default function Summary() {
             </Card>
           </div>
         )}
+      </div>
+      <div className='fixed bottom-6 right-6 z-50'>
+        <Button
+          onClick={onStartNewCycle}
+          className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center'
+          title='Start New Cycle'
+        >
+          <Plus className='w-6 h-6' />
+        </Button>
       </div>
     </div>
   )

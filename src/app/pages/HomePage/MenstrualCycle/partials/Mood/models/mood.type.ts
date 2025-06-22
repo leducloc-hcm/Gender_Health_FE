@@ -9,3 +9,9 @@ export interface MoodData {
   moodType: string
   description: string
 }
+
+export interface CreateMoodData {
+  menstrual_cycle_id: number
+  moodType: string
+  description: string
+}

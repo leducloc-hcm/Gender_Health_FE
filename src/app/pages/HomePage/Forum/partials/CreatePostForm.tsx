@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardHeader } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
+import { sUserProfile } from '@/app/hooks/sUserProfile'
 import { Image as ImageIcon, Sparkles } from 'lucide-react'
 
 interface CreatePostFormProps {
@@ -16,9 +17,9 @@ export default function CreatePostForm({ onCreateClick }: CreatePostFormProps) {
         <div className='flex items-center gap-4'>
           <div className='relative'>
             <Avatar className='h-14 w-14 ring-4 ring-pink-100 shadow-lg'>
-              <AvatarImage src='/placeholder.svg?height=56&width=56' alt='User' />
+              <AvatarImage src={sUserProfile.value.avatar} alt='User' />
               <AvatarFallback className='bg-gradient-to-br from-pink-500 to-rose-500 text-white text-lg font-semibold'>
-                JD
+                {sUserProfile.value.name || 'U'}
               </AvatarFallback>
             </Avatar>
             <div className='absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white'></div>
