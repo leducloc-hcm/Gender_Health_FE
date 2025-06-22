@@ -7,12 +7,10 @@ export interface ConsultantFormData {
   endTime: string
   consultant_profile_id?: number
 }
-
 export interface ConsultantApproveResponse {
   message: string
   data: Data
 }
-
 export interface Data {
   id: number
   consultantProfileId: number
