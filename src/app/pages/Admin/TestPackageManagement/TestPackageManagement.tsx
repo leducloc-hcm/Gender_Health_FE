@@ -28,10 +28,10 @@ export default function TestPackageManagement() {
     {
       accessorKey: 'code',
       header: ({ column }) => (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <p className='flex justify-start' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           Code
           <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
+        </p>
       ),
       cell: ({ row }) => (
         <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>{row.original.code || 'No code'}</div>
@@ -40,10 +40,10 @@ export default function TestPackageManagement() {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <p className='flex justify-start' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           Name
           <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
+        </p>
       ),
       cell: ({ row }) => (
         <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>{row.original.name || 'No name'}</div>
@@ -52,10 +52,10 @@ export default function TestPackageManagement() {
     {
       accessorKey: 'price',
       header: ({ column }) => (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Price(VND)
+        <p className='flex justify-start' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Price (VND)
           <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
+        </p>
       ),
       cell: ({ row }) => (
         <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
@@ -65,7 +65,7 @@ export default function TestPackageManagement() {
     },
     {
       accessorKey: 'description',
-      header: 'Description',
+      header: () => <p className='text-start'>Description</p>,
       cell: ({ row }) => (
         <div
           title={row.original.description || 'No description'}
@@ -77,7 +77,7 @@ export default function TestPackageManagement() {
     },
     {
       accessorKey: 'tests',
-      header: 'Tests',
+      header: () => <p className='text-start'>Tests</p>,
       cell: ({ row }) => (
         <div className='w-full max-w-full overflow-hidden'>
           <div className='flex flex-wrap gap-1 overflow-y-auto'>
@@ -99,11 +99,11 @@ export default function TestPackageManagement() {
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: () => <p className='text-start'>Actions</p>,
       cell: ({ row }) => {
         const item = row.original
         return (
-          <div className='flex items-center justify-center gap-2 w-[100px]'>
+          <div className='flex items-center justify-start gap-2 w-[100px]'>
             <Button
               onClick={() => {
                 setEditItem(item)
