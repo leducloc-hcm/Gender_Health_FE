@@ -141,7 +141,7 @@ const CalendarBooking = () => {
       const profileResponse = await authApi.getProfileConsultant()
       const consultantProfileId = profileResponse.result.consultant_profile_id
       const response = await scheduleApi.getConsultantSchedule(consultantProfileId as number)
-      const mappedEvents = mapToCalendarEvents(response.data)
+      const mappedEvents = mapToCalendarEvents(response.data as any[])
       setEvents(mappedEvents)
     } catch (error) {
       console.error('Error fetching calendar schedule:', error)

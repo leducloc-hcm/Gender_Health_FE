@@ -1,4 +1,3 @@
-import type { DataResponseCalendar } from '@/app/pages/Consultant/models/Calendar'
 import type { AxiosError } from 'axios'
 import type { ConsultantApproveResponse, ConsultantFormData } from '../pages/Consultant/models/Consultant'
 import { fetcher } from './fetcher'
