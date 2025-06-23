@@ -47,13 +47,15 @@ export default function OrderManagement() {
       cell: ({ row }) => <div className='truncate text-sm text-gray-700 max-w-xs text-start'>{row.original.id}</div>
     },
     {
-      accessorKey: 'customerProfile.name',
+      id: 'customer_name',
       header: () => <p className='text-start'>Customer Name</p>,
+      accessorFn: (row) => row.customerProfile?.name,
       cell: ({ row }) => (
         <div className='truncate text-sm text-gray-700 max-w-xs text-start'>
           {row.original.customerProfile?.name || 'No name'}
         </div>
-      )
+      ),
+      filterFn: 'includesString'
     },
     {
       accessorKey: 'phone',
