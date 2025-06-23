@@ -11,6 +11,7 @@ import { Bell } from 'lucide-react'
 import { io, Socket } from 'socket.io-client'
 import { fetcher } from '@/app/apis/fetcher'
 import { setStaffSchedule } from '@/app/hooks/sStaffSchedule'
+import { notificationApi } from '@/app/apis/notification.api'
 
 type Notification = {
   id: number
@@ -62,17 +63,23 @@ const NotificationDropdown = () => {
       socket.disconnect()
     }
   }, [])
-
   const handleMarkAsRead = async (notif: Notification) => {
     if (notif.status === 'READ') return
     try {
-      await fetcher.put(`/notifications/mark-as-read/${notif.id}`)
+      await notificationApi.markAsRead(notif.id)
       setNotifications((prev) => prev.map((n) => (n.id === notif.id ? { ...n, status: 'READ' } : n)))
     } catch (e) {
       console.error('Error marking notification as read:', e)
     }
   }
-
+  const handleMarkAsReadAll = async () => {
+    try {
+      await notificationApi.markAsReadAll()
+      setNotifications((prev) => prev.map((n) => ({ ...n, status: 'READ' })))
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error)
+    }
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -191,8 +198,13 @@ const NotificationDropdown = () => {
         <DropdownMenuSeparator className='bg-pink-100' />
 
         {/* Footer */}
-        <DropdownMenuItem className='p-3 sm:p-4 hover:bg-pink-50 text-pink-600 font-medium text-sm justify-center cursor-pointer transition-colors duration-150'>
-          <span>View All Notifications</span>
+        <DropdownMenuItem
+          onClick={() => {
+            handleMarkAsReadAll()
+          }}
+          className='p-3 sm:p-4 hover:bg-pink-50 text-pink-600 font-medium text-sm justify-center cursor-pointer transition-colors duration-150'
+        >
+          <span>Mark as read all</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
