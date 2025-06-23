@@ -211,7 +211,6 @@ const EditConsultantModal = memo(
   }
 )
 
-// ViewConsultantModal Component
 const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: ViewConsultantModalProps) => (
   <Dialog open={isOpen} onOpenChange={onOpenChange}>
     <DialogContent className='sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>

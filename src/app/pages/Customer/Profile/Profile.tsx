@@ -27,6 +27,7 @@ import type {
   UpdateProfileInput,
   UserProfile
 } from './models/Profile'
+import { Link } from 'react-router-dom'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -533,9 +534,11 @@ export default function Profile() {
                   <Heart className='w-5 h-5 text-rose-500' />
                   Lịch đặt hẹn
                 </h3>
-                <Button size='sm' className='bg-rose-500 hover:bg-rose-600 text-white'>
-                  Đặt lịch mới
-                </Button>
+                <Link to={'../booking-consultant'}>
+                  <Button size='sm' className='bg-rose-500 hover:bg-rose-600 text-white'>
+                    Đặt lịch mới
+                  </Button>
+                </Link>
               </div>
 
               <div className='space-y-4'>

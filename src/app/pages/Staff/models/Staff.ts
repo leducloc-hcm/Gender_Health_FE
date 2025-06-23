@@ -1,9 +1,9 @@
 export interface StaffProfile {
   message: string
-  result: Result
+  result: StaffProfileResult
 }
 
-export interface Result {
+export interface StaffProfileResult {
   id: number
   email: string
   role: string
