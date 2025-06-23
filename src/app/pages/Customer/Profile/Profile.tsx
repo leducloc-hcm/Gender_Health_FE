@@ -27,6 +27,7 @@ import type {
   UpdateProfileInput,
   UserProfile
 } from './models/Profile'
+import { Link } from 'react-router-dom'
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -533,9 +534,11 @@ export default function Profile() {
                   <Heart className='w-5 h-5 text-rose-500' />
                   Lịch đặt hẹn
                 </h3>
-                <Button size='sm' className='bg-rose-500 hover:bg-rose-600 text-white'>
-                  Đặt lịch mới
-                </Button>
+                <Link to={'../booking-consultant'}>
+                  <Button size='sm' className='bg-rose-500 hover:bg-rose-600 text-white'>
+                    Đặt lịch mới
+                  </Button>
+                </Link>
               </div>
 
               <div className='space-y-4'>
@@ -555,27 +558,12 @@ export default function Profile() {
                         {dayjs(history.scheduleAt).format('DD/MM/YYYY ')}- {dayjs(history.startedAt).format('HH:mm')} -
                         {dayjs(history.endedAt).format('HH:mm')}
                       </div>
-                      <div className='text-xs text-gray-500 mt-2'>Phòng 205, Tầng 2</div>
+                      <div className='text-xs text-gray-500 mt-2'>Online Meeting</div>
                     </div>
                   ))
                 ) : (
                   <div className='text-gray-500 text-sm'>Bạn chưa có lịch hẹn nào.</div>
                 )}
-              </div>
-
-              <div className='grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-rose-100'>
-                <div className='text-center'>
-                  <div className='text-xl font-bold text-rose-600'>12</div>
-                  <div className='text-xs text-gray-600'>Tổng lịch hẹn</div>
-                </div>
-                <div className='text-center'>
-                  <div className='text-xl font-bold text-green-600'>8</div>
-                  <div className='text-xs text-gray-600'>Hoàn thành</div>
-                </div>
-                <div className='text-center'>
-                  <div className='text-xl font-bold text-blue-600'>2</div>
-                  <div className='text-xs text-gray-600'>Sắp tới</div>
-                </div>
               </div>
             </CardContent>
           </Card>

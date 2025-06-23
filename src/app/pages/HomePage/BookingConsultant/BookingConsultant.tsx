@@ -219,11 +219,6 @@ const BookingConsultant = () => {
                       </div>
                     </div>
                   </div>
-                  <div className='text-right'>
-                    <div className='text-2xl font-bold text-rose-600'>
-                      ${consultant.consultantProfile.consultationFee}
-                    </div>
-                  </div>
                 </div>
               </CardHeader>
 

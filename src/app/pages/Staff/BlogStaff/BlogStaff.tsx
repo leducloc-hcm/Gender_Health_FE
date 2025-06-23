@@ -5,6 +5,7 @@ import { fetchBlogs, deleteBlog, type BlogPost } from '@/app/apis/blog.api'
 import DataTable from '@/app/pages/Staff/BlogStaff/DataTable'
 import { toast } from 'react-toastify'
 import { getBlogColumns } from './columns'
+import { Activity } from 'lucide-react'
 
 export default function BlogStaffTable() {
   const [blogs, setBlogs] = useState<BlogPost[]>([])
@@ -47,14 +48,22 @@ export default function BlogStaffTable() {
   }
 
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Manage Blogs</h1>
+    <div className='space-y-6'>
+      <div className='bg-white p-6 rounded-lg  border'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-3'>
+            <div className='p-2 bg-blue-100 rounded-lg'>
+              <Activity className='h-6 w-6 text-blue-600' />
+            </div>
+            <div>
+              <h1 className='text-2xl font-bold text-gray-900'>Blog Management</h1>
+              <p className='text-gray-600 mt-1'>Monitor and manage Blog</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {isLoading ? (
-        <p className='text-gray-500'>Đang tải dữ liệu...</p>
-      ) : (
-        <DataTable data={blogs} columns={getBlogColumns({ onDelete: handleDelete })} />
-      )}
+      <DataTable data={blogs} columns={getBlogColumns({ onDelete: handleDelete })} />
     </div>
   )
 }

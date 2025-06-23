@@ -182,7 +182,7 @@ export default function CustomerSidebar() {
                   <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className='bg-pink-100' />
-                <DropdownMenuItem className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'>
+                <DropdownMenuItem className='rounded-lg mx-1 cursor-pointer my-1 text-red-600 hover:bg-red-50 hover:text-red-700 '>
                   <LogOut className='mr-3 h-4 w-4' />
                   <span>Log out</span>
                 </DropdownMenuItem>

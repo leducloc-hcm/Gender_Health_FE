@@ -60,7 +60,7 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className='flex items-center py-4 space-x-2'>
+      <div className='flex items-center pb-6 space-x-2'>
         <Input
           placeholder='Filter title...'
           value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}

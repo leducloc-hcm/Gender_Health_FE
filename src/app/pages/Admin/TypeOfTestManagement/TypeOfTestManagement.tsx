@@ -34,42 +34,42 @@ export default function TypeOfTestManagement() {
     {
       accessorKey: 'code',
       header: ({ column }) => (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <p className='flex justify-start' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           Code
           <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
+        </p>
       ),
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>{row.original.code || 'No code'}</div>
+        <div className='truncate text-sm text-gray-700 max-w-xs text-start'>{row.original.code || 'No code'}</div>
       )
     },
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <p className='flex justify-start' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           Name
           <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
+        </p>
       ),
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>{row.original.name || 'No name'}</div>
+        <div className='truncate text-sm text-gray-700 max-w-xs text-start'>{row.original.name || 'No name'}</div>
       )
     },
     {
       accessorKey: 'description',
-      header: 'Description',
+      header: () => <p className='text-start'>Description</p>,
       cell: ({ row }) => (
         <div
-          title={row.original.description || 'No description'}
-          className='truncate text-sm text-gray-700 max-w-xs flex text-start'
+          className='truncate text-sm text-gray-700 max-w-xs text-start'
+          title={row.original.description || 'No address'}
         >
-          {row.original.description || 'No description'}
+          {row.original.description || 'No address'}
         </div>
       )
     },
     {
       accessorKey: 'tests',
-      header: 'Tests',
+      header: () => <p className='text-start'>Tests</p>,
       cell: ({ row }) => (
         <div className='w-full max-w-full overflow-hidden'>
           <div className='flex flex-wrap gap-1 overflow-y-auto'>
@@ -91,11 +91,11 @@ export default function TypeOfTestManagement() {
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: () => <p className='text-start'>Actions</p>,
       cell: ({ row }) => {
         const item = row.original
         return (
-          <div className='flex items-center justify-center gap-2'>
+          <div className='flex items-center justify-start gap-2'>
             <Button
               onClick={() => {
                 setEditItem(item)

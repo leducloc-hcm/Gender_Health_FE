@@ -50,7 +50,7 @@ export default function DataTableTags<TData>({ columns, data }: DataTableProps<T
 
   return (
     <div>
-      <div className='flex items-center py-4 space-x-2'>
+      <div className='flex items-center pb-6 space-x-2'>
         <Input
           placeholder='Filter name...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}

@@ -108,6 +108,9 @@ export default function Header() {
             >
               Booking Consultant
             </Link>
+            <Link to='/calendar' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+              Calendar
+            </Link>
           </nav>
           {accessToken ? (
             <DropdownMenu>
@@ -160,7 +163,7 @@ export default function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className='bg-pink-100' />
                 <DropdownMenuItem
-                  className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'
+                  className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer'
                   onClick={() => {
                     localStorage.removeItem('access_token')
                     localStorage.removeItem('refresh_token')

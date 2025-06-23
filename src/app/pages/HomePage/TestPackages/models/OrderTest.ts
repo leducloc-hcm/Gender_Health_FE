@@ -16,11 +16,11 @@ export interface OrderFormRequest {
 }
 
 // Order form response
-interface CustomerProfile {
+export interface CustomerProfile {
   name: string
 }
 
-interface OrderItem {
+export interface OrderItem {
   id: number
   code: string
   name: string
@@ -33,7 +33,7 @@ interface OrderItem {
   order_id: number
 }
 
-interface OrderData {
+export interface OrderData {
   id: number
   address: string
   phone: string
@@ -41,13 +41,18 @@ interface OrderData {
   created_at: string
   status: string
   total_amount: string
-  customer_profile_id: number
+  customer_profile_id?: number
   orderItems: OrderItem[]
-  payments: any[]
+  payments?: any[]
   customerProfile: CustomerProfile
 }
 
 export interface OrderFormResponse {
   message: string
-  data?: OrderData
+  data: OrderData
+}
+
+export interface OrderListResponse {
+  message: string
+  data: OrderData[]
 }
