@@ -40,7 +40,7 @@ import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
 import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
 import Schedule from '../pages/Staff/Schedule/Schedule'
-import BookingConsultant from '../pages/HomePage/HomePage/BookingConsultant/BookingConsultant'
+import BookingConsultant from '../pages/HomePage/BookingConsultant/BookingConsultant'
 import ProfileConsultantManagement from '../pages/Staff/ProfileConsultantManagement/ProfileConsultantManagement'
 import AccountManagement from '../pages/Admin/AccountManagement/AccountManagement'
 import PaymentManagement from '../pages/Admin/PaymentManagement/PaymentManagement'
@@ -52,6 +52,7 @@ import StiTrackingStaff from '@/app/pages/Staff/StiTracking/StiTracking'
 import StiTracking from '@/app/pages/HomePage/StiTracking/StiTracking'
 import ResultOfTest from '@/app/pages/Staff/ResultOfTest/ResultOfTest'
 import CreateResultOfTest from '@/app/pages/Staff/ResultOfTest/CreateResultOfTest'
+import CustomerCalendar from '../pages/HomePage/CustomerCalendar/CustomerCalendar'
 
 export default function MainRoutes() {
   return (
@@ -100,6 +101,7 @@ export default function MainRoutes() {
           <Route path={customerPath.dashboard} element={<Dashboard />} />
           <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
           <Route path={customerPath.orders} element={<Order />} />
+          <Route path={customerPath.customerCalendar} element={<CustomerCalendar />} />
         </Route>
 
         <Route path='/admin' element={<Admin />}>
