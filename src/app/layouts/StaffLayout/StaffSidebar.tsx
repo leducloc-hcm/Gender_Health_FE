@@ -1,15 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/app/components/ui/dropdown-menu'
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -17,19 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import {
-  Activity,
-  BookOpen,
-  CalendarFold,
-  ChevronDown,
-  FileText,
-  Home,
-  LogOut,
-  Settings,
-  ShoppingBag,
-  Tags,
-  User
-} from 'lucide-react'
+import { Activity, BookOpen, CalendarFold, FileText, Home, Tags, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [

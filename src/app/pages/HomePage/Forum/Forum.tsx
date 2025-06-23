@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react'
-import { toast } from 'react-toastify'
 import { questionApi } from '@/app/apis/question.api'
 import { replyApi } from '@/app/apis/reply.api'
 import { voteApi } from '@/app/apis/vote.api'
 import type { QuestionData, questionResquest } from '@/app/pages/HomePage/Forum/models/question.type'
 import type { ReplyData, ReplyRequest } from '@/app/pages/HomePage/Forum/models/reply.type'
-import type { VoteRequest, VoteData } from '@/app/pages/HomePage/Forum/models/vote.type'
+import type { VoteData, VoteRequest } from '@/app/pages/HomePage/Forum/models/vote.type'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
-import ForumHeader from './partials/ForumHeader'
+import { sUserProfile } from '@/app/hooks/sUserProfile'
 import CreatePostForm from './partials/CreatePostForm'
-import PostCard from './partials/PostCard'
 import CreatePostModal from './partials/CreatePostModal'
 import EditPostModal from './partials/EditPostModal'
+import ForumHeader from './partials/ForumHeader'
 import LoadingSpinner from './partials/LoadingSpinner'
-import { sUserProfile } from '@/app/hooks/sUserProfile'
+import PostCard from './partials/PostCard'
 
 export default function Forum() {
   // States
@@ -61,10 +61,11 @@ export default function Forum() {
       setLoading(false)
     }
   }
+  const currentUser = sUserProfile.use()
 
   const fetchUserVote = async (questionId?: number, replyId?: number) => {
     try {
-      const currentUserId = sUserProfile.value.id
+      const currentUserId = currentUser.id
       if (!currentUserId) return
 
       let response
@@ -90,9 +91,19 @@ export default function Forum() {
     try {
       setReplyLoading((prev) => ({ ...prev, [questionId]: true }))
       const response = await replyApi.getRepliesByQuestionId(questionId)
-      setReplies((prev) => ({ ...prev, [questionId]: response.data || [] }))
 
-      for (const reply of response.data || []) {
+      // Normalize data để đảm bảo _count.childReplies luôn có giá trị
+      const normalizedReplies = (response.data || []).map((reply: any) => ({
+        ...reply,
+        _count: {
+          votes: reply._count?.votes || 0,
+          childReplies: reply._count?.childReplies || 0
+        }
+      })) as ReplyData[]
+
+      setReplies((prev) => ({ ...prev, [questionId]: normalizedReplies }))
+
+      for (const reply of normalizedReplies) {
         await fetchUserVote(undefined, reply.id)
       }
     } catch (error) {
@@ -122,6 +133,29 @@ export default function Forum() {
               q.id === questionId ? { ...q, _count: { ...q._count, votes: (q._count?.votes || 1) - 1 } } : q
             )
           )
+        } else if (replyId) {
+          // Cập nhật số lượng vote cho reply với proper type safety
+          setReplies((prev) => {
+            const newReplies = { ...prev }
+            Object.keys(newReplies).forEach((questionKey) => {
+              const updateReplyVotes = (replies: ReplyData[]): ReplyData[] => {
+                return replies.map((reply) => {
+                  if (reply.id === replyId) {
+                    return {
+                      ...reply,
+                      _count: {
+                        votes: (reply._count?.votes || 1) - 1,
+                        childReplies: reply._count?.childReplies || 0 // Đảm bảo luôn có giá trị number
+                      }
+                    }
+                  }
+                  return reply
+                })
+              }
+              newReplies[parseInt(questionKey)] = updateReplyVotes(newReplies[parseInt(questionKey)])
+            })
+            return newReplies
+          })
         }
         toast.success('Like removed')
       } else {
@@ -134,22 +168,70 @@ export default function Forum() {
         const response = await voteApi.createVote(voteData)
         setUserLikes((prev) => ({ ...prev, [voteKey]: response.data }))
 
-        // Update the question's vote count immediately for better UX
         if (questionId) {
           setQuestions((prev) =>
             prev.map((q) =>
               q.id === questionId ? { ...q, _count: { ...q._count, votes: (q._count?.votes || 0) + 1 } } : q
             )
           )
+        } else if (replyId) {
+          // Cập nhật số lượng vote cho reply với proper type safety
+          setReplies((prev) => {
+            const newReplies = { ...prev }
+            Object.keys(newReplies).forEach((questionKey) => {
+              const updateReplyVotes = (replies: ReplyData[]): ReplyData[] => {
+                return replies.map((reply) => {
+                  if (reply.id === replyId) {
+                    return {
+                      ...reply,
+                      _count: {
+                        votes: (reply._count?.votes || 0) + 1,
+                        childReplies: reply._count?.childReplies || 0 // Đảm bảo luôn có giá trị number
+                      }
+                    }
+                  }
+                  return reply
+                })
+              }
+              newReplies[parseInt(questionKey)] = updateReplyVotes(newReplies[parseInt(questionKey)])
+            })
+            return newReplies
+          })
         }
         toast.success('Liked!')
       }
-
-      // Optionally refresh the data to ensure accuracy
-      // await fetchQuestions()
     } catch (error) {
       console.error('Error handling like:', error)
       toast.error('Failed to like')
+    }
+  }
+
+  const [replyingTo, setReplyingTo] = useState<{ replyId: number; questionId: number } | null>(null)
+  const [nestedReplyContent, setNestedReplyContent] = useState('')
+
+  const handleCreateNestedReply = async (parentReplyId: number, questionId: number) => {
+    const content = nestedReplyContent.trim()
+    if (!content) {
+      toast.error('Please enter a reply')
+      return
+    }
+
+    try {
+      const replyData: ReplyRequest = {
+        content,
+        question_id: questionId,
+        parent_reply_id: parentReplyId,
+        author_type: localStorage.getItem('user_role') || 'CUSTOMER'
+      }
+
+      await replyApi.createReply(replyData)
+      setNestedReplyContent('')
+      setReplyingTo(null)
+      await fetchReplies(questionId)
+      toast.success('Reply added successfully!')
+    } catch (error) {
+      console.error('Error creating nested reply:', error)
+      toast.error('Failed to add reply')
     }
   }
 
@@ -336,8 +418,6 @@ export default function Forum() {
     return <LoadingSpinner />
   }
 
-  console.log('re render ')
-
   return (
     <div className='min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50'>
       <div className='container mx-auto max-w-4xl py-8 px-4'>
@@ -355,16 +435,21 @@ export default function Forum() {
               replyLoading={replyLoading[question.id] || false}
               newComment={newComment[question.id] || ''}
               editingReply={editingReply}
+              replyingTo={replyingTo}
+              nestedReplyContent={nestedReplyContent}
               isLiked={isLiked}
               onLike={handleLike}
               onToggleComments={toggleComments}
               onEdit={openEditModal}
               onDelete={handleDeleteQuestion}
               onCreateReply={handleCreateReply}
+              onCreateNestedReply={handleCreateNestedReply}
               onUpdateReply={handleUpdateReply}
               onDeleteReply={handleDeleteReply}
               onCommentChange={(questionId, value) => setNewComment((prev) => ({ ...prev, [questionId]: value }))}
               onEditReply={setEditingReply}
+              onReplyTo={setReplyingTo}
+              onNestedReplyContentChange={setNestedReplyContent}
             />
           ))}
         </div>

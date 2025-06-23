@@ -21,30 +21,6 @@ export default function ViewOrderModal({ viewItem, isModalOpen, openModal, close
           <DialogTitle className='font-bold text-2xl mb-4'>Order Detail - No. {viewItem.id}</DialogTitle>{' '}
         </DialogHeader>
 
-        {/* <div className='grid grid-cols-2 gap-4 text-lg text-gray-700 mb-4'>
-          <div>
-            <strong>Customer:</strong> {viewItem.customerProfile?.name || 'N/A'}
-          </div>
-          <div>
-            <strong>Phone:</strong> {viewItem.phone}
-          </div>
-          <div>
-            <strong>Address:</strong> {viewItem.address}
-          </div>
-          <div>
-            <strong>Status:</strong> {getStatusBadge(viewItem.status)}
-          </div>
-          <div>
-            <strong>Total Amount:</strong> {Number(viewItem.total_amount).toLocaleString('vi-VN')}₫
-          </div>
-          <div>
-            <strong>Created At:</strong> {dayjs(viewItem.created_at).format('DD/MM/YYYY')}
-          </div>
-          <div className='col-span-2'>
-            <strong>Note:</strong> {viewItem.note || 'No note'}
-          </div>
-        </div> */}
-
          <div className='space-y-6'>
           {/* Customer Info */}
           <div className='grid grid-cols-2 gap-4'>

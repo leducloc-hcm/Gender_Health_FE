@@ -39,7 +39,7 @@ export const getResultColumns = ({ onCreateResult }: ResultColumnsProps): Column
         </div>
       </div>
     ),
-    filterFn: (row, id, value) => {
+    filterFn: (row, value) => {
       return (
         row.original.orderItem.order.customerProfile.name.toLowerCase().includes(value.toLowerCase()) ||
         row.original.orderItem.name.toLowerCase().includes(value.toLowerCase()) ||

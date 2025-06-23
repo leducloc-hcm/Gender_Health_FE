@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 // import { useNavigate } from 'react-router-dom'
 
-import { fetchBlogs, deleteBlog, type BlogPost } from '@/app/apis/blog.api'
+import { deleteBlog, fetchBlogs, type BlogPost } from '@/app/apis/blog.api'
 import DataTable from '@/app/pages/Staff/BlogStaff/DataTable'
+import { Activity } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { getBlogColumns } from './columns'
-import { Activity } from 'lucide-react'
 
 export default function BlogStaffTable() {
   const [blogs, setBlogs] = useState<BlogPost[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [, setIsLoading] = useState(false)
   // const navigate = useNavigate()
 
   // ✅ Hàm load dữ liệu từ API
