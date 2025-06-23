@@ -17,7 +17,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { BookOpen, CalendarFold, ChevronDown, Home, LogOut, Settings, ShoppingBag, Tags, User } from 'lucide-react'
+import {
+  Activity,
+  BookOpen,
+  CalendarFold,
+  ChevronDown,
+  FileText,
+  Home,
+  LogOut,
+  Settings,
+  ShoppingBag,
+  Tags,
+  User
+} from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [
@@ -49,12 +61,12 @@ const navigationItems = [
   {
     title: 'Stis-Tracking',
     url: '/staff/stis-tracking',
-    icon: BookOpen
+    icon: Activity
   },
   {
     title: 'Result Of Test',
     url: '/staff/result-of-test',
-    icon: BookOpen
+    icon: FileText
   }
 ]
 

@@ -16,20 +16,20 @@ import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
-import { Filter, Search, TestTube } from 'lucide-react'
+import { Filter, Search, FileText } from 'lucide-react'
 
 type DataTableProps<TData> = {
   columns: ColumnDef<TData>[]
   data: TData[]
 }
 
-export default function StiDataTable<TData>({ columns, data }: DataTableProps<TData>) {
+export default function ResultDataTable<TData>({ columns, data }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 5
+    pageSize: 10
   })
 
   const table = useReactTable({
@@ -53,29 +53,29 @@ export default function StiDataTable<TData>({ columns, data }: DataTableProps<TD
 
   return (
     <div className='space-y-6'>
-      {/* Filters */}
+      {/* Search and Filters */}
       <div className='flex items-center justify-between space-x-4'>
-        <div className='relative flex-1 justify-between max-w-sm'>
-          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400  h-4 w-4' />
+        <div className='relative bg-white flex-1 max-w-sm'>
+          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
           <Input
-            placeholder='Search by customer name...'
+            placeholder='Search by test name, customer, or ID...'
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
-            className='pl-10 border-gray-300 bg-white'
+            className='pl-10 border-gray-300'
           />
         </div>
 
-        <Badge variant='outline' className='flex items-center py-1 bg-white'>
+        <Badge variant='outline' className='flex items-center space-x-1 py-1 bg-white'>
           <Filter className='h-3 w-3' />
           <span>{table.getFilteredRowModel().rows.length} results</span>
         </Badge>
       </div>
 
-      <div className='rounded-lg min-h-[625px]'>
+      <div className=' rounded-lg min-h-[690px]'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='bg-gray-100'>
+              <TableRow key={headerGroup.id} className='bg-gray-50'>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className='font-semibold text-gray-700'>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
@@ -84,14 +84,12 @@ export default function StiDataTable<TData>({ columns, data }: DataTableProps<TD
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className=''>
+          <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className='hover:bg-gray-50 transition-colors'>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className='py-4 px-4 text-sm text-gray-700'>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
@@ -99,9 +97,9 @@ export default function StiDataTable<TData>({ columns, data }: DataTableProps<TD
               <TableRow>
                 <TableCell colSpan={columns.length} className='h-32 text-center'>
                   <div className='flex flex-col items-center justify-center space-y-2'>
-                    <TestTube className='h-8 w-8 text-gray-400' />
-                    <p className='text-gray-500'>No STI tracking records found</p>
-                    <p className='text-sm text-gray-400'>Records will appear here once tests are created</p>
+                    <FileText className='h-8 w-8 text-gray-400' />
+                    <p className='text-gray-500'>No report ready tests found</p>
+                    <p className='text-sm text-gray-400'>Tests will appear here when reports are ready</p>
                   </div>
                 </TableCell>
               </TableRow>

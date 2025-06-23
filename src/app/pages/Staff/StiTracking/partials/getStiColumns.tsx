@@ -120,27 +120,23 @@ export const getStiColumns = ({
   actionLoading
 }: StiColumnsProps): ColumnDef<Data>[] => [
   {
-    id: 'no',
+    accessorKey: 'id',
     header: ({ column }) => (
-      <div className='flex items-center justify-center'>
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='font-semibold'
-        >
-          No
-          <ArrowUpDown className='h-4 w-4' />
+      <div className='flex items-center justify-center '>
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Test Id
+          <ArrowUpDown className='ml-1 h-4 w-4' />
         </Button>
       </div>
     ),
     cell: ({ row }) => (
-      <div className='flex items-center justify-center space-x-3 min-w-[100px]'>
+      <div className='flex items-center justify-center space-x-3 '>
         <div className='text-sm font-semibold text-gray-900'>{row.original.id}</div>
       </div>
     )
   },
   {
-    accessorKey: 'customer',
+    accessorKey: 'name',
     header: () => (
       <div className='flex items-center justify-center'>
         <div>Customer Name</div>
@@ -153,8 +149,8 @@ export const getStiColumns = ({
     )
   },
   {
-    id: 'testId',
-    header: () => <div className='flex justify-center'>Test Packages</div>,
+    id: 'testName',
+    header: () => <div className='flex justify-center '>Test Packages</div>,
     cell: ({ row }) => <div className='flex justify-center'>{row.original.orderItem.name}</div>
   },
   {
@@ -190,7 +186,7 @@ export const getStiColumns = ({
         if (item.status === 'PSC_VISITED' || (item.pscVisited && !item.collectedDate)) {
           return {
             action: () => onSampleCollected(item.id),
-            label: 'Mark Sample Collected',
+            label: 'Mark Collected',
             loadingKey: `sample-${item.id}`,
             bgColor: 'bg-green-500 hover:bg-green-600',
             icon: TestTube

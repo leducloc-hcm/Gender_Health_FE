@@ -93,42 +93,40 @@ export default function StiTracking() {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 p-6'>
-      <div className='max-w-7xl mx-auto space-y-6'>
-        <div className='bg-white p-6 rounded-lg  border'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-3'>
-              <div className='p-2 bg-blue-100 rounded-lg'>
-                <Activity className='h-6 w-6 text-blue-600' />
-              </div>
-              <div>
-                <h1 className='text-2xl font-bold text-gray-900'>STI Tracking Management</h1>
-                <p className='text-gray-600 mt-1'>Monitor and manage STI test progress for all customers</p>
-              </div>
+    <div className='space-y-6'>
+      <div className='bg-white p-6 rounded-lg  border'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-3'>
+            <div className='p-2 bg-blue-100 rounded-lg'>
+              <Activity className='h-6 w-6 text-blue-600' />
             </div>
-
-            <Button
-              onClick={fetchStiData}
-              variant='outline'
-              className='flex items-center space-x-2 hover:bg-gray-50'
-              disabled={loading}
-            >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              <span>Refresh</span>
-            </Button>
+            <div>
+              <h1 className='text-2xl font-bold text-gray-900'>STI Tracking Management</h1>
+              <p className='text-gray-600 mt-1'>Monitor and manage STI test progress for all customers</p>
+            </div>
           </div>
-        </div>
 
-        <StiDataTable
-          data={stiData}
-          columns={getStiColumns({
-            onPscVisited: handlePscVisited,
-            onSampleCollected: handleSampleCollected,
-            onReportDate: handleReportDate,
-            actionLoading
-          })}
-        />
+          <Button
+            onClick={fetchStiData}
+            variant='outline'
+            className='flex items-center space-x-2 hover:bg-gray-50'
+            disabled={loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </Button>
+        </div>
       </div>
+
+      <StiDataTable
+        data={stiData}
+        columns={getStiColumns({
+          onPscVisited: handlePscVisited,
+          onSampleCollected: handleSampleCollected,
+          onReportDate: handleReportDate,
+          actionLoading
+        })}
+      />
     </div>
   )
 }
