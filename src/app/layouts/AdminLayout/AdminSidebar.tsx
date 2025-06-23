@@ -26,17 +26,17 @@ const navigationItems = [
     icon: LayoutDashboard
   },
   {
-    title: 'Account',
+    title: 'Accounts',
     url: '/admin/manage-account',
     icon: User
   },
   {
-    title: 'Payment',
+    title: 'Payments',
     url: '/admin/manage-payment',
     icon: CreditCard
   },
   {
-    title: 'Order',
+    title: 'Orders',
     url: '/admin/manage-order',
     icon: ShoppingCart
   },
@@ -51,7 +51,7 @@ const navigationItems = [
     icon: FileText
   },
   {
-    title: 'Test',
+    title: 'Tests',
     url: '/admin/manage-test',
     icon: FlaskConical
   }
@@ -77,7 +77,7 @@ export default function AdminSidebar() {
           </div>
         </SidebarHeader>
 
-        <SidebarContent className=' custom-scrollbar overflow-y-auto'>
+        <SidebarContent className='custom-scrollbar overflow-y-auto'>
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className='space-y-1'>
