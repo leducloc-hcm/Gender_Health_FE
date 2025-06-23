@@ -57,12 +57,12 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center pb-6'>
         <Input
           placeholder='Filter title...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
-          className='max-w-sm'
+          className='max-w-sm bg-white'
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
