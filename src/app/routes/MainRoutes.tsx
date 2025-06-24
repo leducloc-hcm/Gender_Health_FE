@@ -40,7 +40,7 @@ import PaymentSuccess from '../pages/HomePage/Payment/PaymentSuccess'
 import PaymentFailed from '../pages/HomePage/Payment/PaymentFailed'
 import CalendarBooking from '../pages/Consultant/CalendarBooking/CalendarBooking'
 import Schedule from '../pages/Staff/Schedule/Schedule'
-import BookingConsultant from '../pages/HomePage/HomePage/BookingConsultant/BookingConsultant'
+import BookingConsultant from '../pages/HomePage/BookingConsultant/BookingConsultant'
 import ProfileConsultantManagement from '../pages/Staff/ProfileConsultantManagement/ProfileConsultantManagement'
 import AccountManagement from '../pages/Admin/AccountManagement/AccountManagement'
 import PaymentManagement from '../pages/Admin/PaymentManagement/PaymentManagement'
@@ -52,6 +52,8 @@ import StiTrackingStaff from '@/app/pages/Staff/StiTracking/StiTracking'
 import StiTracking from '@/app/pages/HomePage/StiTracking/StiTracking'
 import ResultOfTest from '@/app/pages/Staff/ResultOfTest/ResultOfTest'
 import CreateResultOfTest from '@/app/pages/Staff/ResultOfTest/CreateResultOfTest'
+import CustomerCalendar from '../pages/HomePage/CustomerCalendar/CustomerCalendar'
+import ConsultingManagement from '../pages/Consultant/ConsultingManagement/ConsultingManagement'
 
 export default function MainRoutes() {
   return (
@@ -81,6 +83,7 @@ export default function MainRoutes() {
           <Route path='/payment/success' element={<PaymentSuccess />} />
           <Route path='/payment/failed' element={<PaymentFailed />} />
           <Route path='/sti-tracking' element={<StiTracking />} />
+          <Route path='/calendar' element={<CustomerCalendar />} />
         </Route>
 
         <Route path='/login/oauth' element={<OauthLogin />} />
@@ -116,6 +119,7 @@ export default function MainRoutes() {
         <Route path='/consultant' element={<Consultant />}>
           <Route index element={<Navigate to='/consultant/calendar' replace />} />
           <Route path='/consultant/calendar' element={<CalendarBooking />} />
+          <Route path='/consultant/ConsultingManagement' element={<ConsultingManagement />} />
         </Route>
 
         <Route path='/staff' element={<Staff />}>

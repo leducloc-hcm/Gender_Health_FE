@@ -219,11 +219,6 @@ const BookingConsultant = () => {
                       </div>
                     </div>
                   </div>
-                  <div className='text-right'>
-                    <div className='text-2xl font-bold text-rose-600'>
-                      ${consultant.consultantProfile.consultationFee}
-                    </div>
-                  </div>
                 </div>
               </CardHeader>
 
@@ -264,10 +259,7 @@ const BookingConsultant = () => {
                     <Globe className='w-4 h-4 text-rose-500' />
                     <span className='truncate'>{consultant.consultantProfile.website}</span>
                   </div>
-                  <div className='flex items-center gap-2 text-gray-600'>
-                    <Clock className='w-4 h-4 text-rose-500' />
-                    <span>Response: {consultant.consultantProfile.responseTime}</span>
-                  </div>
+
                   <div className='flex items-center gap-2 text-gray-600'>
                     <Activity className='w-4 h-4 text-rose-500' />
                     <span>Languages: {consultant.consultantProfile.languages?.join(', ')}</span>

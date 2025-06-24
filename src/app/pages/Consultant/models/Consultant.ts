@@ -28,10 +28,10 @@ export interface Data {
 
 export interface profileConsultantResponse {
   message: string
-  result: Result
+  result: consultantProfile
 }
 
-export interface Result {
+export interface consultantProfile {
   id: number
   email: string
   role: string
@@ -40,13 +40,13 @@ export interface Result {
   created_at: string
   updated_at: string
   name: string
-  bio: any
-  location: any
+  bio: string
+  location: string
   username: string
-  avatar: any
-  coverPhoto: any
-  date_of_birth: any
-  website: any
+  avatar: string
+  coverPhoto: string
+  date_of_birth: string
+  website: string
   phone_number: string
-  description: any
+  description: string
 }

@@ -23,33 +23,35 @@ export const getScheduleColumns = ({ onEdit, onView }: ScheduleColumnsProps): Co
         </Button>
       ),
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>{row.original.name || 'No name'}</div>
+        <div className='truncate text-sm text-gray-700 flex text-start justify-center'>
+          {row.original.name || 'No name'}
+        </div>
       )
     },
     {
       accessorKey: 'email',
       header: 'Email',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
-          {row.original.email || 'No email'}
-        </div>
+        <div className='truncate text-sm text-gray-700 flex justify-center'>{row.original.email || 'No email'}</div>
       )
     },
     {
       accessorKey: 'avatar',
       header: 'Avatar',
       cell: ({ row }) => (
-        <Avatar className='w-10 h-10 rounded-none'>
-          <AvatarImage src={`${row.original.avatar}`} />
-          <AvatarFallback>{row.original.name || 'N/A'}</AvatarFallback>
-        </Avatar>
+        <div className='flex justify-center'>
+          <Avatar className='w-10 h-10 rounded-none'>
+            <AvatarImage src={`${row.original.avatar}`} />
+            <AvatarFallback>{row.original.name || 'N/A'}</AvatarFallback>
+          </Avatar>
+        </div>
       )
     },
     {
       accessorKey: 'specialties',
       header: 'Specialties',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start'>
+        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start justify-center'>
           {row.original.specialties?.length > 0 ? row.original.specialties.join(', ') : 'No specialties'}
         </div>
       )

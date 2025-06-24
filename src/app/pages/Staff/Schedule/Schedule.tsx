@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { scheduleApi } from '@/app/apis/Schedule.api'
 import { getScheduleColumns } from './partials/columns'
-import DataTable from '../BlogStaff/DataTable'
 import type { schedule } from './partials/Schedule'
 import { toast } from 'react-toastify'
 import { useSocket } from '@/app/hooks/useSocket'
+import DataTable from './partials/DataTable'
 
 export interface WorkScheduleUpdate {
   workScheduleId: number

@@ -5,7 +5,8 @@ const customerPath = {
   testPackages: 'test-packages',
   blog: 'blog',
   orders: 'orders',
-  blogDetail: 'blog/:id'
+  blogDetail: 'blog/:id',
+  customerCalendar: 'calendar'
 }
 
 export default customerPath

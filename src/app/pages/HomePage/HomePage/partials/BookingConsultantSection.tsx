@@ -37,7 +37,6 @@ const BookingConsultantSection = () => {
           </p>
         </div>
 
-        {/* Consultants Carousel */}
         {}
         <div className='mb-8'>
           <Carousel className='w-full max-w-6xl mx-auto'>
@@ -47,10 +46,10 @@ const BookingConsultantSection = () => {
                   key={consultant.consultant_profile_id}
                   className='pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2 xl:basis-1/3'
                 >
-                  <Card className='h-full bg-white/90 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300'>
+                  <Card className='h-full bg-white/90 backdrop-blur-sm border-0 hover: transition-all duration-300'>
                     <CardHeader className='text-center pb-4'>
                       <div className='flex justify-center mb-4 relative'>
-                        <Avatar className='w-24 h-24 border-3 border-rose-200 shadow-lg'>
+                        <Avatar className='w-24 h-24 border-4 border-rose-200 '>
                           <AvatarImage
                             src={consultant.avatar || '/placeholder.svg'}
                             alt={consultant.name}

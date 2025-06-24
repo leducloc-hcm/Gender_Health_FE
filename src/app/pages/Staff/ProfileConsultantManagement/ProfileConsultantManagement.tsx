@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { format } from 'date-fns'
-import { memo, useEffect, useState, useCallback } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getScheduleColumns } from './partials/columns'
 import DataTable from './partials/DataTable'
@@ -18,7 +18,7 @@ export interface ProfileConsultantResult extends Omit<OriginalProfileConsultantR
   coverPhoto: string | File | null
 }
 
-interface EditConsultantModalProps {
+export interface EditConsultantModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   selectedConsultant: ProfileConsultantResult | null
@@ -27,7 +27,7 @@ interface EditConsultantModalProps {
   onCancel: () => void
 }
 
-interface ViewConsultantModalProps {
+export interface ViewConsultantModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   selectedConsultant: ProfileConsultantResult | null
@@ -36,11 +36,9 @@ interface ViewConsultantModalProps {
 // EditConsultantModal Component
 const EditConsultantModal = memo(
   ({ isOpen, onOpenChange, selectedConsultant, setSelectedConsultant, onSave, onCancel }: EditConsultantModalProps) => {
-    // State for image previews
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
     const [coverPhotoPreview, setCoverPhotoPreview] = useState<string | null>(null)
 
-    // Handle input changes with generic type
     const handleInputChange = <K extends keyof ProfileConsultantResult>(
       field: K,
       value: ProfileConsultantResult[K]
@@ -48,7 +46,6 @@ const EditConsultantModal = memo(
       setSelectedConsultant((prev) => (prev ? { ...prev, [field]: value } : prev))
     }
 
-    // Generate temporary URLs for image previews
     useEffect(() => {
       if (!selectedConsultant) {
         setAvatarPreview(null)
@@ -144,7 +141,6 @@ const EditConsultantModal = memo(
                   value={(() => {
                     const fieldValue = selectedConsultant[id as keyof ProfileConsultantResult]
 
-                    // Handle specific formatters
                     if (id === 'date_of_birth' && fieldValue && typeof fieldValue === 'string') {
                       return format(new Date(fieldValue), 'yyyy-MM-dd')
                     }
@@ -215,7 +211,6 @@ const EditConsultantModal = memo(
   }
 )
 
-// ViewConsultantModal Component
 const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: ViewConsultantModalProps) => (
   <Dialog open={isOpen} onOpenChange={onOpenChange}>
     <DialogContent className='sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>
