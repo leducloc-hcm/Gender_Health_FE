@@ -1,62 +1,34 @@
-export interface Root {
+export interface ConsultantSelfCalendar {
   message: string
-  data: calendarEventResponse[]
+  data: CalendarEventResponse[]
 }
 
-export interface calendarEventResponse {
+export interface CalendarEventResponse {
   id: number
-  consultantProfileId: number
-  customerProfileId: number
-  scheduleAt: string
-  startedAt?: string
-  endedAt?: string
+  title: string
+  description: string
+  location: string
+  date: string
+  startTime: string
+  endTime: string
   status: string
-  rating: string
-  feedback: string
-  consultantNote: string
-  customerNote: string
-  meetingLink: string
-  meetingPlatform: string
   createdAt: string
   updatedAt: string
-  consultantProfile: ConsultantProfile
+  customerProfileId: number
   customerProfile: CustomerProfile
-}
-
-export interface ConsultantProfile {
-  id: number
-  name: string
-  bio: string
-  location: string
-  username: string
-  avatar: string
-  coverPhoto: string
-  description?: string
-  phoneNumber: string
-  dateOfBirth: string
-  website: string
-  rating: number
-  totalReviews: string
-  experience: string
-  specialties: string[]
-  languages: string[]
-  responseTime: string
-  degree: string
-  hospital: string
-  userId: number
 }
 
 export interface CustomerProfile {
   id: number
   name: string
-  bio: string
-  location: string
+  bio: string | null
+  location: string | null
   username: string
   avatar: string
   coverPhoto: string
-  description: string
-  phoneNumber: string
-  dateOfBirth: string
-  website: string
+  description: string | null
+  phoneNumber: string | null
+  dateOfBirth: string | null
+  website: string | null
   userId: number
 }

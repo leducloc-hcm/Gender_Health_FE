@@ -53,6 +53,7 @@ import StiTracking from '@/app/pages/HomePage/StiTracking/StiTracking'
 import ResultOfTest from '@/app/pages/Staff/ResultOfTest/ResultOfTest'
 import CreateResultOfTest from '@/app/pages/Staff/ResultOfTest/CreateResultOfTest'
 import CustomerCalendar from '../pages/HomePage/CustomerCalendar/CustomerCalendar'
+import ConsultingManagement from '../pages/Consultant/ConsultingManagement/ConsultingManagement'
 
 export default function MainRoutes() {
   return (
@@ -118,6 +119,7 @@ export default function MainRoutes() {
         <Route path='/consultant' element={<Consultant />}>
           <Route index element={<Navigate to='/consultant/calendar' replace />} />
           <Route path='/consultant/calendar' element={<CalendarBooking />} />
+          <Route path='/consultant/ConsultingManagement' element={<ConsultingManagement />} />
         </Route>
 
         <Route path='/staff' element={<Staff />}>

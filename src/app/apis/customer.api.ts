@@ -1,3 +1,4 @@
+import type { ConsultantSelfCalendar } from '../pages/HomePage/CustomerCalendar/models/CustomerCalendar'
 import type {
   allConsultantResponse,
   BookingResponse,
@@ -33,6 +34,15 @@ export const customerApi = {
       return response.data
     } catch (error) {
       console.error('Failed to create symptom:', error)
+      throw error
+    }
+  },
+  getSelfSchedule: async (customerProfileId: number): Promise<ConsultantSelfCalendar> => {
+    try {
+      const response = await fetcher.get(`customer-schedule/customer/${customerProfileId}`)
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch self schedule:', error)
       throw error
     }
   }
