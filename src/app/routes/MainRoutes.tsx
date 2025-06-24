@@ -82,6 +82,7 @@ export default function MainRoutes() {
           <Route path='/payment/success' element={<PaymentSuccess />} />
           <Route path='/payment/failed' element={<PaymentFailed />} />
           <Route path='/sti-tracking' element={<StiTracking />} />
+          <Route path='/calendar' element={<CustomerCalendar />} />
         </Route>
 
         <Route path='/login/oauth' element={<OauthLogin />} />
@@ -101,7 +102,6 @@ export default function MainRoutes() {
           <Route path={customerPath.dashboard} element={<Dashboard />} />
           <Route path={customerPath.menstrualCycle} element={<MenstrualCycle />} />
           <Route path={customerPath.orders} element={<Order />} />
-          <Route path={customerPath.customerCalendar} element={<CustomerCalendar />} />
         </Route>
 
         <Route path='/admin' element={<Admin />}>
