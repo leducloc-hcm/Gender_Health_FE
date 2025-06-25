@@ -157,7 +157,6 @@ export default function Forum() {
             return newReplies
           })
         }
-        toast.success('Like removed')
       } else {
         // Like: Create a new vote
         const voteData: VoteRequest = {
@@ -198,7 +197,6 @@ export default function Forum() {
             return newReplies
           })
         }
-        toast.success('Liked!')
       }
     } catch (error) {
       console.error('Error handling like:', error)
