@@ -30,6 +30,9 @@ export default function StiTracking() {
   }
 
   const handlePscVisited = async (id: number) => {
+    if (!window.confirm('Are you sure you want to mark PSC as visited?')) {
+      return
+    }
     const actionKey = `psc-${id}`
     try {
       setActionLoading((prev) => ({ ...prev, [actionKey]: true }))
@@ -51,6 +54,9 @@ export default function StiTracking() {
   }
 
   const handleSampleCollected = async (id: number) => {
+    if (!window.confirm('Are you sure you want to mark sample as collected?')) {
+      return
+    }
     const actionKey = `sample-${id}`
     try {
       setActionLoading((prev) => ({ ...prev, [actionKey]: true }))
@@ -72,6 +78,9 @@ export default function StiTracking() {
   }
 
   const handleReportDate = async (id: number) => {
+    if (!window.confirm('Are you sure you want to set the report date?')) {
+      return
+    }
     const actionKey = `report-${id}`
     try {
       setActionLoading((prev) => ({ ...prev, [actionKey]: true }))

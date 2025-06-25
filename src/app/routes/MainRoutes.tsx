@@ -54,6 +54,7 @@ import ResultOfTest from '@/app/pages/Staff/ResultOfTest/ResultOfTest'
 import CreateResultOfTest from '@/app/pages/Staff/ResultOfTest/CreateResultOfTest'
 import CustomerCalendar from '../pages/HomePage/CustomerCalendar/CustomerCalendar'
 import ConsultingManagement from '../pages/Consultant/ConsultingManagement/ConsultingManagement'
+import ViewResultOfTest from '@/app/pages/Staff/ResultOfTest/ViewResultOfTest'
 
 export default function MainRoutes() {
   return (
@@ -137,6 +138,7 @@ export default function MainRoutes() {
           <Route path={staffPath.stisTracking} element={<StiTrackingStaff />} />
           <Route path={staffPath.resultOfTest} element={<ResultOfTest />} />
           <Route path={staffPath.createResultOfTest} element={<CreateResultOfTest />} />
+          <Route path={staffPath.viewResultOfTest} element={<ViewResultOfTest />} />
         </Route>
       </Routes>
     </>

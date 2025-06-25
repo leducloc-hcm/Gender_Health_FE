@@ -12,7 +12,8 @@ const staffPath = {
   ConsultantProfileManagement: 'consultant-profile-management',
   stisTracking: 'stis-tracking',
   resultOfTest: 'result-of-test',
-  createResultOfTest: 'result-of-test/create/:id'
+  createResultOfTest: 'result-of-test/create/:id',
+  viewResultOfTest: 'result-of-test/view/:id'
 }
 
 export default staffPath
