@@ -18,7 +18,7 @@ const navigationItems = [
     icon: Home
   },
   {
-    title: 'Consultant Profile Management',
+    title: 'Consultant Management',
     url: '/staff/consultant-profile-management',
     icon: User
   },

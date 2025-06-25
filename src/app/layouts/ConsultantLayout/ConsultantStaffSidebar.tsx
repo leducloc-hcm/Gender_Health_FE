@@ -17,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { ChevronDown, LogOut, Settings, ShoppingBag, User, CalendarHeart } from 'lucide-react'
+import { ChevronDown, LogOut, Settings, ShoppingBag, User, CalendarHeart, FolderKanban } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [
@@ -25,6 +25,11 @@ const navigationItems = [
     title: 'Calendar',
     url: '/consultant/calendar',
     icon: CalendarHeart
+  },
+  {
+    title: 'Consulting',
+    url: '/consultant/ConsultingManagement',
+    icon: FolderKanban
   }
 ]
 

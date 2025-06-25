@@ -15,10 +15,10 @@ export interface BookedBy {
 
 export interface DataResponseCalendar {
   message: string
-  data: SieuNhanDo[]
+  data: calendarEventResponse[]
 }
 
-export interface SieuNhanDo {
+export interface calendarEventResponse {
   id: number
   consultantProfileId: number
   title: string
