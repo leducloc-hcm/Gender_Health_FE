@@ -55,6 +55,9 @@ import CreateResultOfTest from '@/app/pages/Staff/ResultOfTest/CreateResultOfTes
 import CustomerCalendar from '../pages/HomePage/CustomerCalendar/CustomerCalendar'
 import ConsultingManagement from '../pages/Consultant/ConsultingManagement/ConsultingManagement'
 import ViewResultOfTest from '@/app/pages/Staff/ResultOfTest/ViewResultOfTest'
+import CustomerManagement from '@/app/pages/Admin/CustomerManagement/CustomerManagement'
+import ConsultantManagement from '@/app/pages/Admin/ConsultantManagement/ConsultantManagement'
+import StaffManagement from '@/app/pages/Admin/StaffManagement/StaffManagement'
 
 export default function MainRoutes() {
   return (
@@ -115,6 +118,9 @@ export default function MainRoutes() {
           <Route path={adminPath.testPackge} element={<TestPackageManagement />} />
           <Route path={adminPath.typeOfTest} element={<TypeOfTestManagement />} />
           <Route path={adminPath.test} element={<TestManagement />} />
+          <Route path={adminPath.customer} element={<CustomerManagement />} />
+          <Route path={adminPath.consultant} element={<ConsultantManagement />} />
+          <Route path={adminPath.staff} element={<StaffManagement />} />
         </Route>
 
         <Route path='/consultant' element={<Consultant />}>
