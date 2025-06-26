@@ -12,6 +12,7 @@ import { getScheduleColumns } from './partials/columns'
 import DataTable from './partials/DataTable'
 
 import type { ProfileConsultantResult as OriginalProfileConsultantResult } from '@/app/pages/Staff/ProfileConsultantManagement/models/ProfleConsultantManagement'
+import { Activity } from 'lucide-react'
 
 export interface ProfileConsultantResult extends Omit<OriginalProfileConsultantResult, 'avatar' | 'coverPhoto'> {
   avatar: string | File | null
@@ -523,24 +524,34 @@ const ProfileConsultantManagement = () => {
   }, [])
 
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Consultant Profile Management</h1>
-      <div className='table-container'>
-        <DataTable columns={getScheduleColumns({ onEdit: handleEdit, onView: handleView })} data={consultants} />
-        <EditConsultantModal
-          isOpen={isEditModalOpen}
-          onOpenChange={setIsEditModalOpen}
-          selectedConsultant={selectedConsultant}
-          setSelectedConsultant={setSelectedConsultant}
-          onSave={handleSave}
-          onCancel={handleCancel}
-        />
-        <ViewConsultantModal
-          isOpen={isViewModalOpen}
-          onOpenChange={setIsViewModalOpen}
-          selectedConsultant={selectedConsultant}
-        />
+    <div className='space-y-6'>
+      <div className='bg-white p-6 rounded-lg  border'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-3'>
+            <div className='p-2 bg-blue-100 rounded-lg'>
+              <Activity className='h-6 w-6 text-blue-600' />
+            </div>
+            <div>
+              <h1 className='text-2xl font-bold text-gray-900'>Profile Consultant Management </h1>
+              <p className='text-gray-600 mt-1'>Monitor and manage Consultant test progress for all customers</p>
+            </div>
+          </div>
+        </div>
       </div>
+      <DataTable columns={getScheduleColumns({ onEdit: handleEdit, onView: handleView })} data={consultants} />
+      <EditConsultantModal
+        isOpen={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        selectedConsultant={selectedConsultant}
+        setSelectedConsultant={setSelectedConsultant}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      />
+      <ViewConsultantModal
+        isOpen={isViewModalOpen}
+        onOpenChange={setIsViewModalOpen}
+        selectedConsultant={selectedConsultant}
+      />
     </div>
   )
 }

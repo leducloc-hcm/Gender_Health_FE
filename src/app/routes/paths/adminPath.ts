@@ -6,6 +6,9 @@ const adminPath = {
   testPackge: 'manage-test-packages',
   typeOfTest: 'manage-type-of-test',
   test: 'manage-test',
+  customer: 'manage-customer',
+  consultant: 'manage-consultant',
+  staff: 'manage-staff'
 }
 
 export default adminPath

@@ -12,7 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
 import { profileApi } from '@/app/apis/profile.api'
-import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
+import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
 import { clearUserProfileSignify, setUserProfileToSignify, sUserProfile } from '@/app/hooks/sUserProfile'
 import { ROLE_ROUTES } from '@/app/pages/Auth/Login/Login'
 import NotificationDropdown from '@/app/layouts/ConsultantLayout/partials/NotificationDropdown'

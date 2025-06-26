@@ -3,6 +3,7 @@ import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Input } from '@/app/components/ui/input'
+import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
 import type { ResultOfTestForm, StiTrackingByIdResponse } from '@/app/pages/Staff/ResultOfTest/models/result.type'
 import { AlertCircle, ArrowLeft, RefreshCw, Save, TestTube } from 'lucide-react'
@@ -105,21 +106,7 @@ export default function CreateResultOfTest() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className='min-h-screen bg-gray-50 p-6'>
-        <div className='max-w-7xl mx-auto'>
-          <div className='bg-white rounded-lg shadow-sm p-12'>
-            <div className='flex flex-col items-center justify-center space-y-4'>
-              <div className='w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin'></div>
-              <p className='text-gray-700 text-lg'>Loading test details...</p>
-              <p className='text-gray-500 text-sm'>Test ID: {id}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <LoadingSpinner />
 
   if (error) {
     return (

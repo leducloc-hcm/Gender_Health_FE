@@ -5,6 +5,7 @@ import type { schedule } from './partials/Schedule'
 import { toast } from 'react-toastify'
 import { useSocket } from '@/app/hooks/useSocket'
 import DataTable from './partials/DataTable'
+import { Activity } from 'lucide-react'
 
 export interface WorkScheduleUpdate {
   workScheduleId: number
@@ -49,8 +50,20 @@ const Schedule = () => {
   }, [socket])
 
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Schedule Approve Management</h1>
+    <div className='space-y-6'>
+      <div className='bg-white p-6 rounded-lg  border'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-3'>
+            <div className='p-2 bg-blue-100 rounded-lg'>
+              <Activity className='h-6 w-6 text-blue-600' />
+            </div>
+            <div>
+              <h1 className='text-2xl font-bold text-gray-900'>STI Tracking Management</h1>
+              <p className='text-gray-600 mt-1'>Monitor and manage STI test progress for all customers</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <DataTable columns={getScheduleColumns(fetchConsultantSchedule)} data={schedules} />
     </div>
   )

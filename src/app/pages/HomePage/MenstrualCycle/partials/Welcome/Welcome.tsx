@@ -1,7 +1,7 @@
 import { profileApi } from '@/app/apis/profile.api'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent } from '@/app/components/ui/card'
-import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
+import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
 import type { WelcomeProps } from '@/app/pages/HomePage/MenstrualCycle/models/menstrual.type'
 import { Calendar, ChevronRight, Heart, Loader2, LogIn, TrendingUp, X } from 'lucide-react'
 import { useEffect, useState } from 'react'

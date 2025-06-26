@@ -10,7 +10,7 @@ import {
 } from '@/app/components/ui/dropdown-menu'
 import { setConsultantProfileToSignify } from '@/app/hooks/sConsultantProfile'
 import { clearUserProfileSignify } from '@/app/hooks/sUserProfile'
-import type { getProfileResult } from '@/app/pages/Customer/Profile/models/Profile'
+import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
 import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

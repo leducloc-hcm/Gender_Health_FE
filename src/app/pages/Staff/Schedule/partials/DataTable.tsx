@@ -59,7 +59,7 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center pb-6'>
         <Input
           placeholder='Filter title...'
           value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
@@ -91,7 +91,7 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className='rounded-md border'>
+      <div className='rounded-md min-h-[625px]'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -7,6 +7,22 @@ export interface ResultOfTestForm {
   stisTrackingId: number
 }
 
+export interface ResultOfTestResponse {
+  message: string
+  data: ResultOfTestData[]
+}
+
+export interface ResultOfTestData {
+  id: number
+  testCode: string
+  value: number
+  abbreviation: string
+  result: string
+  stisTrackingId: number
+  createdAt: string
+  updatedAt: string
+}
+
 export interface StiTrackingByIdResponse {
   message: string
   data: StiTrackingByIdData

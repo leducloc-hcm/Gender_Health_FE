@@ -22,7 +22,7 @@ export const voteApi = {
   },
   getVoteByReplyId: async (replyId: number): Promise<VoteResponse> => {
     try {
-      const response = await fetcher.get(`/votes/question/${replyId}`)
+      const response = await fetcher.get(`/votes/reply/${replyId}`)
       return response.data
     } catch (error) {
       console.error('Failed to fetch reply by ID:', error)

@@ -234,30 +234,27 @@ export default function StiTracking() {
       </div>
     )
   }
+  const customerProfile = sUserProfile.use()
+  const customerProfileId = customerProfile?.customer_profile_id
+
+  const fetchStiData = async () => {
+    try {
+      setLoading(true)
+      // const customerProfileId = sUserProfile.value?.customer_profile_id
+      const response: StiTrackingResponse = await stiApi.getStiByCustomerProfileId(customerProfileId)
+      setStiData(response.data)
+    } catch (error) {
+      console.error('Error fetching STI data:', error)
+      setError('Failed to fetch your STI tracking data')
+      toast.error('Failed to load your test information')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchStiData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const customerProfileId = sUserProfile.value.customer_profile_id
-        if (!customerProfileId) {
-          throw new Error('Customer profile not found')
-        }
-
-        const response: StiTrackingResponse = await stiApi.getStiByCustomerProfileId(customerProfileId)
-        setStiData(response.data)
-      } catch (error) {
-        console.error('Error fetching STI data:', error)
-        setError('Failed to fetch your STI tracking data')
-        toast.error('Failed to load your test information')
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchStiData()
-  }, [])
+  }, [customerProfileId])
 
   if (loading) {
     return <LoadingSpinner />

@@ -2,10 +2,12 @@ import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import type { Data } from '@/app/pages/Staff/StiTracking/models/sti.type'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, FileText, Plus } from 'lucide-react'
+import { ArrowUpDown, FileText } from 'lucide-react'
 
 interface ResultColumnsProps {
   onCreateResult: (testId: number) => void
+  onViewResult: (testId: number) => void
+  onDeleteResult: (testId: number) => void
 }
 
 const formatDate = (dateString: string | null) => {
@@ -19,7 +21,11 @@ const formatDate = (dateString: string | null) => {
   })
 }
 
-export const getResultColumns = ({ onCreateResult }: ResultColumnsProps): ColumnDef<Data>[] => [
+export const getResultColumns = ({
+  onCreateResult,
+  onViewResult,
+  onDeleteResult
+}: ResultColumnsProps): ColumnDef<Data>[] => [
   {
     accessorKey: 'customerInfo',
     header: () => <div className='font-semibold text-gray-700'>Customer Info</div>,
@@ -39,7 +45,7 @@ export const getResultColumns = ({ onCreateResult }: ResultColumnsProps): Column
         </div>
       </div>
     ),
-    filterFn: (row, id, value) => {
+    filterFn: (row, value) => {
       return (
         row.original.orderItem.order.customerProfile.name.toLowerCase().includes(value.toLowerCase()) ||
         row.original.orderItem.name.toLowerCase().includes(value.toLowerCase()) ||
@@ -65,7 +71,7 @@ export const getResultColumns = ({ onCreateResult }: ResultColumnsProps): Column
         <ArrowUpDown className='ml-1 h-4 w-4' />
       </Button>
     ),
-    cell: ({ row }) => <div className='text-sm font-medium text-blue-600'>#{row.original.id}</div>
+    cell: ({ row }) => <div className='text-sm text-center font-medium text-blue-600'>#{row.original.id}</div>
   },
   {
     accessorKey: 'status',
@@ -84,17 +90,42 @@ export const getResultColumns = ({ onCreateResult }: ResultColumnsProps): Column
   },
   {
     id: 'actions',
-    header: () => <div className='font-semibold text-gray-700'>Actions</div>,
+    header: () => <div className='font-semibold text-gray-700 text-center'>Actions</div>,
     cell: ({ row }) => (
-      <div className='flex space-x-2'>
-        <Button
-          onClick={() => onCreateResult(row.original.id)}
-          size='sm'
-          className='bg-green-600 hover:bg-green-700 text-white flex items-center space-x-1'
-        >
-          <Plus className='w-4 h-4' />
-          <span>Create Result</span>
-        </Button>
+      <div className='flex space-x-2 justify-center'>
+        {row.original.status === 'RESULT_AVAILABLE' ? (
+          <>
+            <Button
+              onClick={() => onViewResult(row.original.id)}
+              className='bg-blue-500 hover:bg-blue-600 text-white'
+              size='sm'
+            >
+              <span>View</span>
+            </Button>
+            <Button
+              onClick={() => onViewResult(row.original.id)}
+              className='bg-yellow-500 hover:bg-yellow-600 text-white'
+              size='sm'
+            >
+              <span>Edit</span>
+            </Button>
+            <Button
+              onClick={() => onDeleteResult(row.original.id)}
+              size='sm'
+              className='bg-red-500 hover:bg-red-600 text-white hover:text-white flex items-center space-x-1'
+            >
+              <span>Delete</span>
+            </Button>
+          </>
+        ) : (
+          <Button
+            onClick={() => onCreateResult(row.original.id)}
+            size='sm'
+            className='bg-green-600 hover:bg-green-700 text-white flex items-center space-x-1'
+          >
+            <span>Create Result</span>
+          </Button>
+        )}
       </div>
     )
   }

@@ -1,5 +1,6 @@
 import { stiApi } from '@/app/apis/sti.api'
 import { Button } from '@/app/components/ui/button'
+import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { getResultColumns } from '@/app/pages/Staff/ResultOfTest/partials/getResultColumns'
 import ResultDataTable from '@/app/pages/Staff/ResultOfTest/partials/ResultDataTable'
 import type { Data, StiTrackingResponse } from '@/app/pages/Staff/StiTracking/models/sti.type'
@@ -12,7 +13,6 @@ export default function ResultOfTest() {
   const navigate = useNavigate()
   const [stiData, setStiData] = useState<Data[]>([])
   const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     fetchReportReadyTests()
   }, [])
@@ -37,6 +37,32 @@ export default function ResultOfTest() {
     navigate(`/staff/result-of-test/create/${testId}`)
   }
 
+  const handleViewResult = (testId: number) => {
+    navigate(`/staff/result-of-test/view/${testId}`)
+  }
+
+  const handleDeleteResult = async (testId: number) => {
+    if (!window.confirm('Are you sure you want to delete this test result?')) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      await stiApi.deleteTestResult(testId)
+      toast.success('Test result deleted successfully')
+      await fetchReportReadyTests()
+    } catch (error) {
+      console.error('Error deleting test result:', error)
+      toast.error('Failed to delete test result')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return <LoadingSpinner />
+  }
+
   return (
     <div className='space-y-6'>
       {/* Header */}
@@ -48,7 +74,7 @@ export default function ResultOfTest() {
             </div>
             <div>
               <h1 className='text-2xl font-bold text-gray-900'>Test Results Management</h1>
-              <p className='text-gray-600 mt-1'>Create and manage test results for report-ready tests</p>
+              <p className='text-gray-600 mt-1'>Create, view and manage test results for report-ready tests</p>
             </div>
           </div>
 
@@ -67,7 +93,9 @@ export default function ResultOfTest() {
       <ResultDataTable
         data={stiData}
         columns={getResultColumns({
-          onCreateResult: handleCreateResult
+          onCreateResult: handleCreateResult,
+          onViewResult: handleViewResult,
+          onDeleteResult: handleDeleteResult
         })}
       />
     </div>

@@ -1,5 +1,3 @@
-import type { CustomerProfileQuestion } from '@/app/pages/HomePage/Forum/models/question.type'
-
 export interface ReplyRequest {
   content: string
   parent_reply_id?: number | null
@@ -25,26 +23,25 @@ export interface ReplyData {
   id: number
   content: string
   authorType: string
-  image: string
-  customerProfileId: number | null
-  staffProfileId: number | null
-  parentReplyId: number | null
+  customerProfileId?: number | null
+  staffProfileId?: number | null
   questionId: number
+  parentReplyId?: number | null
   createdAt: string
   updatedAt: string
-  customerProfile: CustomerProfileQuestion
-  staffProfile: StaffProfileReply | null
-  _count: CountReply
-}
-
-export interface StaffProfileReply {
-  id: number
-  name: string
-  username: string
-  avatar: string
-}
-
-export interface CountReply {
-  votes: number
-  childReplies: number
+  customerProfile?: {
+    id: number
+    name: string
+    username: string
+    avatar?: string
+  }
+  staffProfile?: {
+    id: number
+    name: string
+    avatar?: string
+  } | null
+  _count?: {
+    votes: number
+    childReplies: number
+  }
 }

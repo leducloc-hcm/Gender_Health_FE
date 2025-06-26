@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import DataTableTags from './DataTableTags'
 import { getTagColumns } from './tagColumns'
 import type { TagBlog } from '../../Auth/Login/models/tag'
+import { Activity } from 'lucide-react'
 
 export default function TagPage() {
   const [tags, setTags] = useState<TagBlog[]>([])
@@ -32,8 +33,20 @@ export default function TagPage() {
     loadTags()
   }, [])
   return (
-    <div className='p-6'>
-      <h1 className='text-2xl font-bold mb-4'>Tags</h1>
+    <div className='space-y-6'>
+      <div className='bg-white p-6 rounded-lg  border'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-3'>
+            <div className='p-2 bg-blue-100 rounded-lg'>
+              <Activity className='h-6 w-6 text-blue-600' />
+            </div>
+            <div>
+              <h1 className='text-2xl font-bold text-gray-900'>Tag Management</h1>
+              <p className='text-gray-600 mt-1'>Manage Tag For Blog </p>
+            </div>
+          </div>
+        </div>
+      </div>
       <DataTableTags columns={getTagColumns(handleDelete)} data={tags} />
     </div>
   )
