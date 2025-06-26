@@ -50,28 +50,6 @@ export default function ViewResultOfTest() {
     }
   }
 
-  const handleDelete = async () => {
-    if (!id || !window.confirm('Are you sure you want to delete all test results? This action cannot be undone.')) {
-      return
-    }
-
-    try {
-      setDeleting(true)
-      await stiApi.deleteTestResult(parseInt(id))
-      toast.success('Test results deleted successfully')
-      navigate('/staff/result-of-test')
-    } catch (error) {
-      console.error('Error deleting test results:', error)
-      toast.error('Failed to delete test results')
-    } finally {
-      setDeleting(false)
-    }
-  }
-
-  const handleEdit = () => {
-    navigate(`/staff/result-of-test/edit/${id}`)
-  }
-
   const handleRetry = () => {
     if (id) {
       fetchTestData(parseInt(id))
@@ -92,13 +70,6 @@ export default function ViewResultOfTest() {
             </div>
           </div>
           <div className='flex space-x-3'>
-            <Button
-              onClick={handleRetry}
-              className='bg-red-600 hover:bg-red-700 text-white flex items-center space-x-2'
-            >
-              <RefreshCw className='w-4 h-4' />
-              <span>Retry</span>
-            </Button>
             <Button
               onClick={() => navigate('/staff/result-of-test')}
               variant='outline'
@@ -159,7 +130,6 @@ export default function ViewResultOfTest() {
           </div>
         </div>
       </div>
-      S{/* Test Information */}
       <div className='bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center space-x-4'>

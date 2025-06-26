@@ -39,9 +39,6 @@ export default function DeleteDialog({ onConfirm, itemId, isLoading }: DataProps
           </DialogHeader>
         </div>
         <DialogFooter className='flex justify-center gap-2 pt-4'>
-          <DialogClose asChild>
-            <Button variant='outline'>Cancel</Button>
-          </DialogClose>
           <Button className='bg-red-500 hover:bg-red-600 text-white' onClick={() => onConfirm(itemId)}>
             {isLoading ? (
               <div className='flex items-center justify-center'>
@@ -52,6 +49,9 @@ export default function DeleteDialog({ onConfirm, itemId, isLoading }: DataProps
               'Delete'
             )}
           </Button>
+          <DialogClose asChild>
+            <Button variant='outline'>Cancel</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

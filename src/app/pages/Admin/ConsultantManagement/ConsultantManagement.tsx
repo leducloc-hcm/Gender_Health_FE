@@ -2,22 +2,20 @@ import { consultantApi } from '@/app/apis/consultant.api'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import type { ProfileConsultantData, ProfileConsultantRequest } from './models/consultant.type'
-import DataTable from '../TestPackageManagement/Partials/DataTable'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/app/components/ui/button'
 import { ArrowUpDown } from 'lucide-react'
 import { Badge } from '@/app/components/ui/badge'
 import { useOpenModal } from '@/app/hooks/useOpenModal'
-
 import axios from 'axios'
 import EditConsultantModal from '@/app/pages/Admin/ConsultantManagement/partials/EditConsultant'
 import CreateConsultantModal from '@/app/pages/Admin/ConsultantManagement/partials/CreateConsultantModal'
+import DataTable from '@/app/pages/Admin/ConsultantManagement/partials/DataTable'
 
 export default function ConsultantManagement() {
   const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false)
   const [consultants, setConsultants] = useState<ProfileConsultantData[]>([])
   const [editItem, setEditItem] = useState<ProfileConsultantData>()
-
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const [isCreating, setIsCreating] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
@@ -136,16 +134,16 @@ export default function ConsultantManagement() {
           className='flex justify-start cursor-pointer'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Rating
+          Experience
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </p>
       ),
       cell: ({ row }) => (
         <div className='flex items-center text-start'>
           <span className='text-sm text-gray-700'>
-            {row.original.rating ? `${row.original.rating}/5` : 'No rating'}
+            {row.original.experience ? `${row.original.experience}/5` : 'No rating'}
           </span>
-          {row.original.rating && <span className='ml-1 text-yellow-500'>⭐</span>}
+          {row.original.experience && <span className='ml-1 text-yellow-500'>⭐</span>}
         </div>
       )
     },
@@ -293,7 +291,6 @@ export default function ConsultantManagement() {
 
         <div className='table-container'>
           <DataTable columns={columns} data={consultants} isLoading={isLoadingTable} />
-
           <EditConsultantModal
             key={'edit-consultant'}
             editItem={editItem}
@@ -303,7 +300,6 @@ export default function ConsultantManagement() {
             handleCancel={handleCancelEdit}
             handleEdit={handleEdit}
           />
-
           <CreateConsultantModal
             key={'create-consultant'}
             isModalOpen={isOpenCreateModal}
