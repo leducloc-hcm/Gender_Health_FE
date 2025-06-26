@@ -6,7 +6,7 @@ import type {
   UpdateProfileConsultantInput,
   UpdateProfileConsultantResponse,
   UpdateProfileInput
-} from '../pages/Customer/Profile/models/Profile'
+} from '../pages/HomePage/Profile/models/Profile'
 import { fetcher } from '@/app/apis/fetcher'
 
 export const profileApi = {

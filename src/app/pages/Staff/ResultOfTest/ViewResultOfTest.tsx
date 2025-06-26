@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app
 import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
 import type { ResultOfTestResponse, StiTrackingByIdResponse } from '@/app/pages/Staff/ResultOfTest/models/result.type'
-import { AlertCircle, ArrowLeft, Edit, Eye, RefreshCw, Trash2 } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Eye } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -14,7 +14,7 @@ export default function ViewResultOfTest() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [deleting, setDeleting] = useState(false)
+  // const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [testData, setTestData] = useState<StiTrackingByIdResponse | null>(null)
   const [testResults, setTestResults] = useState<ResultOfTestResponse | null>(null)
@@ -47,12 +47,6 @@ export default function ViewResultOfTest() {
       toast.error('Failed to fetch test data')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleRetry = () => {
-    if (id) {
-      fetchTestData(parseInt(id))
     }
   }
 

@@ -37,6 +37,7 @@ const navigationItems = [
   {
     title: 'Accounts',
     icon: User,
+    url: '/',
     isDropdown: true,
     subItems: [
       {

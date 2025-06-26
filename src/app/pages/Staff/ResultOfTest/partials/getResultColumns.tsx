@@ -2,7 +2,7 @@ import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import type { Data } from '@/app/pages/Staff/StiTracking/models/sti.type'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, Eye, FileText, Plus, Trash2 } from 'lucide-react'
+import { ArrowUpDown, FileText } from 'lucide-react'
 
 interface ResultColumnsProps {
   onCreateResult: (testId: number) => void

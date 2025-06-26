@@ -30,7 +30,6 @@ export default function EditConsultantModal({
     register,
     handleSubmit,
     control,
-    setValue,
     reset,
     formState: { errors }
   } = useForm<ProfileConsultantData>({
