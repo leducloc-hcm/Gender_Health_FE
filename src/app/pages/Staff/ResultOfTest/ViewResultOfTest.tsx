@@ -14,7 +14,6 @@ export default function ViewResultOfTest() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  // const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [testData, setTestData] = useState<StiTrackingByIdResponse | null>(null)
   const [testResults, setTestResults] = useState<ResultOfTestResponse | null>(null)

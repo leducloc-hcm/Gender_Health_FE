@@ -127,26 +127,7 @@ export default function ConsultantManagement() {
         </div>
       )
     },
-    {
-      accessorKey: 'rating',
-      header: ({ column }) => (
-        <p
-          className='flex justify-start cursor-pointer'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Experience
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </p>
-      ),
-      cell: ({ row }) => (
-        <div className='flex items-center text-start'>
-          <span className='text-sm text-gray-700'>
-            {row.original.experience ? `${row.original.experience}/5` : 'No rating'}
-          </span>
-          {row.original.experience && <span className='ml-1 text-yellow-500'>⭐</span>}
-        </div>
-      )
-    },
+
     {
       id: 'actions',
       header: () => <p className='text-start'>Actions</p>,

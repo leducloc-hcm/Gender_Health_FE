@@ -3,6 +3,7 @@ import { ChevronUp, MessageCircle } from 'lucide-react'
 import type { ReplyData } from '@/app/pages/HomePage/Forum/models/reply.type'
 import AddCommentForm from '@/app/pages/HomePage/Forum/partials/AddCommentForm'
 import CommentItem from '@/app/pages/HomePage/Forum/partials/CommentItem'
+import CommentsSkeleton from '@/app/pages/HomePage/Forum/partials/CommentsSkeleton'
 
 interface CommentsSectionProps {
   questionId: number
@@ -63,15 +64,18 @@ const NestedReplyTree = ({
 
   if (currentLevelReplies.length === 0) return null
 
-  const maxIndentLevel = 6 // Giới hạn max indent để tránh quá nhỏ
-  const currentIndent = Math.min(level, maxIndentLevel)
-  const marginLeft = currentIndent * 12 // 12px per level
+  const getMarginLeft = (level: number) => {
+    if (level === 0) return 0
+    if (level === 1) return 48
+    if (level === 2) return 48
+    if (level === 3) return 48
+    return 0
+  }
+
+  const marginLeft = getMarginLeft(level)
 
   return (
-    <div
-      className={`space-y-4 ${level > 0 ? `ml-${marginLeft}` : ''}`}
-      style={{ marginLeft: level > 0 ? `${marginLeft * 4}px` : '0' }}
-    >
+    <div className='space-y-4' style={{ marginLeft: `${marginLeft}px` }}>
       {currentLevelReplies.map((reply) => (
         <div key={reply.id} className='relative'>
           {/* Connection lines cho nested levels */}
@@ -105,6 +109,7 @@ const NestedReplyTree = ({
             onNestedReplyContentChange={onNestedReplyContentChange}
             isNested={level > 0}
             nestingLevel={level}
+            allReplies={replies}
           />
 
           {/* Recursive render cho children */}
@@ -163,9 +168,8 @@ export default function CommentsSection({
 
       {/* Comments List */}
       {replyLoading ? (
-        <div className='text-center py-8'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-3'></div>
-          <p className='text-gray-500 text-sm'>Loading comments...</p>
+        <div className='mt-6'>
+          <CommentsSkeleton count={3} />
         </div>
       ) : replies && replies.length > 0 ? (
         <div className='space-y-6 mb-6'>

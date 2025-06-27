@@ -31,21 +31,53 @@ export default function EditConsultantModal({
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors }
   } = useForm<ProfileConsultantData>({
     mode: 'onBlur'
   })
 
+  const watchedValues = watch()
+
   const onSubmit = (data: ProfileConsultantData) => {
     if (!editItem) return
 
+    // Check if any field has changed
     const hasChanged = Object.keys(data).some((key) => {
       const dataKey = key as keyof ProfileConsultantData
+
+      // Handle array comparison for specialties and languages
+      if (dataKey === 'specialties' || dataKey === 'languages') {
+        const originalArray = Array.isArray(editItem[dataKey]) ? editItem[dataKey] : []
+        const newArray = Array.isArray(data[dataKey]) ? data[dataKey] : []
+        return JSON.stringify(originalArray) !== JSON.stringify(newArray)
+      }
+
+      // Handle regular field comparison
       return data[dataKey] !== editItem[dataKey]
     })
 
     if (hasChanged) {
-      handleEdit(data)
+      // Process specialties and languages as arrays
+      const processedData = {
+        ...data,
+        specialties:
+          typeof data.specialties === 'string'
+            ? data.specialties
+                .split(',')
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0)
+            : data.specialties || [],
+        languages:
+          typeof data.languages === 'string'
+            ? data.languages
+                .split(',')
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0)
+            : data.languages || []
+      }
+
+      handleEdit(processedData)
     } else {
       toast.error('No changes were made.')
     }
@@ -53,7 +85,13 @@ export default function EditConsultantModal({
 
   useEffect(() => {
     if (editItem && isModalOpen) {
-      reset(editItem)
+      // Convert arrays to comma-separated strings for form display
+      const formData = {
+        ...editItem,
+        specialties: Array.isArray(editItem.specialties) ? editItem.specialties.join(', ') : editItem.specialties || '',
+        languages: Array.isArray(editItem.languages) ? editItem.languages.join(', ') : editItem.languages || ''
+      }
+      reset(formData)
     }
   }, [editItem, isModalOpen, reset])
 
@@ -128,17 +166,29 @@ export default function EditConsultantModal({
                 control={control}
                 rules={{ required: true }}
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || ''}>
                     <SelectTrigger className={`${errors.status && 'border-red-500'}`}>
                       <SelectValue placeholder='Select status' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='active'>Active</SelectItem>
-                      <SelectItem value='inactive'>Inactive</SelectItem>
+                      <SelectItem value='VERIFIED'>VERIFIED</SelectItem>
+                      <SelectItem value='UNVERIFIED'>UNVERIFIED</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
               />
+            </div>
+          </div>
+
+          <div className='grid grid-cols-2 gap-4'>
+            <div className='space-y-2'>
+              <Label className='text-base'>Date of Birth</Label>
+              <Input type='date' {...register('date_of_birth')} />
+            </div>
+
+            <div className='space-y-2'>
+              <Label className='text-base'>Website</Label>
+              <Input type='url' {...register('website')} />
             </div>
           </div>
 
@@ -154,14 +204,71 @@ export default function EditConsultantModal({
             </div>
           </div>
 
+          <div className='grid grid-cols-3 gap-4'>
+            <div className='space-y-2'>
+              <Label className='text-base'>Rating</Label>
+              <Input
+                type='number'
+                step='0.1'
+                min='0'
+                max='5'
+                {...register('rating', {
+                  valueAsNumber: true,
+                  min: 0,
+                  max: 5
+                })}
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label className='text-base'>Total Reviews</Label>
+              <Input
+                type='number'
+                min='0'
+                {...register('total_reviews', {
+                  valueAsNumber: true,
+                  min: 0
+                })}
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label className='text-base'>Response Time</Label>
+              <Input type='text' {...register('response_time')} placeholder='e.g., 30 minutes' />
+            </div>
+          </div>
+
+          <div className='space-y-2'>
+            <Label className='text-base'>Experience</Label>
+            <Input type='text' {...register('experience')} placeholder='e.g., 5 years' />
+          </div>
+
+          <div className='space-y-2'>
+            <Label className='text-base'>Specialties (comma separated)</Label>
+            <Input
+              type='text'
+              {...register('specialties')}
+              placeholder='e.g., Cardiology, Pediatrics, General Medicine'
+            />
+          </div>
+
+          <div className='space-y-2'>
+            <Label className='text-base'>Languages (comma separated)</Label>
+            <Input type='text' {...register('languages')} placeholder='e.g., English, Vietnamese, French' />
+          </div>
+
           <div className='space-y-2'>
             <Label className='text-base'>Bio</Label>
-            <Textarea {...register('bio')} rows={3} />
+            <Textarea {...register('bio')} rows={3} placeholder='Brief professional biography...' />
           </div>
 
           <div className='space-y-2'>
             <Label className='text-base'>Description</Label>
-            <Textarea {...register('description')} rows={4} />
+            <Textarea
+              {...register('description')}
+              rows={4}
+              placeholder='Detailed description of services and expertise...'
+            />
           </div>
 
           <DialogFooter>
