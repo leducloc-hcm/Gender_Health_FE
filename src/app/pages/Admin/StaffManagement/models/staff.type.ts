@@ -3,12 +3,31 @@ export interface StaffManagementResponse {
   result: StaffManagementData[]
 }
 
-export interface StaffManagementRequest {
+export interface StaffManagementRequestCreate {
+  name: string
   email: string
   password: string
-  name: string
-  username: string
-  phone_number: string
+  confirm_password: string
+  date_of_birth?: string
+  bio?: string
+  location?: string
+  username?: string
+  phone_number?: string
+  description?: string
+  website?: string
+}
+
+export interface StaffManagementRequestUpdate {
+  name?: string
+  bio?: string
+  location?: string
+  username?: string
+  avatar?: File
+  coverPhoto?: File
+  phone_number?: string
+  description?: string
+  date_of_birth?: string
+  website?: string
 }
 
 export interface StaffManagementData {

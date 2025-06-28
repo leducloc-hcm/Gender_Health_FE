@@ -30,7 +30,7 @@ const CreateConsultantModal = memo(
             <DialogTitle>Create New Consultant</DialogTitle>
           </DialogHeader>
 
-          <div className='overflow-y-auto max-h-[calc(90vh-120px)] pr-2'>
+          <div className='overflow-y-auto max-h-[calc(90vh-120px)] p-2'>
             <div className='space-y-4'>
               {[
                 { id: 'name', label: 'Name *', type: 'text', required: true },
@@ -66,7 +66,9 @@ const CreateConsultantModal = memo(
             <Button variant='outline' onClick={onCancel}>
               Cancel
             </Button>
-            <Button onClick={onCreate}>Create Consultant</Button>
+            <Button variant='destructive' onClick={onCreate}>
+              Create Consultant
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

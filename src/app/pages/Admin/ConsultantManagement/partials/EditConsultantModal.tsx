@@ -60,7 +60,7 @@ const EditConsultantModal = memo(
             <DialogTitle>Edit Consultant Profile</DialogTitle>
           </DialogHeader>
 
-          <div className='overflow-y-auto max-h-[calc(90vh-120px)] pr-2'>
+          <div className='overflow-y-auto max-h-[calc(90vh-120px)] p-2'>
             <div className='space-y-4'>
               {[
                 { id: 'name', label: 'Name', type: 'text' },
@@ -171,7 +171,9 @@ const EditConsultantModal = memo(
             <Button variant='outline' onClick={onCancel}>
               Cancel
             </Button>
-            <Button onClick={onSave}>Save changes</Button>
+            <Button variant='destructive' onClick={onSave}>
+              Save changes
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

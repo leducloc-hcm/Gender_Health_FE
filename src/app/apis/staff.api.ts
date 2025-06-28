@@ -1,5 +1,5 @@
 import type {
-  StaffManagementRequest,
+  StaffManagementRequestCreate,
   StaffManagementResponse
 } from '@/app/pages/Admin/StaffManagement/models/staff.type'
 import type { ProfileConsultantManagementResponse } from '../pages/Staff/ProfileConsultantManagement/models/ProfleConsultantManagement'
@@ -24,7 +24,7 @@ export const staffApi = {
       throw error
     }
   },
-  createStaff: async (data: StaffManagementRequest): Promise<any> => {
+  createStaffAccount: async (data: StaffManagementRequestCreate): Promise<any> => {
     try {
       const response = await fetcher.post('/users/staff/register', data)
       return response.data
@@ -33,16 +33,20 @@ export const staffApi = {
       throw error
     }
   },
-  updateStaff: async (id: number, data: any): Promise<any> => {
+  updateStaffProfile: async (staffId: number, data: FormData): Promise<any> => {
     try {
-      const response = await fetcher.put(`/users/staff/${id}`, data)
+      const response = await fetcher.put(`users/staff/${staffId}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       return response.data
     } catch (error) {
-      console.error('Error updating staff:', error)
+      console.error('Failed to update staff profile:', error)
       throw error
     }
   },
-  deleteStaff: async (id: number): Promise<any> => {
+  deleteStaffAccount: async (id: number): Promise<any> => {
     try {
       const response = await fetcher.delete(`/users/staff/${id}`)
       return response.data

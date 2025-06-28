@@ -1,5 +1,4 @@
 import type {
-  ProfileConsultantRequest,
   RegisterConsultantReqBody,
   UpdateConsultantProfileReqBody
 } from '@/app/pages/Admin/ConsultantManagement/models/consultant.type'
