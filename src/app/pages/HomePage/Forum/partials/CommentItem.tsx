@@ -110,11 +110,6 @@ export default function CommentItem({
             {(reply.customerProfile?.name || reply.staffProfile?.name)?.[0] || 'U'}
           </AvatarFallback>
         </Avatar>
-
-        {/* Online Status Indicator chỉ cho level 0 */}
-        {nestingLevel === 0 && (
-          <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white bg-green-400'></div>
-        )}
       </div>
 
       <div className='flex-1 min-w-0'>

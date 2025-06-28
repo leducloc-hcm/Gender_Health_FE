@@ -134,7 +134,7 @@ const CycleChart = ({ predictionData }: { predictionData: PredictionData }) => {
   return (
     <div className='relative flex flex-col items-center'>
       <div className='relative'>
-        <svg width='440' height='440' className='mx-auto'>
+        <svg width='440' height='550' className='mx-auto'>
           {chartData.map((item, index) => {
             const angle = (index * 360) / cycleLength - 90
             const radian = (angle * Math.PI) / 180
