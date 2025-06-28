@@ -151,7 +151,7 @@ export default function PaymentManagement() {
     <div className='p-4'>
       <h1 className='text-2xl font-bold mb-4'>Manage payments</h1>
       <div className='table-container'>
-        <DataTable columns={columns} data={dataSource.reverse()} isLoading={isLoadingTable} />
+        <DataTable columns={columns} data={dataSource} isLoading={isLoadingTable} />
         <ViewPaymentModal
           key={'view-payment-modal'}
           viewItem={viewItem}
