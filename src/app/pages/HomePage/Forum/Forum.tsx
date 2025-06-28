@@ -12,7 +12,7 @@ import CreatePostForm from './partials/CreatePostForm'
 import CreatePostModal from './partials/CreatePostModal'
 import EditPostModal from './partials/EditPostModal'
 import ForumHeader from './partials/ForumHeader'
-import LoadingSpinner from './partials/LoadingSpinner'
+import ForumSkeleton from './partials/ForumSkeleton'
 import PostCard from './partials/PostCard'
 
 export default function Forum() {
@@ -219,7 +219,7 @@ export default function Forum() {
         content,
         question_id: questionId,
         parent_reply_id: parentReplyId,
-        author_type: localStorage.getItem('user_role') || 'CUSTOMER'
+        author_type: sUserProfile.value.role || 'CUSTOMER'
       }
 
       await replyApi.createReply(replyData)
@@ -332,6 +332,7 @@ export default function Forum() {
       if (editQuestion.image) {
         formData.append('image', editQuestion.image)
       }
+      formData.append('image', '')
 
       await questionApi.updateQuestion(editingPost.id, formData)
       resetEditForm()
@@ -413,7 +414,7 @@ export default function Forum() {
   }
 
   if (loading) {
-    return <LoadingSpinner />
+    return <ForumSkeleton />
   }
 
   return (

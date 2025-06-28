@@ -27,6 +27,18 @@ export const getResultColumns = ({
   onDeleteResult
 }: ResultColumnsProps): ColumnDef<Data>[] => [
   {
+    accessorKey: 'id',
+    header: ({ column }) => (
+      <div className='flex items-center justify-center'>
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Test Id
+          <ArrowUpDown className=' h-4 w-4' />
+        </Button>
+      </div>
+    ),
+    cell: ({ row }) => <div className='text-sm text-center font-medium text-blue-600'>#{row.original.id}</div>
+  },
+  {
     accessorKey: 'customerInfo',
     header: () => <div className='font-semibold text-gray-700'>Customer Info</div>,
     cell: ({ row }) => (
@@ -63,16 +75,7 @@ export const getResultColumns = ({
       </div>
     )
   },
-  {
-    accessorKey: 'id',
-    header: ({ column }) => (
-      <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        Test Id
-        <ArrowUpDown className='ml-1 h-4 w-4' />
-      </Button>
-    ),
-    cell: ({ row }) => <div className='text-sm text-center font-medium text-blue-600'>#{row.original.id}</div>
-  },
+
   {
     accessorKey: 'status',
     header: () => <div className='font-semibold text-gray-700'>Status</div>,
@@ -102,13 +105,7 @@ export const getResultColumns = ({
             >
               <span>View</span>
             </Button>
-            <Button
-              onClick={() => onViewResult(row.original.id)}
-              className='bg-yellow-500 hover:bg-yellow-600 text-white'
-              size='sm'
-            >
-              <span>Edit</span>
-            </Button>
+
             <Button
               onClick={() => onDeleteResult(row.original.id)}
               size='sm'

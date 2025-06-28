@@ -153,18 +153,12 @@ export default function Header() {
                     <User className='mr-3 h-4 w-4 text-pink-500' />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
-                    onClick={() => nav('/orders')}
-                  >
-                    <ShoppingBag className='mr-3 h-4 w-4 text-pink-500' />
-                    <span>Orders</span>
-                  </DropdownMenuItem>
+
                   <DropdownMenuItem
                     className='rounded-lg mx-1 my-1 hover:bg-pink-50 cursor-pointer'
                     onClick={() => nav('/sti-tracking')}
                   >
-                    <Settings className='mr-3 h-4 w-4 text-pink-500' />
+                    <ShoppingBag className='mr-3 h-4 w-4 text-pink-500' />
                     <span>STI Tracking</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className='bg-pink-100' />

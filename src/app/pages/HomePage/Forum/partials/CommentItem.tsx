@@ -21,6 +21,7 @@ interface CommentItemProps {
   onNestedReplyContentChange: (content: string) => void
   isNested?: boolean
   nestingLevel?: number
+  allReplies?: ReplyData[]
 }
 
 export default function CommentItem({
@@ -37,13 +38,22 @@ export default function CommentItem({
   onReplyTo,
   onCreateNestedReply,
   onNestedReplyContentChange,
-  nestingLevel = 0
+  nestingLevel = 0,
+  allReplies = []
 }: CommentItemProps) {
   const currentUser = sUserProfile.use()
 
   const canEditDelete =
     reply.customerProfileId === currentUser.customer_profile_id ||
     reply.staffProfileId === currentUser.customer_profile_id
+
+  // Tìm thông tin parent reply để hiển thị "reply to ai"
+  const parentReply = reply.parentReplyId ? allReplies.find((r) => r.id === reply.parentReplyId) : null
+
+  const getParentName = () => {
+    if (!parentReply) return 'someone'
+    return parentReply.customerProfile?.name || parentReply.staffProfile?.name || 'someone'
+  }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -100,11 +110,6 @@ export default function CommentItem({
             {(reply.customerProfile?.name || reply.staffProfile?.name)?.[0] || 'U'}
           </AvatarFallback>
         </Avatar>
-
-        {/* Online Status Indicator chỉ cho level 0 */}
-        {nestingLevel === 0 && (
-          <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white bg-green-400'></div>
-        )}
       </div>
 
       <div className='flex-1 min-w-0'>
@@ -124,10 +129,11 @@ export default function CommentItem({
                 {reply.authorType === 'STAFF' ? 'Staff' : 'Member'}
               </div>
 
-              {/* Nested Reply Indicator */}
-              {nestingLevel > 0 && (
+              {/* Nested Reply Indicator - hiển thị reply ai */}
+              {nestingLevel > 0 && reply.parentReplyId && (
                 <div className='flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium text-xs'>
-                  <CornerDownRight className='h-2 w-2' />L{nestingLevel}
+                  <CornerDownRight className='h-2 w-2' />
+                  <span>Reply to {getParentName()}</span>
                 </div>
               )}
             </div>

@@ -1,6 +1,5 @@
 import { stiApi } from '@/app/apis/sti.api'
 import { Button } from '@/app/components/ui/button'
-import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { getResultColumns } from '@/app/pages/Staff/ResultOfTest/partials/getResultColumns'
 import ResultDataTable from '@/app/pages/Staff/ResultOfTest/partials/ResultDataTable'
 import type { Data, StiTrackingResponse } from '@/app/pages/Staff/StiTracking/models/sti.type'
@@ -45,7 +44,6 @@ export default function ResultOfTest() {
     if (!window.confirm('Are you sure you want to delete this test result?')) {
       return
     }
-
     try {
       setLoading(true)
       await stiApi.deleteTestResult(testId)
@@ -57,10 +55,6 @@ export default function ResultOfTest() {
     } finally {
       setLoading(false)
     }
-  }
-
-  if (loading) {
-    return <LoadingSpinner />
   }
 
   return (

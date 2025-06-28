@@ -1,4 +1,7 @@
-import type { ProfileConsultantRequest } from '@/app/pages/Admin/ConsultantManagement/models/consultant.type'
+import type {
+  RegisterConsultantReqBody,
+  UpdateConsultantProfileReqBody
+} from '@/app/pages/Admin/ConsultantManagement/models/consultant.type'
 import type { ProfileConsultantManagementResponse } from '../pages/Staff/ProfileConsultantManagement/models/ProfleConsultantManagement'
 import { fetcher } from './fetcher'
 
@@ -21,7 +24,7 @@ export const consultantApi = {
       throw error
     }
   },
-  createConsultantAccount: async (data: any): Promise<ProfileConsultantRequest> => {
+  createConsultantAccount: async (data: RegisterConsultantReqBody): Promise<any> => {
     try {
       const response = await fetcher.post('/users/consultant/register', data)
       return response.data
@@ -30,12 +33,19 @@ export const consultantApi = {
       throw error
     }
   },
-  updateConsultantProfile: async (id: number, data: any): Promise<any> => {
+  updateConsultantProfile: async (
+    consultantId: number,
+    data: Partial<UpdateConsultantProfileReqBody>
+  ): Promise<any> => {
     try {
-      const response = await fetcher.put(`/users/consultant/${id}`, data)
+      const response = await fetcher.put(`users/consultant/${consultantId}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       return response.data
     } catch (error) {
-      console.error('Error updating consultant account:', error)
+      console.error('Failed to update consultant profile:', error)
       throw error
     }
   },

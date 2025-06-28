@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react'
 import { stiApi } from '@/app/apis/sti.api'
 import type { StiTrackingResponse, Data } from '@/app/pages/Staff/StiTracking/models/sti.type'
 import { toast } from 'react-toastify'
-import { User, TestTube, FileText, CheckCircle, Clock, Calendar, Activity, AlertCircle, Heart } from 'lucide-react'
+import { User, TestTube, FileText, CheckCircle, Clock, Calendar, Activity, AlertCircle, Heart, Eye } from 'lucide-react'
 import { Badge } from '@/app/components/ui/badge'
+import { Button } from '@/app/components/ui/button'
 import { sUserProfile } from '@/app/hooks/sUserProfile'
 import LoadingSpinner from '@/app/components/ui/loadingspinner'
+import ViewResultModal from '@/app/pages/HomePage/StiTracking/ViewResultModal/ViewResultModal'
 
 export default function StiTracking() {
   const [stiData, setStiData] = useState<Data[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedTest, setSelectedTest] = useState<{ id: number; name: string } | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // ...existing code for formatDate, getStatusConfig, and ProgressTimeline...
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return null
@@ -57,7 +63,7 @@ export default function StiTracking() {
         color: 'bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border-emerald-300',
         icon: CheckCircle,
         text: 'Results Available',
-        description: 'Your test results are now available. Please check your dashboard.',
+        description: 'Your test results are now available. Click to view your results.',
         bgGradient: 'bg-emerald-100'
       }
     }
@@ -182,9 +188,15 @@ export default function StiTracking() {
     )
   }
 
+  const handleViewResults = (testId: number, testName: string) => {
+    setSelectedTest({ id: testId, name: testName })
+    setIsModalOpen(true)
+  }
+
   const TestCard = ({ test }: { test: Data }) => {
     const statusConfig = getStatusConfig(test.status)
     const StatusIcon = statusConfig.icon
+    const isResultAvailable = test.status === 'RESULT_AVAILABLE'
 
     return (
       <div
@@ -202,12 +214,25 @@ export default function StiTracking() {
               </div>
             </div>
 
-            <Badge
-              className={`${statusConfig.color} border-2 flex items-center gap-2 px-3 py-2 text-sm font-semibold shadow-sm`}
-            >
-              <StatusIcon className='w-4 h-4' />
-              {statusConfig.text}
-            </Badge>
+            <div className='flex items-center gap-3'>
+              <Badge
+                className={`${statusConfig.color} border-2 flex items-center gap-2 px-3 py-2 text-sm font-semibold shadow-sm`}
+              >
+                <StatusIcon className='w-4 h-4' />
+                {statusConfig.text}
+              </Badge>
+
+              {isResultAvailable && (
+                <Button
+                  onClick={() => handleViewResults(test.id, test.name)}
+                  className='bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300'
+                  size='sm'
+                >
+                  <Eye className='w-4 h-4 mr-2' />
+                  View Results
+                </Button>
+              )}
+            </div>
           </div>
 
           <div className='mb-6 p-4 bg-white/70 rounded-lg border border-pink-200'>
@@ -234,13 +259,13 @@ export default function StiTracking() {
       </div>
     )
   }
+
   const customerProfile = sUserProfile.use()
   const customerProfileId = customerProfile?.customer_profile_id
 
   const fetchStiData = async () => {
     try {
       setLoading(true)
-      // const customerProfileId = sUserProfile.value?.customer_profile_id
       const response: StiTrackingResponse = await stiApi.getStiByCustomerProfileId(customerProfileId)
       setStiData(response.data)
     } catch (error) {
@@ -302,7 +327,7 @@ export default function StiTracking() {
         </div>
 
         {stiData.length > 0 ? (
-          <div className='grid  grid-cols-1 gap-6'>
+          <div className='grid grid-cols-1 gap-6'>
             {stiData.map((test) => (
               <TestCard key={test.id} test={test} />
             ))}
@@ -322,6 +347,19 @@ export default function StiTracking() {
           </div>
         )}
       </div>
+
+      {/* View Results Modal */}
+      {selectedTest && (
+        <ViewResultModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false)
+            setSelectedTest(null)
+          }}
+          testId={selectedTest.id}
+          testName={selectedTest.name}
+        />
+      )}
     </div>
   )
 }

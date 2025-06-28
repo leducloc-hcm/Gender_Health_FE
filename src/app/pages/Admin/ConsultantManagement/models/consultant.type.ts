@@ -3,12 +3,38 @@ export interface ProfileConsultantManagementResponse {
   result: ProfileConsultantData[]
 }
 
-export interface ProfileConsultantRequest {
+export interface RegisterConsultantReqBody {
+  name: string
   email: string
   password: string
-  name: string
-  username: string
-  phone_number: string
+  confirm_password: string
+  date_of_birth?: string
+  bio?: string
+  location?: string
+  username?: string
+  phone_number?: string
+  description?: string
+  website?: string
+}
+
+export interface UpdateConsultantProfileReqBody {
+  name?: string
+  email?: string
+  date_of_birth?: string
+  bio?: string
+  location?: string
+  username?: string
+  avatar?: File
+  coverPhoto?: File
+  phone_number?: string
+  description?: string
+  website?: string
+  experience?: string
+  specialties?: string[]
+  languages?: string[]
+  response_time?: string
+  degree?: string
+  hospital?: string
 }
 
 export interface ProfileConsultantData {
