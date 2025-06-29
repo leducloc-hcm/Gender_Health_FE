@@ -11,9 +11,9 @@ import {
 import { setConsultantProfileToSignify } from '@/app/hooks/sConsultantProfile'
 import { clearUserProfileSignify } from '@/app/hooks/sUserProfile'
 import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
-import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const UserDropdown = () => {
   const [userProfile, setUserProfile] = useState<getProfileResult>({
@@ -71,21 +71,7 @@ const UserDropdown = () => {
           </div>
         </div>
         <DropdownMenuSeparator className='bg-pink-100' />
-        <Link to={`profile`}>
-          <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
-            <User className='mr-3 h-4 w-4 text-pink-500' />
-            <span>Profile</span>
-          </DropdownMenuItem>
-        </Link>
-        <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
-          <ShoppingBag className='mr-3 h-4 w-4 text-pink-500' />
-          <span>Orders</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className='rounded-lg mx-1 my-1 hover:bg-pink-50'>
-          <Settings className='mr-3 h-4 w-4 text-pink-500' />
-          <span>Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator className='bg-pink-100' />
+
         <DropdownMenuItem
           className='rounded-lg mx-1 my-1 text-red-600 hover:bg-red-50 hover:text-red-700'
           onClick={() => {

@@ -58,8 +58,8 @@ const Schedule = () => {
               <Activity className='h-6 w-6 text-blue-600' />
             </div>
             <div>
-              <h1 className='text-2xl font-bold text-gray-900'>STI Tracking Management</h1>
-              <p className='text-gray-600 mt-1'>Monitor and manage STI test progress for all customers</p>
+              <h1 className='text-2xl font-bold text-gray-900'>Schedule Management</h1>
+              <p className='text-gray-600 mt-1'>Monitor and manage schedule for all customers</p>
             </div>
           </div>
         </div>

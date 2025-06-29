@@ -6,10 +6,12 @@ import DataTable from '@/app/pages/Staff/BlogStaff/DataTable'
 import { Activity } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { getBlogColumns } from './columns'
+import Swal from 'sweetalert2'
 
 export default function BlogStaffTable() {
   const [blogs, setBlogs] = useState<BlogPost[]>([])
   const [, setIsLoading] = useState(false)
+
   // const navigate = useNavigate()
 
   // ✅ Hàm load dữ liệu từ API
@@ -34,8 +36,18 @@ export default function BlogStaffTable() {
 
   // Xử lý xoá blog
   const handleDelete = async (id: number) => {
-    const confirmed = confirm('Bạn có chắc chắn muốn xoá blog này không?')
-    if (!confirmed) return
+    const result = await Swal.fire({
+      title: 'Are you sure to delete?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
 
     try {
       await deleteBlog(id)

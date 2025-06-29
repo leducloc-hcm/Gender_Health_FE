@@ -65,11 +65,7 @@ export const getStaffColumns = ({
     header: 'Status',
     cell: ({ row }) => {
       const status = row.getValue('status') as string
-      return (
-        <Badge variant={status === 'active' ? 'default' : 'destructive'} className='capitalize'>
-          {status}
-        </Badge>
-      )
+      return <Badge className='capitalize bg-green-500'>{status}</Badge>
     }
   },
   {

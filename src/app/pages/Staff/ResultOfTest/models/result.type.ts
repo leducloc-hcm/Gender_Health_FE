@@ -1,4 +1,12 @@
 export type ResultOfTestReq = ResultOfTestForm[]
+export type ResultOfTesUpdatetReq = ResultOfTestUpdateForm[]
+
+export interface ResultOfTestUpdateForm {
+  testCode: string
+  value: number
+  abbreviation: string
+  id: number
+}
 
 export interface ResultOfTestForm {
   testCode: string

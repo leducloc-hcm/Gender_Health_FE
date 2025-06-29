@@ -1,11 +1,10 @@
 import { motion, useInView } from 'framer-motion'
-import { User, Calendar } from 'lucide-react'
-import { useRef, useEffect, useState } from 'react'
+import { Calendar, User } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { fetchBlogs, type BlogPost } from '@/app/apis/blog.api'
 import { Card, CardContent } from '@/app/components/ui/card'
-import LoadingSpinner from '@/app/components/ui/loadingspinner'
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
@@ -19,7 +18,7 @@ function formatDate(dateString: string): string {
 export default function BlogSection() {
   const navigate = useNavigate()
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
-  const [loading, setLoading] = useState(false)
+  const [, setLoading] = useState(false)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
 
@@ -129,10 +128,6 @@ export default function BlogSection() {
 
   const handleViewAllBlogs = () => {
     navigate('/blog')
-  }
-
-  if (loading) {
-    return <LoadingSpinner />
   }
 
   return (

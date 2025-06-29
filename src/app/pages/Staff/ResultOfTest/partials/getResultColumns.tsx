@@ -6,6 +6,7 @@ import { ArrowUpDown, FileText } from 'lucide-react'
 
 interface ResultColumnsProps {
   onCreateResult: (testId: number) => void
+  onEditResult: (testId: number) => void
   onViewResult: (testId: number) => void
   onDeleteResult: (testId: number) => void
 }
@@ -23,6 +24,7 @@ const formatDate = (dateString: string | null) => {
 
 export const getResultColumns = ({
   onCreateResult,
+  onEditResult,
   onViewResult,
   onDeleteResult
 }: ResultColumnsProps): ColumnDef<Data>[] => [
@@ -104,6 +106,14 @@ export const getResultColumns = ({
               size='sm'
             >
               <span>View</span>
+            </Button>
+
+            <Button
+              onClick={() => onEditResult?.(row.original.id)}
+              size='sm'
+              className='bg-yellow-500 hover:bg-yellow-600 text-white hover:text-white flex items-center space-x-1'
+            >
+              Edit
             </Button>
 
             <Button

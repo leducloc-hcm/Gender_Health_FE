@@ -7,6 +7,7 @@ import { FileText, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 
 export default function ResultOfTest() {
   const navigate = useNavigate()
@@ -40,10 +41,23 @@ export default function ResultOfTest() {
     navigate(`/staff/result-of-test/view/${testId}`)
   }
 
+  const handleEditResult = (testId: number) => {
+    navigate(`/staff/result-of-test/update/${testId}`)
+  }
+
   const handleDeleteResult = async (testId: number) => {
-    if (!window.confirm('Are you sure you want to delete this test result?')) {
-      return
-    }
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
     try {
       setLoading(true)
       await stiApi.deleteTestResult(testId)
@@ -88,6 +102,7 @@ export default function ResultOfTest() {
         data={stiData}
         columns={getResultColumns({
           onCreateResult: handleCreateResult,
+          onEditResult: handleEditResult,
           onViewResult: handleViewResult,
           onDeleteResult: handleDeleteResult
         })}

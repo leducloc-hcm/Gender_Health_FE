@@ -22,7 +22,7 @@ export default function RevenueChart({ revenueDataFromServer, primaryColor }: Da
   }
 
   return (
-    <Card className='w-full h-full overflow-hidden bg-white transition-transform duration-200 hover:scale-105 hover:shadow-md'>
+    <Card className='w-full h-full overflow-hidden bg-white transition-transform duration-200 hover:scale-102 hover:shadow-md'>
       <CardHeader>
         <CardTitle className='text-xl font-medium'>Revenue by Test Package</CardTitle>
         <CardDescription className='text-lg text-gray-500 font-normal italic mb-4'>
