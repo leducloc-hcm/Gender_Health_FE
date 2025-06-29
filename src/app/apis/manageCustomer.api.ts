@@ -1,7 +1,8 @@
 import { fetcher } from '@/app/apis/fetcher'
+import type { CustomerResponse } from '@/app/pages/Admin/CustomerManagement/models/customerManagement.type'
 
 export const manageCustomerApi = {
-  getAllProfileConsultants: async (): Promise<any> => {
+  getAllProfileCustomer: async (): Promise<CustomerResponse> => {
     try {
       const response = await fetcher.get('/users/customer/order/all')
       return response.data

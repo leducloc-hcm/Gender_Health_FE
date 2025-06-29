@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { CalendarIcon, ArrowLeft } from 'lucide-react'
+import { CalendarIcon, ArrowLeft, User, Clock, Share2 } from 'lucide-react'
 import { fetchBlogById, fetchBlogs } from '@/app/apis/blog.api'
 import { Button } from '@/app/components/ui/button'
 import { Badge } from '@/app/components/ui/badge'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/app/components/ui/carousel'
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Card, CardContent } from '@/app/components/ui/card'
 import draftToHtml from 'draftjs-to-html'
+import LoadingSpinner from '@/app/components/ui/loadingspinner'
+
 interface BlogTag {
   tag: {
     id: number
@@ -20,10 +21,22 @@ interface BlogItem {
   image: File
   date: string
   tags: BlogTag[]
+  staff?: {
+    name: string
+  }
 }
 
 interface BlogDetail extends BlogItem {
   content: string
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
 }
 
 export default function BlogDetail() {
@@ -59,6 +72,7 @@ export default function BlogDetail() {
             ...item,
             tags: Array.isArray(item.tags) ? item.tags : []
           }))
+          .slice(0, 4)
         setRelatedPosts(related)
       } catch (err) {
         console.error('Failed to load related blogs:', err)
@@ -68,120 +82,174 @@ export default function BlogDetail() {
   }, [blog])
 
   if (!blog) {
-    return <div className='text-center py-20 text-muted-foreground'>Đang tải bài viết...</div>
+    return <LoadingSpinner />
   }
 
   return (
-    <div className=' container mx-auto px-4 py-10 '>
-      <Button variant='outline' className='mb-6' asChild>
-        <Link to='/blog'>
-          <ArrowLeft className='w-4 h-4 mr-2' /> Back to Blog
-        </Link>
-      </Button>
+    <div className='min-h-screen bg-gray-50'>
+      {/* Header */}
 
-      <article className='space-y-6'>
-        <div className='rounded-xl overflow-hidden'>
-          <img
-            src={
-              typeof blog.image === 'string'
-                ? blog.image
-                : blog.image instanceof File
-                  ? URL.createObjectURL(blog.image)
-                  : '/placeholder.svg'
-            }
-            alt={blog.title}
-            className='w-[900px] h-auto object-cover rounded-xl mx-auto'
-          />
-        </div>
+      {/* Main Content */}
+      <div className='container mx-auto px-4 py-8 max-w-7xl'>
+        <Button
+          variant='outline'
+          className=' bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:text-white mb-4 '
+          asChild
+        >
+          <Link to='/blog'>
+            <ArrowLeft className='w-4 h-4 mr-2' /> Back to Blog
+          </Link>
+        </Button>
+        <div className='flex flex-col lg:flex-row gap-8'>
+          <main className='flex-1 lg:order-1'>
+            <article className='bg-white rounded-2xl shadow-lg overflow-hidden'>
+              <div className='relative h-96 overflow-hidden'>
+                <img
+                  src={
+                    typeof blog.image === 'string'
+                      ? blog.image
+                      : blog.image instanceof File
+                        ? URL.createObjectURL(blog.image)
+                        : '/placeholder.svg'
+                  }
+                  alt={blog.title}
+                  className='w-full h-full object-cover'
+                />
+                <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent'></div>
+              </div>
 
-        <div className='flex flex-wrap justify-between items-center gap-2 text-sm text-muted-foreground'>
-          <div className='flex items-center gap-2'>
-            <CalendarIcon className='h-4 w-4' />
-            {new Date(blog.date).toLocaleDateString('vi-VN', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </div>
-          <div className='flex flex-wrap gap-2'>
-            {blog.tags.map((t, i) => (
-              <Badge key={i} className='bg-pink-500 text-white rounded-full px-3 py-1 text-sm'>
-                {t.tag.name}
-              </Badge>
-            ))}
-          </div>
-        </div>
+              {/* Article Content */}
+              <div className='p-8 lg:p-12'>
+                {/* Tags */}
+                <div className='flex flex-wrap gap-2 mb-6'>
+                  {blog.tags.map((t, i) => (
+                    <Badge
+                      key={i}
+                      className='bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 text-sm rounded-full hover:from-pink-600 hover:to-rose-600 transition-all'
+                    >
+                      {t.tag.name}
+                    </Badge>
+                  ))}
+                </div>
 
-        <h1 className='text-4xl font-bold leading-tight'>{blog.title}</h1>
+                {/* Title */}
+                <h1 className='text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6'>{blog.title}</h1>
 
-        <div className='prose prose-lg max-w-none text-gray-800 whitespace-pre-line break-words '>
-          <div
-            className='prose prose-lg max-w-none text-gray-800'
-            dangerouslySetInnerHTML={{
-              __html: (() => {
-                try {
-                  const isJson = blog.content.trim().startsWith('{') && blog.content.trim().endsWith('}')
-                  return isJson ? draftToHtml(JSON.parse(blog.content)) : `<p>${blog.content}</p>`
-                } catch (e) {
-                  console.error('Failed to parse blog content:', e)
-                  return '<p>Nội dung không hiển thị được.</p>'
-                }
-              })()
-            }}
-          />
-        </div>
-      </article>
+                {/* Meta Info */}
+                <div className='flex flex-wrap items-center gap-6 text-gray-600 mb-8 pb-8 border-b border-gray-200'>
+                  <div className='flex items-center gap-2'>
+                    <CalendarIcon className='h-5 w-5 text-pink-500' />
+                    <span className='font-medium'>{formatDate(blog.date)}</span>
+                  </div>
+                  {blog.staff?.name && (
+                    <div className='flex items-center gap-2'>
+                      <User className='h-5 w-5 text-pink-500' />
+                      <span className='font-medium'>{blog.staff.name}</span>
+                    </div>
+                  )}
+                  <div className='flex items-center gap-2'>
+                    <Clock className='h-5 w-5 text-pink-500' />
+                    <span className='font-medium'>5 min read</span>
+                  </div>
+                  <Button variant='outline' size='sm' className='ml-auto border-gray-300 hover:bg-gray-50'>
+                    <Share2 className='h-4 w-4 mr-2' />
+                    Share
+                  </Button>
+                </div>
 
-      {relatedPosts.length > 0 && (
-        <div className='mt-16'>
-          <h2 className='text-2xl font-bold mb-4'>Related articles</h2>
+                {/* Content */}
+                <div className='prose prose-lg prose-gray max-w-none'>
+                  <div
+                    className='text-gray-800 leading-relaxed'
+                    style={{
+                      fontSize: '1.125rem',
+                      lineHeight: '1.75'
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: (() => {
+                        try {
+                          const isJson = blog.content.trim().startsWith('{') && blog.content.trim().endsWith('}')
+                          return isJson ? draftToHtml(JSON.parse(blog.content)) : `<p>${blog.content}</p>`
+                        } catch (e) {
+                          console.error('Failed to parse blog content:', e)
+                          return '<p>Content cannot be displayed.</p>'
+                        }
+                      })()
+                    }}
+                  />
+                </div>
+              </div>
+            </article>
 
-          <div className='relative'>
-            <Carousel className='w-full'>
-              <CarouselContent>
-                {relatedPosts.map((item) => (
-                  <CarouselItem key={item.id} className='md:basis-1/2 lg:basis-1/4'>
-                    <Link to={`/blog/${item.id}`}>
-                      <Card className='rounded-xl hover:shadow-lg transition-shadow h-[320px]'>
-                        <div className='h-[160px] overflow-hidden rounded-t-xl'>
+            {/* Back to Blog Button */}
+            <div className='text-center mt-8'>
+              <Button
+                asChild
+                className='px-8 py-3 text-base bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200'
+              >
+                <Link to='/blog'>Explore More Articles</Link>
+              </Button>
+            </div>
+          </main>
+
+          {/* Sidebar */}
+          <aside className='lg:w-80 space-y-6 lg:order-2'>
+            {/* Author Info Card */}
+            {blog.staff?.name && (
+              <Card className='border-0 shadow-md'>
+                <CardContent className='p-6'>
+                  <h2 className='font-bold text-gray-900 mb-4 uppercase text-lg'>About Author</h2>
+                  <div className='flex items-center gap-4'>
+                    <div className='w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-lg'>
+                      {blog.staff.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className='font-semibold text-gray-900'>{blog.staff.name}</h3>
+                      <p className='text-sm text-gray-600'>Health Specialist</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            {/* Related Articles */}
+            {relatedPosts.length > 0 && (
+              <Card className='border-0 shadow-md'>
+                <CardContent className='p-6'>
+                  <h2 className='font-bold text-gray-900 mb-6 uppercase text-lg'>Related Articles</h2>
+                  <div className='space-y-4'>
+                    {relatedPosts.map((post) => (
+                      <Link key={post.id} to={`/blog/${post.id}`} className='flex gap-4 group'>
+                        <div className='w-16 h-16 rounded-lg overflow-hidden flex-shrink-0'>
                           <img
                             src={
-                              typeof item.image === 'string'
-                                ? item.image
-                                : item.image instanceof File
-                                  ? URL.createObjectURL(item.image)
+                              typeof post.image === 'string'
+                                ? post.image
+                                : post.image instanceof File
+                                  ? URL.createObjectURL(post.image)
                                   : '/placeholder.svg'
                             }
-                            alt={item.title}
+                            alt={post.title}
                             className='w-full h-full object-cover'
                           />
                         </div>
-                        <CardHeader>
-                          <div className='text-sm text-muted-foreground mb-1'>
-                            {new Date(item.date).toLocaleDateString('vi-VN')}
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-center gap-2 text-xs text-pink-500 mb-1'>
+                            <div className='w-1.5 h-1.5 bg-pink-500 rounded-full'></div>
+                            <time>{formatDate(post.date)}</time>
                           </div>
-                          <CardTitle className='line-clamp-2 text-base'>{item.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className='pt-0 pb-4'>
-                          <div className='flex flex-wrap gap-2'>
-                            {item.tags.map((t, idx) => (
-                              <Badge key={idx} className='bg-gray-200 text-black rounded-full px-2 py-0.5 text-xs'>
-                                {t.tag.name}
-                              </Badge>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
+                          <h4 className='text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-pink-600 transition-colors'>
+                            {post.title}
+                          </h4>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </aside>
         </div>
-      )}
+      </div>
     </div>
   )
 }
