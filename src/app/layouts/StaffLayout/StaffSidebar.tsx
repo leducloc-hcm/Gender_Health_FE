@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { Activity, BookOpen, CalendarFold, FileText, Home, Tags, User } from 'lucide-react'
+import { Activity, BookOpen, CalendarFold, FileText, Tags, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [

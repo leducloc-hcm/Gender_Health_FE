@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/app/components/ui/dropdown-menu'
-import { clearUserProfileSignify, setUserProfileToSignify, sUserProfile } from '@/app/hooks/sUserProfile'
+import { clearUserProfileSignify, setUserProfileToSignify } from '@/app/hooks/sUserProfile'
 import NotificationDropdown from '@/app/layouts/ConsultantLayout/partials/NotificationDropdown'
 import { ROLE_ROUTES } from '@/app/pages/Auth/Login/Login'
 import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
