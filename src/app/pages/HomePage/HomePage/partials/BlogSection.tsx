@@ -131,10 +131,6 @@ export default function BlogSection() {
     navigate('/blog')
   }
 
-  if (loading) {
-    return <LoadingSpinner />
-  }
-
   return (
     <section id='blog' ref={ref} className='py-20 lg:py-32  relative overflow-hidden'>
       {/* Background Decorations */}

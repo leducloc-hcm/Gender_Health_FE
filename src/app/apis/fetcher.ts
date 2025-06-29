@@ -26,9 +26,17 @@ fetcher.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refresh_token')
         if (refreshToken) {
-          await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/refresh-token`, {
+          const refreshResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/refresh-token`, {
             refresh_token: refreshToken
           })
+          const newAccessToken = refreshResponse.data.access_token
+          const newRefreshToken = refreshResponse.data.refresh_token
+          if (newAccessToken) {
+            localStorage.setItem('access_token', newAccessToken)
+            localStorage.setItem('refresh_token', newRefreshToken)
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+            return fetcher(originalRequest)
+          }
         }
       } catch (refreshError) {
         localStorage.removeItem('access_token')
