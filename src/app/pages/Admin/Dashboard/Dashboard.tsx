@@ -118,7 +118,12 @@ export default function Dashboard() {
       <div className='grid gap-4 md:grid-cols-1 lg:grid-cols-2'>
         <RevenueChart key={'RevenueChart'} revenueDataFromServer={dataRevenue} primaryColor={primaryColor} />
         <UserCountChart key={'UserCountChart'} countUser={dataUserCount} primaryColor={primaryColor} />
-        <div className='table-container'></div>
+        <div className='table-container'>
+          order recently in process
+        </div>
+        <div className='table-container'>
+          payment recently in process
+        </div>
       </div>
     </div>
   )
