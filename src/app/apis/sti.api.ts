@@ -2,6 +2,7 @@ import { fetcher } from '@/app/apis/fetcher'
 import type {
   ResultOfTestReq,
   ResultOfTestResponse,
+  ResultOfTesUpdatetReq,
   StiTrackingByIdResponse
 } from '@/app/pages/Staff/ResultOfTest/models/result.type'
 import type { StiTrackingPostResponse, StiTrackingResponse } from '@/app/pages/Staff/StiTracking/models/sti.type'
@@ -82,7 +83,7 @@ export const stiApi = {
       throw axiosError
     }
   },
-  updateTestResult: async (id: number, data: ResultOfTestReq): Promise<any> => {
+  updateTestResult: async (id: number, data: ResultOfTesUpdatetReq): Promise<any> => {
     try {
       const response: AxiosResponse<any> = await fetcher.put(`/result-of-test/${id}`, data)
       return response.data

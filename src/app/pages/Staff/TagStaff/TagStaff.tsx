@@ -6,6 +6,7 @@ import DataTableTags from './DataTableTags'
 import { getTagColumns } from './tagColumns'
 import type { TagBlog } from '../../Auth/Login/models/tag'
 import { Activity } from 'lucide-react'
+import Swal from 'sweetalert2'
 
 export default function TagPage() {
   const [tags, setTags] = useState<TagBlog[]>([])
@@ -16,8 +17,18 @@ export default function TagPage() {
   }
 
   const handleDelete = async (id: number, name: string) => {
-    const confirm = window.confirm(`Are you sure you want to delete "${name}"?`)
-    if (!confirm) return
+    const result = await Swal.fire({
+      title: 'Are you sure to delete?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
 
     try {
       await deleteTag(id.toString())

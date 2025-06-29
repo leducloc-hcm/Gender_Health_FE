@@ -55,6 +55,7 @@ import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import adminPath from './paths/adminPath'
 import authPath from './paths/authPath'
 import ScrollToTop from '@/app/components/ui/autoScroll'
+import UpdateResultOfTest from '@/app/pages/Staff/ResultOfTest/UpdateResultOfTest'
 
 export default function MainRoutes() {
   return (
@@ -136,6 +137,7 @@ export default function MainRoutes() {
           <Route path={staffPath.resultOfTest} element={<ResultOfTest />} />
           <Route path={staffPath.createResultOfTest} element={<CreateResultOfTest />} />
           <Route path={staffPath.viewResultOfTest} element={<ViewResultOfTest />} />
+          <Route path={staffPath.updateResultOfTest} element={<UpdateResultOfTest />} />
         </Route>
       </Routes>
     </>

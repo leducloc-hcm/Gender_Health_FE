@@ -13,7 +13,8 @@ const staffPath = {
   stisTracking: 'stis-tracking',
   resultOfTest: 'result-of-test',
   createResultOfTest: 'result-of-test/create/:id',
-  viewResultOfTest: 'result-of-test/view/:id'
+  viewResultOfTest: 'result-of-test/view/:id',
+  updateResultOfTest: 'result-of-test/update/:id'
 }
 
 export default staffPath

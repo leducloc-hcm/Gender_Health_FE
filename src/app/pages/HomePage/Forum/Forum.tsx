@@ -14,6 +14,7 @@ import EditPostModal from './partials/EditPostModal'
 import ForumHeader from './partials/ForumHeader'
 import ForumSkeleton from './partials/ForumSkeleton'
 import PostCard from './partials/PostCard'
+import Swal from 'sweetalert2'
 
 export default function Forum() {
   // States
@@ -226,7 +227,6 @@ export default function Forum() {
       setNestedReplyContent('')
       setReplyingTo(null)
       await fetchReplies(questionId)
-      toast.success('Reply added successfully!')
     } catch (error) {
       console.error('Error creating nested reply:', error)
       toast.error('Failed to add reply')
@@ -251,7 +251,6 @@ export default function Forum() {
       await replyApi.createReply(replyData)
       setNewComment((prev) => ({ ...prev, [question_id]: '' }))
       await fetchReplies(question_id)
-      toast.success('Comment added successfully!')
     } catch (error) {
       console.error('Error creating reply:', error)
       toast.error('Failed to add comment')
@@ -271,7 +270,6 @@ export default function Forum() {
 
       const refreshPromises = expandedComments.map((questionId) => fetchReplies(questionId))
       await Promise.all(refreshPromises)
-      toast.success('Comment updated successfully!')
     } catch (error) {
       console.error('Error updating reply:', error)
       toast.error('Failed to update comment')
@@ -279,12 +277,22 @@ export default function Forum() {
   }
 
   const handleDeleteReply = async (replyId: number, questionId: number) => {
-    if (!confirm('Are you sure you want to delete this comment?')) return
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete reply?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
 
     try {
       await replyApi.deleteReply(replyId)
       await fetchReplies(questionId)
-      toast.success('Comment deleted successfully!')
     } catch (error) {
       console.error('Error deleting reply:', error)
       toast.error('Failed to delete comment')
@@ -309,7 +317,6 @@ export default function Forum() {
       await questionApi.createQuestion(formData)
       resetCreateForm()
       await fetchQuestions()
-      toast.success('Post created successfully!')
     } catch (error) {
       console.error('Error creating question:', error)
       toast.error('Failed to create post')
@@ -337,7 +344,6 @@ export default function Forum() {
       await questionApi.updateQuestion(editingPost.id, formData)
       resetEditForm()
       await fetchQuestions()
-      toast.success('Post updated successfully!')
     } catch (error) {
       console.error('Error updating question:', error)
       toast.error('Failed to update post')
@@ -347,12 +353,22 @@ export default function Forum() {
   }
 
   const handleDeleteQuestion = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this post?')) return
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete question?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
 
     try {
       await questionApi.deleteQuestion(id)
       await fetchQuestions()
-      toast.success('Post deleted successfully!')
     } catch (error) {
       console.error('Error deleting question:', error)
       toast.error('Failed to delete post')

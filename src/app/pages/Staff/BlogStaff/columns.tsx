@@ -14,7 +14,28 @@ export const getBlogColumns = ({ onDelete }: { onDelete: (id: number) => void })
         Title
         <ArrowUpDown className='ml-2 h-4 w-4' />
       </Button>
-    )
+    ),
+    cell: ({ row }) => {
+      const raw = row.original.title
+      let preview = ''
+
+      const isProbablyJson = typeof raw === 'string' && raw.trim().startsWith('{')
+
+      if (isProbablyJson) {
+        try {
+          const json = JSON.parse(raw)
+          const html = draftToHtml(json)
+          preview = html.replace(/<[^>]+>/g, '').slice(0, 100) + '...'
+        } catch (e) {
+          console.error('Invalid JSON format in content:', e)
+          preview = raw?.slice(0, 100) + '...'
+        }
+      } else {
+        preview = raw?.slice(0, 100) + '...'
+      }
+
+      return <div className='truncate text-sm text-gray-700 max-w-xs'>{preview}</div>
+    }
   },
   {
     accessorKey: 'content',

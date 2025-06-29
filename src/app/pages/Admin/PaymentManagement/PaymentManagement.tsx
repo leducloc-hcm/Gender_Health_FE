@@ -68,9 +68,9 @@ export default function PaymentManagement() {
       cell: ({ row }) => (
         <div
           className='truncate text-sm text-gray-700 max-w-xs text-start'
-          title={row.original.order?.address || 'No address'}
+          title={row.original.order.address || 'No address'}
         >
-          {row.original.order?.address || 'No address'}
+          {row.original.order.address || 'No address'}
         </div>
       )
     },

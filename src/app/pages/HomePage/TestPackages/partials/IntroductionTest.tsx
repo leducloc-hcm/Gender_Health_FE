@@ -56,7 +56,9 @@ export default function IntroductionTest() {
         >
           <motion.div variants={itemVariants} className='order-2 lg:order-1'>
             <div className='py-2 mb-6'>
-              <h1 className='text-4xl lg:text-6xl text-center text-black lg:text-left font-extrabold'>13 Diseases (STIs)</h1>
+              <h1 className='text-4xl lg:text-5xl text-center text-black lg:text-left font-extrabold'>
+                13 Diseases (STIs)
+              </h1>
               <h1 className='text-3xl lg:text-5xl py-2 text-center lg:text-left font-extrabold tracking-tight bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 bg-clip-text text-transparent'>
                 Test Package
               </h1>

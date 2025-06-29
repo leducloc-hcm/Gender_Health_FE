@@ -6,6 +6,7 @@ import StiDataTable from '@/app/pages/Staff/StiTracking/partials/StiDataTable'
 import { getStiColumns } from '@/app/pages/Staff/StiTracking/partials/getStiColumns'
 import { RefreshCw, Activity } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
+import Swal from 'sweetalert2'
 
 export default function StiTracking() {
   const [stiData, setStiData] = useState<Data[]>([])
@@ -30,9 +31,19 @@ export default function StiTracking() {
   }
 
   const handlePscVisited = async (id: number) => {
-    if (!window.confirm('Are you sure you want to mark PSC as visited?')) {
-      return
-    }
+    const result = await Swal.fire({
+      title: 'Are you sure you want to mark PSC as visited?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
+
     const actionKey = `psc-${id}`
     try {
       setActionLoading((prev) => ({ ...prev, [actionKey]: true }))
@@ -54,9 +65,18 @@ export default function StiTracking() {
   }
 
   const handleSampleCollected = async (id: number) => {
-    if (!window.confirm('Are you sure you want to mark sample as collected?')) {
-      return
-    }
+    const result = await Swal.fire({
+      title: 'Are you sure you want to mark sample as collected?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
     const actionKey = `sample-${id}`
     try {
       setActionLoading((prev) => ({ ...prev, [actionKey]: true }))
@@ -78,9 +98,18 @@ export default function StiTracking() {
   }
 
   const handleReportDate = async (id: number) => {
-    if (!window.confirm('Are you sure you want to set the report date?')) {
-      return
-    }
+    const result = await Swal.fire({
+      title: 'Are you sure you want to set the report date?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
     const actionKey = `report-${id}`
     try {
       setActionLoading((prev) => ({ ...prev, [actionKey]: true }))
