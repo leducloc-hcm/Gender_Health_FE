@@ -11,6 +11,7 @@ import { Bell } from 'lucide-react'
 import { io, Socket } from 'socket.io-client'
 import { fetcher } from '@/app/apis/fetcher'
 import { notificationApi } from '@/app/apis/notification.api'
+import { toast } from 'react-toastify'
 
 type Notification = {
   id: number
@@ -32,6 +33,7 @@ const NotificationDropdown = () => {
       .get('/notifications', { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         const data = Array.isArray(res?.data) ? res.data : Array.isArray(res?.data?.data) ? res.data.data : []
+        toast.success('Notifications updated successfully')
         setNotifications(data)
       })
       .catch((e) => {

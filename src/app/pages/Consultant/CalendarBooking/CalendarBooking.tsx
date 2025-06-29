@@ -424,7 +424,6 @@ const CalendarBooking = () => {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
               }}
               dateClick={(info) => {
-                alert('Clicked on: ' + info.dateStr)
                 setIsModalOpen(true)
                 const selectedDate = parse(info.dateStr, 'yyyy-MM-dd', new Date())
                 setValue('date', selectedDate)
