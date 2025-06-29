@@ -81,8 +81,8 @@ export default function Header() {
             </Link>
           </div>
           <nav className='hidden md:flex gap-6'>
-            <Link to='/#features' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
-              Features
+            <Link to='/' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
+              HomePage
             </Link>
             <Link to='/forum' className='text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors'>
               Forum

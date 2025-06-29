@@ -31,7 +31,9 @@ const BookingConsultantSection = () => {
       <div className='max-w-7xl mx-auto'>
         {/* Header */}
         <div className='text-center mb-12'>
-          <h1 className='text-4xl font-bold text-gray-900 mb-4'>Book Your Consultation</h1>
+          <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-pink-600 via-rose-500 to-pink-700 bg-clip-text text-transparent mb-4'>
+            Book Your Consultation
+          </h2>
           <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
             Choose from our expert consultants and find the perfect time slot for your needs
           </p>
