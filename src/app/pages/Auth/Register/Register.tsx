@@ -11,7 +11,7 @@ import {
   nameValidation,
   passwordValidation
 } from '@/app/modules/AuthValidation/AuthValidation'
-import type { RegisterFormData, RegisterResponse } from '@/app/pages/Auth/Register/models/register'
+import type { RegisterFormData } from '@/app/pages/Auth/Register/models/register'
 import axios from 'axios'
 import { format, parse } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
@@ -73,8 +73,10 @@ export default function Register() {
     } catch (error) {
       setIsLoading(false)
       if (axios.isAxiosError(error)) {
-        const errorResponse = error.response?.data as RegisterResponse
-        toast.error(errorResponse.message)
+        const errorResponse =
+          (error.response?.data.errors?.email?.msg as string) || error.response?.data.message || 'Registration failed'
+        console.log('errorResponse: ', errorResponse)
+        toast.error(errorResponse)
       } else {
         toast.error('An unexpected error occurred. Please try again.')
       }

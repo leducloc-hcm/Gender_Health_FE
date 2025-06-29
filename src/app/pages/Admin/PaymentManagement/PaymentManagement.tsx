@@ -66,7 +66,10 @@ export default function PaymentManagement() {
       accessorKey: 'order.address',
       header: () => <p className='text-start'>Address</p>,
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 text-start' title={row.original.order?.address || 'No address'}>
+        <div
+          className='truncate text-sm text-gray-700 max-w-xs text-start'
+          title={row.original.order?.address || 'No address'}
+        >
           {row.original.order?.address || 'No address'}
         </div>
       )

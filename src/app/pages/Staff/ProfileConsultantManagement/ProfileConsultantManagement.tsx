@@ -53,7 +53,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
           Consultant Profile Details
         </DialogTitle>
       </DialogHeader>
-
       {selectedConsultant && (
         <div className='space-y-6'>
           {/* Profile Header with Avatar and Status */}
@@ -209,7 +208,7 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
                   </div>
                 </div>
 
-                <div className='flex items-center gap-3'>
+                {/* <div className='flex items-center gap-3'>
                   <Clock className='h-5 w-5 text-teal-500' />
                   <div>
                     <p className='text-sm text-gray-600'>Response Time</p>
@@ -219,7 +218,7 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
                         : 'No response time'}
                     </p>
                   </div>
-                </div>
+                </div> */}
 
                 <div className='flex items-center gap-3'>
                   <FileText className='h-5 w-5 text-indigo-500' />
@@ -351,9 +350,7 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
           </Card>
         </div>
       )}
-
       <Separator className='my-6' />
-
       <DialogFooter>
         <Button variant='outline' onClick={() => onOpenChange(false)} className='px-6'>
           Close

@@ -8,15 +8,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/app/components/ui/sidebar'
-import { Activity, BookOpen, CalendarFold, FileText, Home, Tags, User } from 'lucide-react'
+import { Activity, BookOpen, CalendarFold, FileText, Tags, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [
-  {
-    title: 'Dashboard',
-    url: '/staff/dashboard',
-    icon: Home
-  },
+  // {
+  //   title: 'Dashboard',
+  //   url: '/staff/dashboard',
+  //   icon: Home
+  // },
   {
     title: 'Consultant Management',
     url: '/staff/consultant-profile-management',
