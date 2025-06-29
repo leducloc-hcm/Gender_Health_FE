@@ -49,6 +49,12 @@ export interface PasswordForm {
   confirm_password: string
 }
 
+export interface FeedbackForm {
+  feedback: string
+  rating: number
+  customerNote: string
+}
+
 export interface UpdateProfileConsultantInput {
   id?: number
   name?: string

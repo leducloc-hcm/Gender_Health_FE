@@ -2,16 +2,17 @@ import { useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
-import { ArrowUpDown, ExternalLink } from 'lucide-react'
+import { ArrowUpDown, ExternalLink, MessageSquare } from 'lucide-react'
 import type { ConsultantManagementResponse } from '../models/ConsultingManagement'
-import { AddMeetingLinkModal } from '../components/AddMeetingLinkModal'
+import { AddMeetingLinkModal } from './AddMeetingLinkModal'
+import { ConsultantFeedbackModal } from './ConsultantFeedbackModal'
 
 interface ColumnsProps {
   onRefresh?: () => void
 }
 
 export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
-  const [modalState, setModalState] = useState<{
+  const [meetingLinkModalState, setMeetingLinkModalState] = useState<{
     isOpen: boolean
     historyId: number | null
   }>({
@@ -19,17 +20,34 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
     historyId: null
   })
 
-  const handleOpenModal = (historyId: number) => {
-    setModalState({ isOpen: true, historyId })
+  const [feedbackModalState, setFeedbackModalState] = useState<{
+    isOpen: boolean
+    historyId: number | null
+  }>({
+    isOpen: false,
+    historyId: null
+  })
+
+  const handleOpenMeetingLinkModal = (historyId: number) => {
+    setMeetingLinkModalState({ isOpen: true, historyId })
   }
 
-  const handleCloseModal = () => {
-    setModalState({ isOpen: false, historyId: null })
+  const handleCloseMeetingLinkModal = () => {
+    setMeetingLinkModalState({ isOpen: false, historyId: null })
+  }
+
+  const handleOpenFeedbackModal = (historyId: number) => {
+    setFeedbackModalState({ isOpen: true, historyId })
+  }
+
+  const handleCloseFeedbackModal = () => {
+    setFeedbackModalState({ isOpen: false, historyId: null })
   }
 
   const handleSuccess = () => {
     onRefresh?.()
-    handleCloseModal()
+    handleCloseMeetingLinkModal()
+    handleCloseFeedbackModal()
   }
 
   const columns: ColumnDef<ConsultantManagementResponse>[] = [
@@ -243,27 +261,49 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
             <Button
               variant='outline'
               size='sm'
-              onClick={() => handleOpenModal(row.original.id)}
+              onClick={() => handleOpenMeetingLinkModal(row.original.id)}
               className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
             >
               <span className='mr-2'>🔗</span>
               <span className='font-medium text-xs'>Add Link</span>
             </Button>
+            {new Date(row.original.scheduleAt) < new Date() && (
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => handleOpenFeedbackModal(row.original.id)}
+                className='bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
+              >
+                <MessageSquare className='w-3 h-3 mr-1' />
+                <span className='font-medium text-xs'>Note</span>
+              </Button>
+            )}
           </div>
         </div>
       )
     }
   ]
 
-  const Modal = () =>
-    modalState.historyId ? (
-      <AddMeetingLinkModal
-        isOpen={modalState.isOpen}
-        onClose={handleCloseModal}
-        historyId={modalState.historyId}
-        onSuccess={handleSuccess}
-      />
-    ) : null
+  const Modal = () => (
+    <>
+      {meetingLinkModalState.historyId && (
+        <AddMeetingLinkModal
+          isOpen={meetingLinkModalState.isOpen}
+          onClose={handleCloseMeetingLinkModal}
+          historyId={meetingLinkModalState.historyId}
+          onSuccess={handleSuccess}
+        />
+      )}
+      {feedbackModalState.historyId && (
+        <ConsultantFeedbackModal
+          isOpen={feedbackModalState.isOpen}
+          onClose={handleCloseFeedbackModal}
+          historyId={feedbackModalState.historyId}
+          onSuccess={handleSuccess}
+        />
+      )}
+    </>
+  )
 
   return { columns, Modal }
 }

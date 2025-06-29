@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { FiMenu, FiHeart, FiX } from 'react-icons/fi'
+import { profileApi } from '@/app/apis/profile.api'
+import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Button } from '@/app/components/ui/button'
 import {
   DropdownMenu,
@@ -9,13 +8,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/app/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
-import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
-import { profileApi } from '@/app/apis/profile.api'
-import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
 import { clearUserProfileSignify, setUserProfileToSignify, sUserProfile } from '@/app/hooks/sUserProfile'
-import { ROLE_ROUTES } from '@/app/pages/Auth/Login/Login'
 import NotificationDropdown from '@/app/layouts/ConsultantLayout/partials/NotificationDropdown'
+import { ROLE_ROUTES } from '@/app/pages/Auth/Login/Login'
+import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
+import { LogOut, ShoppingBag, User } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { FiHeart, FiMenu, FiX } from 'react-icons/fi'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Header() {
   const nav = useNavigate()

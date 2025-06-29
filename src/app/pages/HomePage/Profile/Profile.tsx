@@ -14,10 +14,11 @@ import {
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Progress } from '@/app/components/ui/progress'
+import { Textarea } from '@/app/components/ui/textarea'
 import { clearUserProfileSignify, setUserProfileToSignify } from '@/app/hooks/sUserProfile'
 import dayjs from 'dayjs'
-import { Edit3, Eye, EyeOff, Heart, MapPin, Save, Upload, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Edit3, Eye, EyeOff, Heart, MapPin, MessageSquare, Save, Star, Upload, X } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import type {
@@ -25,7 +26,8 @@ import type {
   historyConsultingData,
   PasswordForm,
   UpdateProfileInput,
-  UserProfile
+  UserProfile,
+  FeedbackForm
 } from './models/Profile'
 import { Link } from 'react-router-dom'
 
@@ -56,6 +58,11 @@ export default function Profile() {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [userConsultingHistory, setUserConsultingHistory] = useState<historyConsultingData[]>([])
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
+  const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(null)
+  const [rating, setRating] = useState(0)
+  const [hoveredRating, setHoveredRating] = useState(0)
+  console.log('userConsultingHistory: ', userConsultingHistory)
   const {
     register,
     handleSubmit,
@@ -72,6 +79,13 @@ export default function Profile() {
     watch,
     reset: resetPassword
   } = useForm<PasswordForm>()
+
+  const {
+    register: registerFeedback,
+    handleSubmit: handleSubmitFeedback,
+    formState: { errors: feedbackErrors },
+    reset: resetFeedback
+  } = useForm<FeedbackForm>()
 
   const password = watch('password', '')
 
@@ -91,7 +105,7 @@ export default function Profile() {
 
   const passwordStrength = calculatePasswordStrength(password)
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const response = await profileApi.getProfile()
       const profile = response?.result
@@ -110,11 +124,11 @@ export default function Profile() {
       console.log(error)
       clearUserProfileSignify()
     }
-  }
+  }, [reset])
 
   useEffect(() => {
     fetchProfile()
-  }, [])
+  }, [fetchProfile])
 
   useEffect(() => {
     return () => {
@@ -161,8 +175,9 @@ export default function Profile() {
       setAvatarPreview(null)
       setCoverPreview(null)
       setIsEditing(false)
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update profile. Please try again.')
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update profile. Please try again.'
+      toast.error(errorMessage)
     }
   }
 
@@ -206,9 +221,47 @@ export default function Profile() {
       setIsPasswordModalOpen(false)
       console.log(response)
       toast.success('Password changed successfully!')
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to change password. Please try again.')
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to change password. Please try again.'
+      toast.error(errorMessage)
     }
+  }
+
+  const handleFeedbackSubmit = async (data: FeedbackForm) => {
+    if (!selectedHistoryId) return
+
+    try {
+      const feedbackData = {
+        historyId: selectedHistoryId,
+        feedback: data.feedback,
+        rating: rating,
+        customerNote: data.customerNote
+      }
+
+      await profileApi.submitFeedback(feedbackData)
+      toast.success('Feedback submitted successfully!')
+
+      // Reset form and close modal
+      resetFeedback()
+      setRating(0)
+      setHoveredRating(0)
+      setIsFeedbackModalOpen(false)
+      setSelectedHistoryId(null)
+
+      // Refresh the consulting history
+      await fetchProfile()
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.'
+      toast.error(errorMessage)
+    }
+  }
+
+  const openFeedbackModal = (historyId: number) => {
+    setSelectedHistoryId(historyId)
+    setIsFeedbackModalOpen(true)
+    setRating(0)
+    setHoveredRating(0)
+    resetFeedback()
   }
 
   return (
@@ -430,6 +483,96 @@ export default function Profile() {
                     </form>
                   </DialogContent>
                 </Dialog>
+
+                <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackModalOpen}>
+                  <DialogContent className='sm:max-w-md'>
+                    <DialogHeader>
+                      <DialogTitle className='flex items-center gap-2 text-gray-900'>
+                        <MessageSquare className='w-5 h-5 text-purple-600' />
+                        Submit Feedback
+                      </DialogTitle>
+                      <DialogDescription>Please share your experience with this consultation.</DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmitFeedback(handleFeedbackSubmit)} className='space-y-4'>
+                      <div className='space-y-2'>
+                        <Label className='text-sm font-medium text-gray-700'>Rating</Label>
+                        <div className='flex gap-1'>
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type='button'
+                              onMouseEnter={() => setHoveredRating(star)}
+                              onMouseLeave={() => setHoveredRating(0)}
+                              onClick={() => setRating(star)}
+                              className='p-1 hover:scale-110 transition-transform'
+                            >
+                              <Star
+                                className={`w-6 h-6 ${
+                                  star <= (hoveredRating || rating)
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        {rating === 0 && <p className='text-red-500 text-xs mt-1'>Please select a rating</p>}
+                      </div>
+
+                      <div className='space-y-2'>
+                        <Label htmlFor='feedback' className='text-sm font-medium text-gray-700'>
+                          Feedback
+                        </Label>
+                        <Textarea
+                          id='feedback'
+                          placeholder='Share your experience...'
+                          {...registerFeedback('feedback', { required: 'Feedback is required' })}
+                          className='border-purple-200 focus:border-purple-400 focus:ring-purple-400 min-h-[80px]'
+                        />
+                        {feedbackErrors.feedback && (
+                          <p className='text-red-500 text-xs mt-1'>{feedbackErrors.feedback.message}</p>
+                        )}
+                      </div>
+
+                      <div className='space-y-2'>
+                        <Label htmlFor='customerNote' className='text-sm font-medium text-gray-700'>
+                          Additional Notes
+                        </Label>
+                        <Textarea
+                          id='customerNote'
+                          placeholder='Any additional comments...'
+                          {...registerFeedback('customerNote')}
+                          className='border-purple-200 focus:border-purple-400 focus:ring-purple-400 min-h-[60px]'
+                        />
+                      </div>
+
+                      <div className='flex gap-2 pt-4'>
+                        <Button
+                          type='submit'
+                          className='flex-1 bg-purple-600 hover:bg-purple-700 text-white'
+                          disabled={rating === 0}
+                        >
+                          <Save className='w-4 h-4 mr-2' />
+                          Submit Feedback
+                        </Button>
+                        <Button
+                          type='button'
+                          variant='outline'
+                          onClick={() => {
+                            setIsFeedbackModalOpen(false)
+                            resetFeedback()
+                            setRating(0)
+                            setHoveredRating(0)
+                            setSelectedHistoryId(null)
+                          }}
+                          className='border-gray-300'
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
                 <Button
                   onClick={() => setIsEditing(true)}
                   size='sm'
@@ -572,9 +715,22 @@ export default function Profile() {
                             Upcoming
                           </Badge>
                         ) : (
-                          <Badge className='bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-300 px-3 py-1 font-medium'>
-                            Completed
-                          </Badge>
+                          <div className='flex gap-2'>
+                            <Badge className='bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-300 px-3 py-1 font-medium'>
+                              Completed
+                            </Badge>
+                            {!history.feedback && (
+                              <Button
+                                size='sm'
+                                variant='outline'
+                                onClick={() => openFeedbackModal(history.id)}
+                                className='bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border-purple-200'
+                              >
+                                <MessageSquare className='w-3 h-3 mr-1' />
+                                Feedback
+                              </Button>
+                            )}
+                          </div>
                         )}
                       </div>
 

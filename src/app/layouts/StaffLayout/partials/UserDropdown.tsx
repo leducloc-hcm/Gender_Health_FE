@@ -11,9 +11,9 @@ import {
 import { setConsultantProfileToSignify } from '@/app/hooks/sConsultantProfile'
 import { clearUserProfileSignify } from '@/app/hooks/sUserProfile'
 import type { getProfileResult } from '@/app/pages/HomePage/Profile/models/Profile'
-import { LogOut, Settings, ShoppingBag, User } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const UserDropdown = () => {
   const [userProfile, setUserProfile] = useState<getProfileResult>({

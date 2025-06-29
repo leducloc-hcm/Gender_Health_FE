@@ -1,6 +1,7 @@
 import type {
   ConsultantManagementResponseData,
-  linkInviteResponse
+  linkInviteResponse,
+  ConsultantFeedbackResponse
 } from '../pages/Consultant/ConsultingManagement/models/ConsultingManagement'
 import { fetcher } from './fetcher'
 
@@ -24,6 +25,22 @@ export const consultingManagementApi = {
       return response.data
     } catch (error) {
       console.error('Error creating invite link:', error)
+      throw error
+    }
+  },
+  submitConsultantFeedback: async (data: {
+    historyId: number
+    consultantNote: string
+  }): Promise<ConsultantFeedbackResponse> => {
+    try {
+      const response = await fetcher.put(`consulting-history/consultant/feedback`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error submitting consultant feedback:', error)
       throw error
     }
   }

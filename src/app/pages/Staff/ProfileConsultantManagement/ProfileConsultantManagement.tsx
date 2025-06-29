@@ -3,29 +3,39 @@ import { staffApi } from '@/app/apis/staff.api'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
 import { Button } from '@/app/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog'
-import { Input } from '@/app/components/ui/input'
-import { Label } from '@/app/components/ui/label'
 import { format } from 'date-fns'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getScheduleColumns } from './partials/columns'
 import DataTable from './partials/DataTable'
+import EditConsultantModal from './partials/EditConsultantModal'
 
 import type { ProfileConsultantResult as OriginalProfileConsultantResult } from '@/app/pages/Staff/ProfileConsultantManagement/models/ProfleConsultantManagement'
-import { Activity } from 'lucide-react'
+import {
+  Activity,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Star,
+  Award,
+  Globe,
+  Clock,
+  Building2,
+  GraduationCap,
+  FileText,
+  Tag,
+  Languages,
+  Camera
+} from 'lucide-react'
+import { Badge } from '@/app/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Separator } from '@/app/components/ui/separator'
 
 export interface ProfileConsultantResult extends Omit<OriginalProfileConsultantResult, 'avatar' | 'coverPhoto'> {
   avatar: string | File | null
   coverPhoto: string | File | null
-}
-
-export interface EditConsultantModalProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  selectedConsultant: ProfileConsultantResult | null
-  setSelectedConsultant: React.Dispatch<React.SetStateAction<ProfileConsultantResult | null>>
-  onSave: () => Promise<void>
-  onCancel: () => void
 }
 
 export interface ViewConsultantModalProps {
@@ -34,287 +44,318 @@ export interface ViewConsultantModalProps {
   selectedConsultant: ProfileConsultantResult | null
 }
 
-// EditConsultantModal Component
-const EditConsultantModal = memo(
-  ({ isOpen, onOpenChange, selectedConsultant, setSelectedConsultant, onSave, onCancel }: EditConsultantModalProps) => {
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-    const [coverPhotoPreview, setCoverPhotoPreview] = useState<string | null>(null)
-
-    const handleInputChange = <K extends keyof ProfileConsultantResult>(
-      field: K,
-      value: ProfileConsultantResult[K]
-    ) => {
-      setSelectedConsultant((prev) => (prev ? { ...prev, [field]: value } : prev))
-    }
-
-    useEffect(() => {
-      if (!selectedConsultant) {
-        setAvatarPreview(null)
-        return
-      }
-      if (selectedConsultant.avatar instanceof File) {
-        const url = URL.createObjectURL(selectedConsultant.avatar)
-        setAvatarPreview(url)
-        return () => URL.revokeObjectURL(url)
-      }
-      setAvatarPreview(typeof selectedConsultant.avatar === 'string' ? selectedConsultant.avatar : null)
-    }, [selectedConsultant])
-
-    useEffect(() => {
-      if (!selectedConsultant) {
-        setCoverPhotoPreview(null)
-        return
-      }
-      if (selectedConsultant.coverPhoto instanceof File) {
-        const url = URL.createObjectURL(selectedConsultant.coverPhoto)
-        setCoverPhotoPreview(url)
-        return () => URL.revokeObjectURL(url)
-      }
-      setCoverPhotoPreview(typeof selectedConsultant.coverPhoto === 'string' ? selectedConsultant.coverPhoto : null)
-    }, [selectedConsultant])
-
-    if (!selectedConsultant) return null
-
-    return (
-      <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className='sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>
-          <DialogHeader>
-            <DialogTitle>Edit Consultant Profile</DialogTitle>
-          </DialogHeader>
-          <div className='grid gap-4 py-4'>
-            {[
-              { id: 'name', label: 'Name', type: 'text' },
-              { id: 'username', label: 'Username', type: 'text' },
-              { id: 'email', label: 'Email', type: 'email' },
-              { id: 'role', label: 'Role', type: 'text' },
-              { id: 'status', label: 'Status', type: 'text' },
-              { id: 'phone_number', label: 'Phone Number', type: 'text' },
-              { id: 'bio', label: 'Bio', type: 'text' },
-              { id: 'description', label: 'Description', type: 'text' },
-              { id: 'location', label: 'Location', type: 'text' },
-              { id: 'website', label: 'Website', type: 'url' },
-              { id: 'degree', label: 'Degree', type: 'text' },
-              { id: 'hospital', label: 'Hospital', type: 'text' },
-              {
-                id: 'date_of_birth',
-                label: 'Date of Birth',
-                type: 'date',
-                formatter: (value?: string) => (value ? format(new Date(value), 'yyyy-MM-dd') : '')
-              },
-              {
-                id: 'specialties',
-                label: 'Specialties',
-                type: 'text',
-                formatter: (value?: string[]) => value?.join(', ') || '',
-                parser: (value: string) => value.split(',').map((s) => s.trim())
-              },
-              {
-                id: 'languages',
-                label: 'Languages',
-                type: 'text',
-                formatter: (value?: string[]) => value?.join(', ') || '',
-                parser: (value: string) => value.split(',').map((s) => s.trim())
-              },
-              {
-                id: 'rating',
-                label: 'Rating',
-                type: 'number',
-                props: { step: '0.1', min: '0', max: '5' },
-                parser: (value: string) => parseFloat(value) || 0
-              },
-              {
-                id: 'total_reviews',
-                label: 'Total Reviews',
-                type: 'number',
-                props: { min: '0' },
-                parser: (value: string) => parseInt(value, 10) || 0
-              },
-              { id: 'experience', label: 'Experience (Years)', type: 'text' },
-              { id: 'response_time', label: 'Response Time (Mins)', type: 'text' }
-            ].map(({ id, label, type, props, parser }) => (
-              <div key={id} className='grid grid-cols-4 items-center gap-4'>
-                <Label htmlFor={id} className='text-right'>
-                  {label}
-                </Label>
-                <Input
-                  id={id}
-                  type={type}
-                  value={(() => {
-                    const fieldValue = selectedConsultant[id as keyof ProfileConsultantResult]
-
-                    if (id === 'date_of_birth' && fieldValue && typeof fieldValue === 'string') {
-                      return format(new Date(fieldValue), 'yyyy-MM-dd')
-                    }
-                    if (id === 'specialties' && Array.isArray(fieldValue)) {
-                      return fieldValue.join(', ')
-                    }
-                    if (id === 'languages' && Array.isArray(fieldValue)) {
-                      return fieldValue.join(', ')
-                    }
-
-                    if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
-                      return String(fieldValue)
-                    }
-                    return ''
-                  })()}
-                  onChange={(e) =>
-                    handleInputChange(
-                      id as keyof ProfileConsultantResult,
-                      parser
-                        ? parser(e.target.value)
-                        : type === 'date' && e.target.value
-                          ? new Date(e.target.value).toISOString()
-                          : e.target.value
-                    )
-                  }
-                  className='col-span-3'
-                  {...props}
-                />
-              </div>
-            ))}
-            {[
-              { field: 'avatar', label: 'Avatar', preview: avatarPreview },
-              { field: 'coverPhoto', label: 'Cover Photo', preview: coverPhotoPreview }
-            ].map(({ field, label, preview }) => (
-              <div key={field} className='grid grid-cols-4 items-center gap-4'>
-                <Label className='text-right'>{label}</Label>
-                <div className='col-span-3 flex items-center gap-4'>
-                  {preview ? (
-                    <Avatar className='w-16 h-16'>
-                      <AvatarImage src={preview} />
-                      <AvatarFallback>{selectedConsultant.name ?? 'N/A'}</AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <span>No {label.toLowerCase()}</span>
-                  )}
-                  <Input
-                    id={field}
-                    type='file'
-                    accept='image/*'
-                    onChange={(e) =>
-                      handleInputChange(field as keyof ProfileConsultantResult, e.target.files?.[0] ?? null)
-                    }
-                    className='w-auto'
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <DialogFooter>
-            <Button variant='outline' onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button onClick={onSave}>Save changes</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-)
-
 const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: ViewConsultantModalProps) => (
   <Dialog open={isOpen} onOpenChange={onOpenChange}>
-    <DialogContent className='sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>
-      <DialogHeader>
-        <DialogTitle>Consultant Profile Details</DialogTitle>
+    <DialogContent className='sm:max-w-[900px] max-h-[90vh] overflow-y-auto'>
+      <DialogHeader className='pb-6'>
+        <DialogTitle className='text-2xl font-bold text-center text-gray-800 flex items-center justify-center gap-2'>
+          <User className='h-6 w-6' />
+          Consultant Profile Details
+        </DialogTitle>
       </DialogHeader>
+
       {selectedConsultant && (
-        <div className='grid gap-4 py-4'>
-          {[
-            { label: 'Name', value: selectedConsultant.name ?? 'No name' },
-            { label: 'Username', value: selectedConsultant.username ?? 'No username' },
-            { label: 'Email', value: selectedConsultant.email ?? 'No email' },
-            { label: 'Role', value: selectedConsultant.role ?? 'N/A' },
-            { label: 'Status', value: selectedConsultant.status ?? 'Unknown' },
-            { label: 'Phone Number', value: selectedConsultant.phone_number ?? 'No phone' },
-            { label: 'Bio', value: selectedConsultant.bio ?? 'No bio' },
-            { label: 'Description', value: selectedConsultant.description ?? 'No description' },
-            { label: 'Location', value: selectedConsultant.location ?? 'No location' },
-            {
-              label: 'Date of Birth',
-              value: selectedConsultant.date_of_birth
-                ? format(new Date(selectedConsultant.date_of_birth), 'dd MMM yyyy')
-                : 'No date of birth'
-            },
-            {
-              label: 'Website',
-              value: selectedConsultant.website ? (
-                <a
-                  href={selectedConsultant.website}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-blue-500 hover:underline'
-                >
-                  {selectedConsultant.website}
-                </a>
-              ) : (
-                'No website'
-              )
-            },
-            {
-              label: 'Specialties',
-              value: selectedConsultant.specialties?.length
-                ? selectedConsultant.specialties.join(', ')
-                : 'No specialties'
-            },
-            {
-              label: 'Languages',
-              value: selectedConsultant.languages?.length ? selectedConsultant.languages.join(', ') : 'No languages'
-            },
-            {
-              label: 'Rating',
-              value: selectedConsultant.rating != null ? selectedConsultant.rating.toFixed(1) : 'No rating'
-            },
-            { label: 'Total Reviews', value: selectedConsultant.total_reviews ?? 'No reviews' },
-            {
-              label: 'Experience',
-              value: selectedConsultant.experience ? `${selectedConsultant.experience} years` : 'No experience'
-            },
-            {
-              label: 'Response Time',
-              value: selectedConsultant.response_time ? `${selectedConsultant.response_time} mins` : 'No response time'
-            },
-            { label: 'Degree', value: selectedConsultant.degree ?? 'No degree' },
-            { label: 'Hospital', value: selectedConsultant.hospital ?? 'No hospital' },
-            {
-              label: 'Created At',
-              value: selectedConsultant.created_at
-                ? format(new Date(selectedConsultant.created_at), 'dd MMM yyyy HH:mm')
-                : 'Invalid Date'
-            },
-            {
-              label: 'Updated At',
-              value: selectedConsultant.updated_at
-                ? format(new Date(selectedConsultant.updated_at), 'dd MMM yyyy HH:mm')
-                : 'Invalid Date'
-            }
-          ].map(({ label, value }) => (
-            <div key={label} className='grid grid-cols-4 items-center gap-4'>
-              <Label className='text-right font-bold'>{label}</Label>
-              <span className='col-span-3'>{value}</span>
-            </div>
-          ))}
-          <div className='flex justify-center gap-8'>
-            {(['avatar', 'coverPhoto'] as const).map((field) => (
-              <div key={field} className='grid grid-cols-4 items-center gap-4'>
-                <Label className='text-right font-bold'>{field === 'avatar' ? 'Avatar' : 'Cover Photo'}</Label>
-                <div className='col-span-3'>
-                  {typeof selectedConsultant[field] === 'string' && selectedConsultant[field] ? (
-                    <Avatar className='w-16 h-16'>
-                      <AvatarImage src={selectedConsultant[field] as string} />
-                      <AvatarFallback>{selectedConsultant.name ?? 'N/A'}</AvatarFallback>
+        <div className='space-y-6'>
+          {/* Profile Header with Avatar and Status */}
+          <Card>
+            <CardContent className='pt-6'>
+              <div className='flex flex-col md:flex-row items-center gap-6'>
+                <div className='flex-shrink-0'>
+                  {typeof selectedConsultant.avatar === 'string' && selectedConsultant.avatar ? (
+                    <Avatar className='w-32 h-32 rounded-xl border-4 border-white shadow-lg'>
+                      <AvatarImage src={selectedConsultant.avatar} className='object-cover' />
+                      <AvatarFallback className='text-3xl bg-gradient-to-br from-blue-400 to-purple-500 text-white'>
+                        {selectedConsultant.name?.[0] ?? 'N/A'}
+                      </AvatarFallback>
                     </Avatar>
                   ) : (
-                    `No ${field === 'avatar' ? 'avatar' : 'cover photo'}`
+                    <div className='w-32 h-32 rounded-xl border-4 border-gray-200 flex items-center justify-center bg-gray-50'>
+                      <User className='h-16 w-16 text-gray-400' />
+                    </div>
+                  )}
+                </div>
+
+                <div className='flex-1 text-center md:text-left space-y-2'>
+                  <h2 className='text-3xl font-bold text-gray-900'>{selectedConsultant.name ?? 'No name'}</h2>
+                  <p className='text-lg text-gray-600'>@{selectedConsultant.username ?? 'No username'}</p>
+                  <div className='flex items-center justify-center md:justify-start gap-4 mt-4'>
+                    <Badge
+                      className={`px-3 py-1 text-sm font-medium ${
+                        selectedConsultant.status === 'VERIFIED'
+                          ? 'bg-green-100 text-green-800 border-green-200'
+                          : selectedConsultant.status === 'REJECT'
+                            ? 'bg-red-100 text-red-800 border-red-200'
+                            : selectedConsultant.status === 'PENDING'
+                              ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                              : 'bg-gray-100 text-gray-800 border-gray-200'
+                      }`}
+                    >
+                      {selectedConsultant.status ?? 'Unknown'}
+                    </Badge>
+
+                    {selectedConsultant.rating != null && (
+                      <div className='flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200'>
+                        <Star className='h-4 w-4 text-yellow-500 fill-current' />
+                        <span className='text-sm font-medium text-yellow-800'>
+                          {selectedConsultant.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedConsultant.bio && <p className='text-gray-600 mt-3 italic'>"{selectedConsultant.bio}"</p>}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Contact Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className='text-lg flex items-center gap-2'>
+                <Mail className='h-5 w-5' />
+                Contact Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='flex items-center gap-3'>
+                  <Mail className='h-5 w-5 text-blue-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Email</p>
+                    <p className='font-medium'>{selectedConsultant.email ?? 'No email'}</p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <Phone className='h-5 w-5 text-green-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Phone</p>
+                    <p className='font-medium'>{selectedConsultant.phone_number ?? 'No phone'}</p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <MapPin className='h-5 w-5 text-red-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Location</p>
+                    <p className='font-medium'>{selectedConsultant.location ?? 'No location'}</p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <Globe className='h-5 w-5 text-purple-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Website</p>
+                    {selectedConsultant.website ? (
+                      <a
+                        href={selectedConsultant.website}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='font-medium text-blue-600 hover:text-blue-800 hover:underline'
+                      >
+                        {selectedConsultant.website}
+                      </a>
+                    ) : (
+                      <p className='font-medium text-gray-400'>No website</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Professional Details */}
+          <Card>
+            <CardHeader>
+              <CardTitle className='text-lg flex items-center gap-2'>
+                <Award className='h-5 w-5' />
+                Professional Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                <div className='flex items-center gap-3'>
+                  <Award className='h-5 w-5 text-blue-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Role</p>
+                    <p className='font-medium'>{selectedConsultant.role ?? 'N/A'}</p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <GraduationCap className='h-5 w-5 text-green-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Degree</p>
+                    <p className='font-medium'>{selectedConsultant.degree ?? 'No degree'}</p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <Building2 className='h-5 w-5 text-purple-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Hospital/Clinic</p>
+                    <p className='font-medium'>{selectedConsultant.hospital ?? 'No hospital'}</p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <Clock className='h-5 w-5 text-orange-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Experience</p>
+                    <p className='font-medium'>
+                      {selectedConsultant.experience ? `${selectedConsultant.experience} years` : 'No experience'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <Clock className='h-5 w-5 text-teal-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Response Time</p>
+                    <p className='font-medium'>
+                      {selectedConsultant.response_time
+                        ? `${selectedConsultant.response_time} mins`
+                        : 'No response time'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <FileText className='h-5 w-5 text-indigo-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Total Reviews</p>
+                    <p className='font-medium'>{selectedConsultant.total_reviews ?? 'No reviews'}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Skills & Languages */}
+          <Card>
+            <CardHeader>
+              <CardTitle className='text-lg flex items-center gap-2'>
+                <Tag className='h-5 w-5' />
+                Skills & Languages
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='space-y-4'>
+              <div>
+                <div className='flex items-center gap-2 mb-3'>
+                  <Tag className='h-4 w-4 text-blue-500' />
+                  <span className='text-sm font-medium text-gray-600'>Specialties</span>
+                </div>
+                <div className='flex flex-wrap gap-2'>
+                  {selectedConsultant.specialties?.length ? (
+                    selectedConsultant.specialties.map((specialty, index) => (
+                      <Badge key={index} variant='secondary' className='bg-blue-50 text-blue-700 border-blue-200'>
+                        {specialty}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className='text-gray-400 italic'>No specialties</span>
                   )}
                 </div>
               </div>
-            ))}
-          </div>
+
+              <Separator />
+
+              <div>
+                <div className='flex items-center gap-2 mb-3'>
+                  <Languages className='h-4 w-4 text-green-500' />
+                  <span className='text-sm font-medium text-gray-600'>Languages</span>
+                </div>
+                <div className='flex flex-wrap gap-2'>
+                  {selectedConsultant.languages?.length ? (
+                    selectedConsultant.languages.map((language, index) => (
+                      <Badge key={index} variant='secondary' className='bg-green-50 text-green-700 border-green-200'>
+                        {language}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className='text-gray-400 italic'>No languages</span>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Description */}
+          {selectedConsultant.description && (
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-lg flex items-center gap-2'>
+                  <FileText className='h-5 w-5' />
+                  Description
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className='text-gray-700 leading-relaxed'>{selectedConsultant.description}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Cover Photo */}
+          {typeof selectedConsultant.coverPhoto === 'string' && selectedConsultant.coverPhoto && (
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-lg flex items-center gap-2'>
+                  <Camera className='h-5 w-5' />
+                  Cover Photo
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='w-full h-48 rounded-lg overflow-hidden border border-gray-200'>
+                  <img src={selectedConsultant.coverPhoto} alt='Cover' className='w-full h-full object-cover' />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Personal Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className='text-lg flex items-center gap-2'>
+                <Calendar className='h-5 w-5' />
+                Personal Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='flex items-center gap-3'>
+                  <Calendar className='h-5 w-5 text-blue-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Date of Birth</p>
+                    <p className='font-medium'>
+                      {selectedConsultant.date_of_birth
+                        ? format(new Date(selectedConsultant.date_of_birth), 'dd MMM yyyy')
+                        : 'No date of birth'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <Clock className='h-5 w-5 text-gray-500' />
+                  <div>
+                    <p className='text-sm text-gray-600'>Member Since</p>
+                    <p className='font-medium'>
+                      {selectedConsultant.created_at
+                        ? format(new Date(selectedConsultant.created_at), 'dd MMM yyyy')
+                        : 'Invalid Date'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
+
+      <Separator className='my-6' />
+
       <DialogFooter>
-        <Button variant='outline' onClick={() => onOpenChange(false)}>
+        <Button variant='outline' onClick={() => onOpenChange(false)} className='px-6'>
           Close
         </Button>
       </DialogFooter>
@@ -352,7 +393,6 @@ const ProfileConsultantManagement = () => {
   const handleView = useCallback((consultant: ProfileConsultantResult) => {
     setSelectedConsultant(consultant)
     setIsViewModalOpen(true)
-    toast.info(`Viewing consultant ID: ${consultant.id}`, { position: 'top-right', autoClose: 1000 })
   }, [])
 
   const handleSliceToArrayString = useCallback((value: string | string[] | undefined): string[] => {
