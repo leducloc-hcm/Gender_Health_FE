@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/componen
 import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table'
 import type { ResultOfTestResponse } from '@/app/pages/Staff/ResultOfTest/models/result.type'
-import { AlertCircle, Eye, X } from 'lucide-react'
+import { AlertCircle, Eye } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 

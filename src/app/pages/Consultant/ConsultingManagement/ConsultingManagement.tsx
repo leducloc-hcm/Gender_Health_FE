@@ -31,7 +31,7 @@ const ConsultingManagement = () => {
   return (
     <div>
       <div className='p-4'>
-        <h1 className='text-2xl font-bold mb-4'>Consultant Profile Management</h1>
+        <h1 className='text-2xl font-bold mb-4'>Consulting Management</h1>
         <div className='table-container'>
           <DataTable columns={columns} data={consultingData} />
         </div>

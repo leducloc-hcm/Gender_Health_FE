@@ -25,7 +25,6 @@ const ConsultantManagement = () => {
   const [newConsultant, setNewConsultant] = useState<Partial<RegisterConsultantReqBody>>({})
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const fetchData = useCallback(async () => {
     setIsLoading(true)

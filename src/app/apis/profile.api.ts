@@ -71,5 +71,18 @@ export const profileApi = {
       console.error('Failed to fetch history consulting:', error)
       throw error
     }
+  },
+  submitFeedback: async (data: { feedback: string; rating: number; customerNote: string }) => {
+    try {
+      const response = await fetcher.put(`consulting-history/customer/feedback`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Failed to submit feedback:', error)
+      throw error
+    }
   }
 }

@@ -83,3 +83,13 @@ export interface linkInviteData {
   createdAt: string
   updatedAt: string
 }
+
+export interface ConsultantFeedbackForm {
+  historyId: number
+  consultantNote: string
+}
+
+export interface ConsultantFeedbackResponse {
+  message: string
+  data: linkInviteData
+}
