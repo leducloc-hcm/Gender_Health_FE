@@ -96,7 +96,7 @@ export default function OrderManagement() {
     },
     {
       accessorKey: 'created_at',
-      header: () => <p className='text-start'>Created At</p>,
+      header: () => <p className='text-start'>Created Date</p>,
       cell: ({ row }) => (
         <div className='truncate text-sm text-gray-700 max-w-xs text-start'>
           {dayjs(row.original.created_at).format('DD/MM/YYYY')}
