@@ -10,6 +10,8 @@ import LoadingSpinner from '@/app/components/ui/loadingspinner'
 import { adminApi } from '@/app/apis/admin.api'
 import RevenueChart from './Partials/RevenueChart'
 import UserCountChart from './Partials/UserCountChart'
+import OrderTable from './Partials/OrderTable'
+import PaymentTable from './Partials/PaymentTable'
 
 export default function Dashboard() {
   const primaryColor = '#ec4899'
@@ -118,12 +120,8 @@ export default function Dashboard() {
       <div className='grid gap-4 md:grid-cols-1 lg:grid-cols-2'>
         <RevenueChart key={'RevenueChart'} revenueDataFromServer={dataRevenue} primaryColor={primaryColor} />
         <UserCountChart key={'UserCountChart'} countUser={dataUserCount} primaryColor={primaryColor} />
-        <div className='table-container'>
-          order recently in process
-        </div>
-        <div className='table-container'>
-          payment recently in process
-        </div>
+        <OrderTable key={'OrderTable'} dataOrder={dataOrder} isLoading={isLoading} />
+        <PaymentTable key={'PaymentTable'} dataPayment={dataPayment} isLoading={isLoading} />
       </div>
     </div>
   )

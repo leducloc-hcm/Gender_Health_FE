@@ -45,7 +45,7 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
   return (
     <>
       {/* Table content */}
-      {/* <div className='min-h-[530px]'> */}
+      <div className='min-h-[250px]'>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -94,7 +94,7 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
           )}
         </TableBody>
       </Table>
-      {/* </div> */}
+      </div>
     </>
   )
 }
