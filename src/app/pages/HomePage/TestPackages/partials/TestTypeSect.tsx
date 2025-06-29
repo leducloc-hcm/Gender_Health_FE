@@ -159,12 +159,7 @@ export default function TestTypeSect() {
 
   if (showOrderModal) {
     return (
-      <OrderModal
-        key={'OrderModal'}
-        id={packageId}
-        handleCloseModal={handleCloseOrderModal}
-        isOpen={showOrderModal}
-      />
+      <OrderModal key={'OrderModal'} id={packageId} handleCloseModal={handleCloseOrderModal} isOpen={showOrderModal} />
     )
   }
 
@@ -205,7 +200,7 @@ export default function TestTypeSect() {
 
                         <CardFooter className='px-2 sm:px-4 md:px-6 pb-2 sm:pb-4 md:pb-6 pt-0 sm:pt-1'>
                           <Button
-                            className='w-full bg-white text-gray-800 hover:bg-gray-200 font-bold rounded-md sm:rounded-lg text-base md:text-xl py-4 md:py-5'
+                            className='cursor-pointer w-full bg-white text-gray-800 hover:bg-gray-200 font-bold rounded-md sm:rounded-lg text-base md:text-xl py-4 md:py-5'
                             onClick={() => handleBooking(pkg.id)}
                           >
                             Booking
@@ -233,7 +228,7 @@ export default function TestTypeSect() {
                         open={openTestTypes[type.typeId]}
                         onOpenChange={() => toggleOpenTestTypes(type.typeId)}
                       >
-                        <CollapsibleTrigger className='flex items-center gap-3 w-full p-4 text-left hover:bg-gray-100 transition-colors'>
+                        <CollapsibleTrigger className='cursor-pointer flex items-center gap-3 w-full p-4 text-left hover:bg-gray-100 transition-colors'>
                           <div className='flex-shrink-0'>
                             {openTestTypes[type.typeId] ? (
                               <Minus className='h-5 w-5 text-gray-600' />
@@ -252,7 +247,7 @@ export default function TestTypeSect() {
                                   open={openTestCategory[test.id]}
                                   onOpenChange={() => toggleOpenTestCategory(test.id)}
                                 >
-                                  <CollapsibleTrigger className='w-full p-4 hover:bg-gray-100 transition-colors'>
+                                  <CollapsibleTrigger className='cursor-pointer w-full p-4 hover:bg-gray-100 transition-colors'>
                                     <div className='flex justify-start items-center gap-3 mb-4'>
                                       <div className='flex-shrink-0'>
                                         {openTestCategory[test.id] ? (
