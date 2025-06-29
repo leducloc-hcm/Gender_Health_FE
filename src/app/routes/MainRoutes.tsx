@@ -54,6 +54,7 @@ import EditTag from '../pages/Staff/TagStaff/EditTag'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import adminPath from './paths/adminPath'
 import authPath from './paths/authPath'
+import ScrollToTop from '@/app/components/ui/autoScroll'
 
 export default function MainRoutes() {
   return (
@@ -70,6 +71,7 @@ export default function MainRoutes() {
         pauseOnHover
         theme='light'
       />
+      <ScrollToTop />
       <Routes>
         <Route path='/' element={<HomePageLayout />}>
           <Route path='/' element={<HomePage />} />
