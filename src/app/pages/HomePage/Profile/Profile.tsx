@@ -695,7 +695,7 @@ export default function Profile() {
 
               <div className='space-y-4'>
                 {userConsultingHistory.length > 0 ? (
-                  userConsultingHistory.reverse().map((history, index) => (
+                  userConsultingHistory.map((history, index) => (
                     <div
                       key={index}
                       className='group p-5 bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl border border-rose-200 hover:border-rose-300 hover:shadow-md transition-all duration-200'
