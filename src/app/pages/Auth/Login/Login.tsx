@@ -31,7 +31,7 @@ const googleOAuthUrl = getGoogleAuthUrl()
 export const ROLE_ROUTES = {
   CUSTOMER: '/',
   ADMIN: '/admin',
-  STAFF: '/staff',
+  STAFF: '/staff/consultant-profile-management',
   CONSULTANT: '/consultant'
 } as const
 
