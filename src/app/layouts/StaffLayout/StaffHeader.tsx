@@ -1,0 +1,37 @@
+import { SidebarTrigger } from '@/app/components/ui/sidebar'
+import NotificationDropdown from './partials/NotificationDropdown'
+import UserDropdown from './partials/UserDropdown'
+import { useEffect, useState } from 'react'
+import { authApi } from '@/app/apis/auth.api'
+import { sStaffProfile } from '@/app/hooks/sStaffProfile'
+import type { StaffProfileResult } from '@/app/pages/Staff/models/Staff'
+export default function StaffHeader() {
+  const [staffProfile, setStaffProfile] = useState<StaffProfileResult>()
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await authApi.getProfileStaff()
+        setStaffProfile(response.result)
+        sStaffProfile.set(response.result as any)
+      } catch (error) {
+        console.log('error: ', error)
+      }
+    }
+    fetchUserProfile()
+  }, [])
+  return (
+    <header className='flex h-20 shrink-0 items-center gap-2 bg-white border-b border-pink-100'>
+      <div className='flex items-center gap-4 px-6'>
+        <SidebarTrigger className='h-8 w-8 rounded-lg hover:bg-pink-50 transition-colors' />
+        <div className='h-6 w-px bg-pink-200' />
+        <div>
+          <p className='text-xl font-bold text-pink-600'>Welcome back, {staffProfile?.name}...!</p>
+        </div>
+      </div>
+      <div className='ml-auto flex items-center gap-3 px-6'>
+        <NotificationDropdown />
+        <UserDropdown />
+      </div>
+    </header>
+  )
+}

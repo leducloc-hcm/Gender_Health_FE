@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useForm, type SubmitHandler } from 'react-hook-form'
-import { FiEye, FiEyeOff, FiHeart, FiMail, FiLock } from 'react-icons/fi'
+import { authApi } from '@/app/apis/auth.api'
 import { Button } from '@/app/components/ui/button'
+import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
+import type { LoginFormData } from '@/app/pages/Auth/Login/models/login'
 import axios from 'axios'
+import { useState } from 'react'
+import { useForm, type SubmitHandler } from 'react-hook-form'
+import { FiEye, FiEyeOff, FiHeart, FiLock, FiMail } from 'react-icons/fi'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import type { LoginFormData } from '@/app/pages/Auth/Login/models/login'
-import { emailValidation, passwordValidation } from '@/app/modules/AuthValidation/AuthValidation'
-import { authApi } from '@/app/apis/auth.api'
 
 const getGoogleAuthUrl = () => {
   const { VITE_GOOGLE_CLIENT_ID, VITE_GOOGLE_REDIRECT_URI } = import.meta.env
@@ -27,6 +27,15 @@ const getGoogleAuthUrl = () => {
   return `${url}?${queryString}`
 }
 const googleOAuthUrl = getGoogleAuthUrl()
+
+export const ROLE_ROUTES = {
+  CUSTOMER: '/',
+  ADMIN: '/admin',
+  STAFF: '/staff',
+  CONSULTANT: '/consultant'
+} as const
+
+type UserRole = keyof typeof ROLE_ROUTES
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -63,12 +72,24 @@ export default function LoginPage() {
         console.log('Refresh token stored:', responseData.result.refresh_token)
       }
 
+      const userRole = responseData.result?.role?.toUpperCase() as UserRole
+      console.log('User role from API:', userRole)
+
+      if (userRole) {
+        localStorage.setItem('user_role', userRole)
+      }
+
       toast.success('Login successful!', {
         position: 'top-right',
         autoClose: 500
       })
       setTimeout(() => {
-        navigate('/customer/dashboard')
+        if (userRole && ROLE_ROUTES[userRole]) {
+          navigate(ROLE_ROUTES[userRole])
+        } else {
+          console.warn('Unknown role:', userRole, 'Redirecting to customer dashboard')
+          navigate(ROLE_ROUTES.CUSTOMER)
+        }
       }, 1000)
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -169,7 +190,7 @@ export default function LoginPage() {
                 </label>
               </div>
 
-              <Link to='/auth/forgotPassword' className='text-sm text-pink-600 hover:text-pink-500 font-medium'>
+              <Link to='/auth/forgot-password' className='text-sm text-pink-600 hover:text-pink-500 font-medium'>
                 Forgot password?
               </Link>
             </div>

@@ -1,9 +1,12 @@
+import { SocketProvider } from './app/contexts/SocketContext'
 import MainRoutes from './app/routes/MainRoutes'
 
 function App() {
   return (
     <>
-      <MainRoutes />
+      <SocketProvider>
+        <MainRoutes />
+      </SocketProvider>
     </>
   )
 }

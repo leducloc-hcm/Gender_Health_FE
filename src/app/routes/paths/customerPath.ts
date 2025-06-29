@@ -1,6 +1,12 @@
 const customerPath = {
   dashboard: 'dashboard',
-  profile: 'profile'
+  profile: 'profile',
+  menstrualCycle: 'cycle',
+  testPackages: 'test-packages',
+  blog: 'blog',
+  orders: 'orders',
+  blogDetail: 'blog/:id',
+  customerCalendar: 'calendar'
 }
 
 export default customerPath

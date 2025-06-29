@@ -16,5 +16,8 @@ export default defineConfig({
   },
   css: {
     devSourcemap: true
+  },
+  define: {
+    global: 'globalThis'
   }
 })
