@@ -12,11 +12,11 @@ import { Activity, BookOpen, CalendarFold, FileText, Home, Tags, User } from 'lu
 import { Link, useLocation } from 'react-router-dom'
 
 const navigationItems = [
-  {
-    title: 'Dashboard',
-    url: '/staff/dashboard',
-    icon: Home
-  },
+  // {
+  //   title: 'Dashboard',
+  //   url: '/staff/dashboard',
+  //   icon: Home
+  // },
   {
     title: 'Consultant Management',
     url: '/staff/consultant-profile-management',
