@@ -29,10 +29,10 @@ const ConsultingManagement = () => {
   }, [consultantProfile.consultant_profile_id, fetchConsultingData])
 
   return (
-    <div>
+    <div className='w-full overflow-hidden'>
       <div className='p-4'>
         <h1 className='text-2xl font-bold mb-4'>Consulting Management</h1>
-        <div className='table-container'>
+        <div className='w-full overflow-x-auto'>
           <DataTable columns={columns} data={consultingData} />
         </div>
       </div>
