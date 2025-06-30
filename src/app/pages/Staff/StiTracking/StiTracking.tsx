@@ -38,7 +38,7 @@ export default function StiTracking() {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Delete',
+      confirmButtonText: 'Mark PSC',
       cancelButtonText: 'Cancel'
     })
 
@@ -72,7 +72,7 @@ export default function StiTracking() {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Delete',
+      confirmButtonText: 'Mark sample',
       cancelButtonText: 'Cancel'
     })
 
@@ -105,7 +105,7 @@ export default function StiTracking() {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Delete',
+      confirmButtonText: 'Set report',
       cancelButtonText: 'Cancel'
     })
 

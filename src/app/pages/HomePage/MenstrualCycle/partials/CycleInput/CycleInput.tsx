@@ -76,6 +76,8 @@ export default function CycleInput({ onNext }: CycleInputProps) {
             <input
               id='startDate'
               type='date'
+              min={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+              max={new Date().toISOString().split('T')[0]}
               {...register('startDate', {
                 required: 'Start date is required'
               })}
