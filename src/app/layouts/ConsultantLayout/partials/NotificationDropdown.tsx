@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { fetcher } from '@/app/apis/fetcher'
+import { notificationApi } from '@/app/apis/notification.api'
 import { Button } from '@/app/components/ui/button'
 import {
   DropdownMenu,
@@ -8,10 +9,8 @@ import {
   DropdownMenuTrigger
 } from '@/app/components/ui/dropdown-menu'
 import { Bell } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
-import { fetcher } from '@/app/apis/fetcher'
-import { notificationApi } from '@/app/apis/notification.api'
-import { toast } from 'react-toastify'
 
 type Notification = {
   id: number
