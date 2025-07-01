@@ -42,9 +42,9 @@ export default function EditSpecialtyModal({ editItem, isModalOpen, openModal, c
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!editItem) return
-    
+
     if (!formData.name.trim()) {
       toast.error('Name is required')
       return
@@ -56,7 +56,7 @@ export default function EditSpecialtyModal({ editItem, isModalOpen, openModal, c
         name: formData.name.trim(),
         description: formData.description.trim() || undefined
       })
-      
+
       toast.success('Specialty updated successfully')
       onSuccess()
       closeModal()

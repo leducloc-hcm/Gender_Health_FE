@@ -22,14 +22,12 @@ fetcher.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // Avoid infinite retry loops and check if we have both tokens
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
       const accessToken = localStorage.getItem('access_token')
       const refreshToken = localStorage.getItem('refresh_token')
 
-      // Only attempt refresh if we have both tokens
       if (accessToken && refreshToken) {
         try {
           const refreshResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/refresh-token`, {

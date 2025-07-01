@@ -31,7 +31,7 @@ export default function CreateSpecialtyModal({ isModalOpen, openModal, closeModa
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.name.trim()) {
       toast.error('Name is required')
       return
@@ -43,7 +43,7 @@ export default function CreateSpecialtyModal({ isModalOpen, openModal, closeModa
         name: formData.name.trim(),
         description: formData.description.trim() || undefined
       })
-      
+
       toast.success('Specialty created successfully')
       setFormData({ name: '', description: '' }) // Reset form
       onSuccess()
@@ -103,7 +103,11 @@ export default function CreateSpecialtyModal({ isModalOpen, openModal, closeModa
                 Cancel
               </Button>
             </DialogClose>
-            <Button type='submit' disabled={isLoading}>
+            <Button
+              className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-2.5 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+              type='submit'
+              disabled={isLoading}
+            >
               {isLoading ? 'Creating...' : 'Create Specialty'}
             </Button>
           </DialogFooter>
