@@ -26,7 +26,7 @@ fetcher.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refresh_token')
         if (refreshToken) {
-          const refreshResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/refresh-token`, {
+          const refreshResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}users/refresh-token`, {
             refresh_token: refreshToken
           })
           const newAccessToken = refreshResponse.data.access_token
