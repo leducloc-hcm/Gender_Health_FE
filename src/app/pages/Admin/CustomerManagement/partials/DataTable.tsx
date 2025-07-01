@@ -57,8 +57,8 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
         {/* Search */}
         <Input
           placeholder='Search by customer name...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+          value={(table.getColumn('profile.name')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn('profile.name')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
       </div>
