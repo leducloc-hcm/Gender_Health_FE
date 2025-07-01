@@ -3,7 +3,7 @@ import { Button } from '@/app/components/ui/button'
 import { useOpenModal } from '@/app/hooks/useOpenModal'
 import type { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
-import { ArrowUpDown, Edit, Eye, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Edit, Eye } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import type { SpecialtyDataResponse } from './Models/SpecialtyManagement'
@@ -11,9 +11,11 @@ import DataTable from './partials/DataTable'
 import EditSpecialtyModal from './partials/EditSpecialtyModal'
 import ViewSpecialtyModal from './partials/ViewSpecialtyModal'
 import CreateSpecialtyModal from './partials/CreateSpecialtyModal'
+import DeleteDialog from '../Common/DeleteDialog'
 
 export default function SpecialtyManagement() {
   const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false)
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [dataSource, setDataSource] = useState<SpecialtyDataResponse[]>([])
 
   const [viewItem, setViewItem] = useState<SpecialtyDataResponse>()
@@ -23,6 +25,33 @@ export default function SpecialtyManagement() {
   const { isOpen: isOpenEditModal, openModal: openEditModal, closeModal: closeEditModal } = useOpenModal()
 
   const { isOpen: isOpenCreateModal, openModal: openCreateModal, closeModal: closeCreateModal } = useOpenModal()
+
+  const handleDelete = async (id: number) => {
+    setIsDeleting(true)
+    try {
+      await specialtyApi.deleteSpecialty(id)
+      toast.success('Specialty deleted successfully')
+      fetchData()
+    } catch (error) {
+      console.error('Failed to delete specialty:', error)
+      let errorMessage = 'Failed to delete specialty'
+
+      // Check if error has response data with message
+      if (error && typeof error === 'object' && 'response' in error) {
+        const response = (error as { response?: { data?: { message?: string } } }).response
+        if (response?.data?.message) {
+          errorMessage = response.data.message
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      console.log('errorMessage: ', errorMessage)
+      toast.error(errorMessage)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   const columns: ColumnDef<SpecialtyDataResponse>[] = [
     {
@@ -60,7 +89,6 @@ export default function SpecialtyManagement() {
         </div>
       )
     },
-
     {
       accessorKey: 'createdAt',
       header: ({ column }) => (
@@ -118,49 +146,16 @@ export default function SpecialtyManagement() {
               <Edit size={16} className='mr-1' />
               Edit
             </Button>
-            <Button onClick={() => handleDelete(item)} className='bg-red-500 hover:bg-red-600 text-white' size='sm'>
-              <Trash2 size={16} className='mr-1' />
-              Delete
-            </Button>
+            <DeleteDialog onConfirm={handleDelete} itemId={item.id} isLoading={isDeleting} />
           </div>
         )
       }
     }
   ]
 
-  const handleCancelView = () => {
-    closeViewModal()
-    setViewItem(undefined)
-  }
-
-  const handleCancelEdit = () => {
-    closeEditModal()
-    setEditItem(undefined)
-  }
-
-  const handleEditSuccess = () => {
-    fetchData() // Refresh the data after successful edit
-  }
-
-  const handleCreateSuccess = () => {
-    fetchData() // Refresh the data after successful creation
-  }
-
   const handleEdit = (specialty: SpecialtyDataResponse) => {
     setEditItem(specialty)
     openEditModal()
-  }
-
-  const handleDelete = async (specialty: SpecialtyDataResponse) => {
-    try {
-      await specialtyApi.deleteSpecialty(specialty.id)
-      toast.success('Specialty deleted successfully')
-      fetchData() // Refresh the data
-    } catch (error) {
-      console.error('Failed to delete specialty:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Failed to delete specialty'
-      toast.error(errorMessage)
-    }
   }
 
   const fetchData = async (): Promise<void> => {
@@ -170,8 +165,7 @@ export default function SpecialtyManagement() {
       setDataSource(specialtyRes.data)
     } catch (error) {
       console.error('Failed to fetch data:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch specialties'
-      toast.error(errorMessage)
+      toast.error('Failed to fetch specialties')
     } finally {
       setIsLoadingTable(false)
     }
@@ -181,15 +175,45 @@ export default function SpecialtyManagement() {
     fetchData()
   }, [])
 
+  const handleCancelView = () => {
+    setViewItem(undefined)
+    closeViewModal()
+  }
+
+  const handleCancelEdit = () => {
+    setEditItem(undefined)
+    closeEditModal()
+  }
+
+  const handleEditSuccess = () => {
+    fetchData()
+    closeEditModal()
+    setEditItem(undefined)
+  }
+
+  const handleCreateSuccess = () => {
+    fetchData()
+    closeCreateModal()
+  }
+
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Manage Specialties</h1>
-      <div className='table-container'>
+    <div className='px-6 py-8'>
+      <div className='flex items-center justify-between mb-6'>
+        <h1 className='text-3xl font-bold text-gray-900'>Specialty Management</h1>
+        <Button
+          onClick={openCreateModal}
+          className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-2.5 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300'
+          size='lg'
+        >
+          Create Specialty
+        </Button>
+      </div>
+
+      <div className='bg-white rounded-lg shadow-sm border border-gray-200'>
         <DataTable
           columns={columns}
           data={dataSource}
           isLoading={isLoadingTable}
-          onCreateClick={openCreateModal}
           searchPlaceholder='Search by specialty name...'
           searchColumnKey='name'
         />
@@ -201,6 +225,7 @@ export default function SpecialtyManagement() {
           openModal={openViewModal}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          isDeleting={isDeleting}
         />
         <EditSpecialtyModal
           key={'edit-specialty-modal'}

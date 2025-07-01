@@ -71,7 +71,10 @@ export default function DataTable<TData>({
           className='max-w-sm'
         />
         {onCreateClick && (
-          <Button onClick={onCreateClick} className='bg-red-500 hover:bg-red-600 text-white'>
+          <Button
+            onClick={onCreateClick}
+            className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-2.5 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+          >
             <Plus size={16} className='mr-2' />
             Create Specialty
           </Button>

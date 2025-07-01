@@ -1,8 +1,9 @@
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog'
 import dayjs from 'dayjs'
 import { Button } from '@/app/components/ui/button'
 import { Badge } from '@/app/components/ui/badge'
-import { Edit, Trash2 } from 'lucide-react'
+import { Edit } from 'lucide-react'
+import DeleteDialog from '@/app/pages/Admin/Common/DeleteDialog'
 import type { SpecialtyDataResponse } from '../Models/SpecialtyManagement'
 
 type DataProps = {
@@ -11,7 +12,8 @@ type DataProps = {
   openModal: () => void
   closeModal: () => void
   onEdit: (specialty: SpecialtyDataResponse) => void
-  onDelete: (specialty: SpecialtyDataResponse) => void
+  onDelete: (id: number) => void
+  isDeleting?: boolean
 }
 
 export default function ViewSpecialtyModal({
@@ -20,7 +22,8 @@ export default function ViewSpecialtyModal({
   openModal,
   closeModal,
   onEdit,
-  onDelete
+  onDelete,
+  isDeleting = false
 }: DataProps) {
   if (!viewItem) return null
 
@@ -29,8 +32,8 @@ export default function ViewSpecialtyModal({
     closeModal()
   }
 
-  const handleDelete = () => {
-    onDelete(viewItem)
+  const handleDelete = (id: number) => {
+    onDelete(id)
     closeModal()
   }
 
@@ -92,17 +95,8 @@ export default function ViewSpecialtyModal({
               <Edit size={16} />
               Edit
             </Button>
-            <Button type='button' variant='destructive' onClick={handleDelete} className='flex items-center gap-2'>
-              <Trash2 size={16} />
-              Delete
-            </Button>
+            <DeleteDialog onConfirm={handleDelete} itemId={viewItem.id} isLoading={isDeleting} />
           </div>
-
-          <DialogClose asChild>
-            <Button type='button' variant='outline'>
-              Close
-            </Button>
-          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
