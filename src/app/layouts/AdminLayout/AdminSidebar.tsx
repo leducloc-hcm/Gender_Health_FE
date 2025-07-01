@@ -22,7 +22,8 @@ import {
   Users,
   UserCheck,
   UserCog,
-  ChevronRight
+  ChevronRight,
+  SquareDashedBottomCode
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/app/components/ui/collapsible'
@@ -71,6 +72,11 @@ const navigationItems = [
     title: 'Test Packages',
     url: '/admin/manage-test-packages',
     icon: Boxes
+  },
+  {
+    title: 'Specialties',
+    url: '/admin/manage-specialties',
+    icon: SquareDashedBottomCode
   },
   {
     title: 'Type of test',

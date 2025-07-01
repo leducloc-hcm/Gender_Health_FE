@@ -30,7 +30,7 @@ export interface ConsultantProfile {
   rating: number
   totalReviews: number
   experience: string
-  specialties: string[]
+  specialties: Specialty[]
   languages: string[]
   responseTime: string
   degree: string
@@ -70,4 +70,11 @@ export interface dataBookingResponse {
 export interface allConsultantResponse {
   message: string
   result: ConsultantProfile[]
+}
+export interface Specialty {
+  id: number
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
 }
