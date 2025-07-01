@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/components/ui/avatar'
+import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog'
 import { Label } from '@/app/components/ui/label'
@@ -111,29 +112,30 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
               </div>
             </div>
 
-            {/* Skills & Languages */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Skills & Languages</h3>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                {[
-                  {
-                    label: 'Specialties',
-                    value: selectedConsultant.specialties?.length
-                      ? selectedConsultant.specialties.join(', ')
-                      : 'No specialties'
-                  },
-                  {
-                    label: 'Languages',
-                    value: selectedConsultant.languages?.length
-                      ? selectedConsultant.languages.join(', ')
-                      : 'No languages'
-                  }
-                ].map(({ label, value }) => (
-                  <div key={label} className='space-y-1'>
-                    <Label className='text-sm font-medium text-gray-600'>{label}</Label>
-                    <p className='text-sm'>{value}</p>
-                  </div>
-                ))}
+
+              <div className='space-y-1'>
+                <Label className='text-sm font-medium text-gray-600'>Specialties</Label>
+                <div className='flex flex-wrap gap-2'>
+                  {selectedConsultant.specialties?.length > 0 ? (
+                    selectedConsultant.specialties.map((specialty, index) => (
+                      <Badge key={index} className='bg-blue-100 text-blue-800 hover:bg-blue-200 text-xs font-medium'>
+                        {specialty.name}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className='text-sm text-gray-500'>No specialties</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Languages */}
+              <div className='space-y-1'>
+                <Label className='text-sm font-medium text-gray-600'>Languages</Label>
+                <p className='text-sm'>
+                  {selectedConsultant.languages?.length ? selectedConsultant.languages.join(', ') : 'No languages'}
+                </p>
               </div>
             </div>
 

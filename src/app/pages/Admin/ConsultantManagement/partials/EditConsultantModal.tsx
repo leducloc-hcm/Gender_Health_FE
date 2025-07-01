@@ -3,6 +3,7 @@ import { Button } from '@/app/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog'
 import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
+import { SpecialtySelector } from '@/app/components/ui/specialty-selector'
 import { format } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
 import type { ConsultantData } from '../ConsultantManagement'
@@ -79,11 +80,6 @@ const EditConsultantModal = memo(
                   type: 'date'
                 },
                 {
-                  id: 'specialties',
-                  label: 'Specialties (comma separated)',
-                  type: 'text'
-                },
-                {
                   id: 'languages',
                   label: 'Languages (comma separated)',
                   type: 'text'
@@ -104,9 +100,6 @@ const EditConsultantModal = memo(
                       if (id === 'date_of_birth' && fieldValue && typeof fieldValue === 'string') {
                         return format(new Date(fieldValue), 'yyyy-MM-dd')
                       }
-                      if (id === 'specialties' && Array.isArray(fieldValue)) {
-                        return fieldValue.join(', ')
-                      }
                       if (id === 'languages' && Array.isArray(fieldValue)) {
                         return fieldValue.join(', ')
                       }
@@ -118,9 +111,9 @@ const EditConsultantModal = memo(
                     })()}
                     onChange={(e) => {
                       const value = e.target.value
-                      let processedValue: any = value
+                      let processedValue: string | string[] | Date = value
 
-                      if (id === 'specialties' || id === 'languages') {
+                      if (id === 'languages') {
                         processedValue = value.split(',').map((s) => s.trim())
                       } else if (type === 'date' && value) {
                         processedValue = new Date(value).toISOString()
@@ -132,6 +125,15 @@ const EditConsultantModal = memo(
                   />
                 </div>
               ))}
+
+              {/* Specialties Selector */}
+              <div className='space-y-2'>
+                <Label className='text-sm font-medium'>Specialties</Label>
+                <SpecialtySelector
+                  selectedSpecialtyIds={selectedConsultant.specialtyIds || []}
+                  onSelectionChange={(specialtyIds) => handleInputChange('specialtyIds', specialtyIds)}
+                />
+              </div>
 
               {/* Image Upload Section */}
               <div className='space-y-4 pt-4 border-t'>
