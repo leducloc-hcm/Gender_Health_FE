@@ -87,13 +87,13 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className='rounded-md '>
-        <Table>
+      <div className='rounded-md border overflow-x-auto'>
+        <Table className='min-w-full'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className='whitespace-nowrap'>
                     <div className='text-center w-full'>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </div>
@@ -108,7 +108,7 @@ export default function DataTable<TData>({ columns, data }: DataTableProps<TData
                 {table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className='whitespace-nowrap'>
                         <div className='text-center w-full'>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </div>

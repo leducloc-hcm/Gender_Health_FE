@@ -4,6 +4,7 @@ import { Badge } from '@/app/components/ui/badge'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/app/components/ui/carousel'
+import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
 import { Award, Briefcase, Building2, Clock, GraduationCap, Languages, MapPin, Phone, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { Consultant, ConsultantProfile } from '../models/BookingConsultantSectionModel'
@@ -12,6 +13,7 @@ const BookingConsultantSection = () => {
   const [selectedConsultant] = useState<Consultant | null>(null)
   console.log('selectedConsultant: ', selectedConsultant)
   const [consultantsData, setConsultantsData] = useState<ConsultantProfile[]>()
+  const [hoveredConsultant, setHoveredConsultant] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchConsultants = async () => {
@@ -43,118 +45,162 @@ const BookingConsultantSection = () => {
         <div className='mb-8'>
           <Carousel className='w-full max-w-6xl mx-auto'>
             <CarouselContent className='-ml-2 md:-ml-4'>
-              {consultantsData?.map((consultant) => (
-                <CarouselItem
-                  key={consultant.consultant_profile_id}
-                  className='pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2 xl:basis-1/3'
-                >
-                  <Card className='h-full bg-white/90 backdrop-blur-sm border-0 hover: transition-all duration-300'>
-                    <CardHeader className='text-center pb-4'>
-                      <div className='flex justify-center mb-4 relative'>
-                        <Avatar className='w-24 h-24 border-4 border-rose-200 '>
-                          <AvatarImage
-                            src={consultant.avatar || '/placeholder.svg'}
-                            alt={consultant.name}
-                            className='object-cover'
-                          />
-                          <AvatarFallback className='bg-gradient-to-br from-rose-400 to-pink-400 text-white text-xl font-semibold'>
-                            {consultant.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className='absolute -top-1 -right-1'>
-                          <Badge className='bg-green-500 text-white text-xs px-2 py-1 rounded-full'>✓ Verified</Badge>
+              {consultantsData
+                ?.filter((consultant) => consultant.consultant_profile_id)
+                .map((consultant) => (
+                  <CarouselItem
+                    key={consultant.consultant_profile_id}
+                    className='pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2 xl:basis-1/3'
+                  >
+                    <Card className='h-full bg-white/90 backdrop-blur-sm border-0 hover: transition-all duration-300'>
+                      <CardHeader className='text-center pb-4'>
+                        <div className='flex justify-center mb-4 relative'>
+                          <Avatar className='w-24 h-24 border-4 border-rose-200 '>
+                            <AvatarImage
+                              src={consultant.avatar || '/placeholder.svg'}
+                              alt={consultant.name || 'Consultant'}
+                              className='object-cover'
+                            />
+                            <AvatarFallback className='bg-gradient-to-br from-rose-400 to-pink-400 text-white text-xl font-semibold'>
+                              {consultant.name?.charAt(0) || 'C'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className='absolute -top-1 -right-1'>
+                            <Badge className='bg-green-500 text-white text-xs px-2 py-1 rounded-full'>✓ Verified</Badge>
+                          </div>
                         </div>
-                      </div>
-                      <CardTitle className='text-xl font-bold text-gray-900 mb-1'>{consultant.name}</CardTitle>
-                      <CardDescription className='text-gray-600 mb-2'>@{consultant.username}</CardDescription>
-                      {consultant.bio && <p className='text-sm text-gray-700 italic'>{consultant.bio}</p>}
-                    </CardHeader>
+                        <CardTitle className='text-xl font-bold text-gray-900 mb-1'>
+                          {consultant.name || 'Unknown Consultant'}
+                        </CardTitle>
+                        <CardDescription className='text-gray-600 mb-2'>
+                          @{consultant.username || 'unknown'}
+                        </CardDescription>
+                        {consultant.bio && <p className='text-sm text-gray-700 italic'>{consultant.bio}</p>}
+                      </CardHeader>
 
-                    <CardContent className='space-y-4'>
-                      {/* Experience */}
-                      {consultant.experience && (
-                        <div className='flex items-center gap-2 text-sm text-gray-700 bg-blue-50 p-2 rounded-lg'>
-                          <Briefcase className='w-4 h-4 text-blue-500' />
-                          <span className='font-medium'>{consultant.experience} years experience</span>
-                        </div>
-                      )}
-
-                      {/* Contact Info */}
-                      <div className='space-y-2'>
-                        {consultant.phone_number && (
-                          <div className='flex items-center gap-2 text-sm text-gray-600'>
-                            <Phone className='w-4 h-4 text-rose-500' />
-                            <span>{consultant.phone_number}</span>
+                      <CardContent className='space-y-4'>
+                        {/* Experience */}
+                        {consultant.experience && (
+                          <div className='flex items-center gap-2 text-sm text-gray-700 bg-blue-50 p-2 rounded-lg'>
+                            <Briefcase className='w-4 h-4 text-blue-500' />
+                            <span className='font-medium'>{consultant.experience} years experience</span>
                           </div>
                         )}
-                        {consultant.location && (
-                          <div className='flex items-center gap-2 text-sm text-gray-600'>
-                            <MapPin className='w-4 h-4 text-rose-500' />
-                            <span className='line-clamp-2'>{consultant.location}</span>
-                          </div>
-                        )}
-                        {consultant.hospital && (
-                          <div className='flex items-center gap-2 text-sm text-gray-600'>
-                            <Building2 className='w-4 h-4 text-rose-500' />
-                            <span>{consultant.hospital}</span>
-                          </div>
-                        )}
-                      </div>
 
-                      {/* Specialties */}
-                      {consultant.specialties && consultant.specialties.length > 0 && (
+                        {/* Contact Info */}
                         <div className='space-y-2'>
-                          <div className='flex items-center gap-2 text-sm font-medium text-gray-700'>
-                            <Award className='w-4 h-4 text-purple-500' />
-                            <span>Specialties</span>
-                          </div>
-                          <div className='flex flex-wrap gap-1'>
-                            {consultant.specialties.slice(0, 3).map((specialty, index) => (
-                              <Badge
-                                key={index}
-                                variant='secondary'
-                                className='text-xs bg-purple-100 text-purple-700 hover:bg-purple-200'
-                              >
-                                {specialty}
-                              </Badge>
-                            ))}
-                            {consultant.specialties.length > 3 && (
-                              <Badge variant='secondary' className='text-xs bg-gray-100 text-gray-600'>
-                                +{consultant.specialties.length - 3} more
-                              </Badge>
-                            )}
-                          </div>
+                          {consultant.phone_number && (
+                            <div className='flex items-center gap-2 text-sm text-gray-600'>
+                              <Phone className='w-4 h-4 text-rose-500' />
+                              <span>{consultant.phone_number}</span>
+                            </div>
+                          )}
+                          {consultant.location && (
+                            <div className='flex items-center gap-2 text-sm text-gray-600'>
+                              <MapPin className='w-4 h-4 text-rose-500' />
+                              <span className='line-clamp-2'>{consultant.location}</span>
+                            </div>
+                          )}
+                          {consultant.hospital && (
+                            <div className='flex items-center gap-2 text-sm text-gray-600'>
+                              <Building2 className='w-4 h-4 text-rose-500' />
+                              <span>{consultant.hospital}</span>
+                            </div>
+                          )}
                         </div>
-                      )}
 
-                      {/* Languages */}
-                      {consultant.languages && consultant.languages.length > 0 && (
-                        <div className='space-y-2'>
-                          <div className='flex items-center gap-2 text-sm font-medium text-gray-700'>
-                            <Languages className='w-4 h-4 text-green-500' />
-                            <span>Languages</span>
+                        {/* Specialties */}
+                        {consultant.specialties && consultant.specialties.length > 0 && (
+                          <div className='space-y-2'>
+                            <div className='flex items-center gap-2 text-sm font-medium text-gray-700'>
+                              <Award className='w-4 h-4 text-purple-500' />
+                              <span>Specialties</span>
+                            </div>
+                            <div className='flex flex-wrap gap-1'>
+                              {consultant.specialties.slice(0, 3).map((specialty, index) => (
+                                <Badge
+                                  key={index}
+                                  variant='secondary'
+                                  className='text-xs bg-purple-100 text-purple-700 hover:bg-purple-200'
+                                >
+                                  {specialty?.name || 'Specialty'}
+                                </Badge>
+                              ))}
+                              {consultant.specialties.length > 3 && (
+                                <Popover
+                                  open={hoveredConsultant === consultant.consultant_profile_id}
+                                  onOpenChange={(open) =>
+                                    setHoveredConsultant(open ? consultant.consultant_profile_id : null)
+                                  }
+                                >
+                                  <PopoverTrigger asChild>
+                                    <Badge
+                                      variant='secondary'
+                                      className='text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-help'
+                                      onMouseEnter={() => setHoveredConsultant(consultant.consultant_profile_id)}
+                                      onMouseLeave={() => setHoveredConsultant(null)}
+                                    >
+                                      +{consultant.specialties.length - 3} more
+                                    </Badge>
+                                  </PopoverTrigger>
+                                  <PopoverContent
+                                    className='w-80 p-3 bg-white border border-gray-200 shadow-lg rounded-md'
+                                    onMouseEnter={() => setHoveredConsultant(consultant.consultant_profile_id)}
+                                    onMouseLeave={() => setHoveredConsultant(null)}
+                                  >
+                                    <div className='space-y-2'>
+                                      <p className='font-medium text-sm text-gray-800'>All Specialties:</p>
+                                      <div className='flex flex-wrap gap-1'>
+                                        {consultant.specialties.map((specialty, index) => (
+                                          <Badge
+                                            key={index}
+                                            variant='secondary'
+                                            className='text-xs bg-purple-100 text-purple-700'
+                                          >
+                                            {specialty?.name || 'Specialty'}
+                                          </Badge>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
+                              )}
+                            </div>
                           </div>
-                          <div className='flex flex-wrap gap-1'>
-                            {consultant.languages.map((language, index) => (
-                              <Badge key={index} variant='outline' className='text-xs border-green-200 text-green-700'>
-                                {language}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Degree */}
-                      {consultant.degree && (
-                        <div className='flex items-center gap-2 text-sm text-gray-600 bg-amber-50 p-2 rounded-lg'>
-                          <GraduationCap className='w-4 h-4 text-amber-500' />
-                          <span>{consultant.degree}</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
+                        {/* Languages */}
+                        {consultant.languages && consultant.languages.length > 0 && (
+                          <div className='space-y-2'>
+                            <div className='flex items-center gap-2 text-sm font-medium text-gray-700'>
+                              <Languages className='w-4 h-4 text-green-500' />
+                              <span>Languages</span>
+                            </div>
+                            <div className='flex flex-wrap gap-1'>
+                              {consultant.languages.map((language, index) => (
+                                <Badge
+                                  key={index}
+                                  variant='outline'
+                                  className='text-xs border-green-200 text-green-700'
+                                >
+                                  {language}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Degree */}
+                        {consultant.degree && (
+                          <div className='flex items-center gap-2 text-sm text-gray-600 bg-amber-50 p-2 rounded-lg'>
+                            <GraduationCap className='w-4 h-4 text-amber-500' />
+                            <span>{consultant.degree}</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
             </CarouselContent>
             <CarouselPrevious className='hidden md:flex' />
             <CarouselNext className='hidden md:flex' />

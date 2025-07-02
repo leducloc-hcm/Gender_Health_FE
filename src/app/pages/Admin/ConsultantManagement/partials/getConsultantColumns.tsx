@@ -2,15 +2,13 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
 import { ArrowUpDown } from 'lucide-react'
-import { Avatar } from '@/app/components/ui/avatar'
-import { AvatarImage, AvatarFallback } from '@radix-ui/react-avatar'
-import type { ProfileConsultantData } from '@/app/pages/Admin/ConsultantManagement/models/consultant.type'
+import type { ConsultantData } from '../ConsultantManagement'
 import DeleteDialog from '@/app/pages/Admin/Common/DeleteDialog'
 
 // Define the props for getScheduleColumns
 interface ColumnsProps {
-  onEdit: (consultant: ProfileConsultantData) => void
-  onView: (consultant: ProfileConsultantData) => void
+  onEdit: (consultant: ConsultantData) => void
+  onView: (consultant: ConsultantData) => void
   onDelete: (id: number) => Promise<void>
   isDeleting?: boolean
 }
@@ -20,7 +18,7 @@ export const getConsultantColumns = ({
   onView,
   onDelete,
   isDeleting = false
-}: ColumnsProps): ColumnDef<any>[] => {
+}: ColumnsProps): ColumnDef<ConsultantData>[] => {
   return [
     {
       accessorKey: 'name',
@@ -44,23 +42,19 @@ export const getConsultantColumns = ({
       )
     },
     {
-      accessorKey: 'avatar',
-      header: 'Avatar',
-      cell: ({ row }) => (
-        <div className='flex justify-center'>
-          <Avatar className='w-10 h-10 rounded-none'>
-            <AvatarImage src={`${row.original.avatar}`} />
-            <AvatarFallback>{row.original.name || 'N/A'}</AvatarFallback>
-          </Avatar>
-        </div>
-      )
-    },
-    {
       accessorKey: 'specialties',
       header: 'Specialties',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 max-w-xs flex text-start justify-center'>
-          {row.original.specialties?.length > 0 ? row.original.specialties.join(', ') : 'No specialties'}
+        <div className='flex flex-wrap gap-1 justify-center items-center max-w-xs mx-auto'>
+          {row.original.specialties?.length > 0 ? (
+            row.original.specialties.map((spec, index) => (
+              <Badge key={index} className='bg-green-100 text-black-800 hover:bg-green-200 text-xs font-medium'>
+                {spec.name}
+              </Badge>
+            ))
+          ) : (
+            <span className='text-sm text-gray-500'>No specialties</span>
+          )}
         </div>
       )
     },
@@ -96,7 +90,14 @@ export const getConsultantColumns = ({
             <Button onClick={() => onView(consultant)} className='bg-gray-500 hover:bg-gray-600 text-white' size='sm'>
               View
             </Button>
-            <DeleteDialog onConfirm={onDelete} itemId={consultant.id} isLoading={isDeleting} />
+            <Button
+              onClick={() => onDelete(consultant.id)}
+              className='bg-red-500 hover:bg-red-600 text-white'
+              size='sm'
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </Button>
           </div>
         )
       }

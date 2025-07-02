@@ -14,15 +14,26 @@ import {
   type SortingState,
   type VisibilityState
 } from '@tanstack/react-table'
+import { Plus } from 'lucide-react'
 import { useState } from 'react'
 
 type DataTableProps<TData> = {
   columns: ColumnDef<TData>[]
   data: TData[]
   isLoading: boolean
+  onCreateClick?: () => void
+  searchPlaceholder?: string
+  searchColumnKey?: string
 }
 
-export default function DataTable<TData>({ columns, data, isLoading }: DataTableProps<TData>) {
+export default function DataTable<TData>({
+  columns,
+  data,
+  isLoading,
+  onCreateClick,
+  searchPlaceholder = 'Search...',
+  searchColumnKey = 'name'
+}: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -52,17 +63,23 @@ export default function DataTable<TData>({ columns, data, isLoading }: DataTable
 
   return (
     <>
-      {/* search filter */}
-      <div className='flex items-center justify-start gap-2 py-4'>
-        {/* Search */}
+      <div className='flex items-center justify-between py-4'>
         <Input
-          placeholder='Search by customer name...'
-          value={(table.getColumn('profile.name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('profile.name')?.setFilterValue(event.target.value)}
+          placeholder={searchPlaceholder}
+          value={(table.getColumn(searchColumnKey)?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn(searchColumnKey)?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
+        {onCreateClick && (
+          <Button
+            onClick={onCreateClick}
+            className='bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-2.5 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+          >
+            <Plus size={16} className='mr-2' />
+            Create Specialty
+          </Button>
+        )}
       </div>
-      {/* Table content */}
       <div className='min-h-[530px]'>
         <Table>
           <TableHeader>

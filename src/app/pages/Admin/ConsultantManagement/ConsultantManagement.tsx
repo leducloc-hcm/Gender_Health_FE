@@ -7,12 +7,15 @@ import { getConsultantColumns } from '@/app/pages/Admin/ConsultantManagement/par
 import { PlusSquare } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import type { ProfileConsultantData, RegisterConsultantReqBody } from './models/consultant.type'
+import type { ProfileConsultantData, RegisterConsultantReqBody, SpecialtyObject } from './models/consultant.type'
 import DataTable from './partials/DataTable'
+import Swal from 'sweetalert2'
 
-export interface ConsultantData extends Omit<ProfileConsultantData, 'avatar' | 'coverPhoto'> {
+export interface ConsultantData extends Omit<ProfileConsultantData, 'avatar' | 'coverPhoto' | 'specialties'> {
   avatar: string | File | null
   coverPhoto: string | File | null
+  specialties: SpecialtyObject[] // For display in table
+  specialtyIds: number[] // For form handling
 }
 
 const ConsultantManagement = () => {
@@ -30,7 +33,30 @@ const ConsultantManagement = () => {
     setIsLoading(true)
     try {
       const response = await consultantApi.getAllProfileConsultants()
-      setConsultants(response.result)
+      const consultantData: ConsultantData[] = response.result.map((consultant) => {
+        let specialtiesArray: SpecialtyObject[] = []
+        let specialtyIdsArray: number[] = []
+
+        if (Array.isArray(consultant.specialties) && consultant.specialties.length > 0) {
+          if (typeof consultant.specialties[0] === 'object' && consultant.specialties[0] !== null) {
+            // API returns specialty objects
+            specialtiesArray = consultant.specialties as unknown as SpecialtyObject[]
+            specialtyIdsArray = specialtiesArray.map((spec) => spec.id)
+          } else {
+            // API returns specialty IDs
+            specialtyIdsArray = consultant.specialties.map((spec) => Number(spec))
+          }
+        }
+
+        return {
+          ...consultant,
+          avatar: consultant.avatar as string | File | null,
+          coverPhoto: consultant.coverPhoto as string | File | null,
+          specialties: specialtiesArray,
+          specialtyIds: specialtyIdsArray
+        } as ConsultantData
+      })
+      setConsultants(consultantData)
     } catch (error) {
       console.error('Error fetching data:', error)
       toast.error('Failed to fetch consultants', { position: 'top-right', autoClose: 2000 })
@@ -56,6 +82,41 @@ const ConsultantManagement = () => {
 
   const handleDelete = useCallback(
     async (id: number) => {
+      const consultantToDelete = consultants.find((c) => c.id === id)
+
+      const hasWorkSchedule = consultantToDelete?.workSchedule && consultantToDelete.workSchedule.length > 0
+
+      let warningText = 'This action cannot be undone.'
+
+      if (hasWorkSchedule) {
+        warningText = `This consultant has ${consultantToDelete.workSchedule.length} active work schedule(s). Deleting this consultant will also remove all associated work schedules. This action cannot be undone.`
+      }
+
+      const result = await Swal.fire({
+        title: 'Are you sure to delete?',
+        text: warningText,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        ...(hasWorkSchedule && {
+          html: `
+          <div class="text-left">
+            <p class="mb-3">This consultant has <strong>${consultantToDelete.workSchedule.length} active work schedule(s)</strong>:</p>
+            <ul class="list-disc list-inside mb-3 text-sm">
+              ${consultantToDelete.workSchedule
+                .map((schedule) => `<li>From ${schedule.startTime} to ${schedule.endTime}</li>`)
+                .join('')}
+            </ul>
+            <p class="text-red-600 font-medium">Deleting this consultant will also remove all associated work schedules. This action cannot be undone.</p>
+          </div>
+        `
+        })
+      })
+
+      if (!result.isConfirmed) return
       setIsDeleting(true)
       try {
         await consultantApi.deleteConsultantAccount(id)
@@ -93,9 +154,9 @@ const ConsultantManagement = () => {
 
   const getChangedFields = useCallback(
     (original: ConsultantData, updated: ConsultantData) => {
-      const changes: Record<string, string | number | string[] | File | null | undefined> = {}
+      const changes: Record<string, string | number | string[] | number[] | File | null | undefined> = {}
 
-      const fieldsToCheck: (keyof ConsultantData)[] = [
+      const fieldsToCheck: (keyof Omit<ConsultantData, 'specialties'>)[] = [
         'name',
         'username',
         'email',
@@ -117,11 +178,9 @@ const ConsultantManagement = () => {
         }
       })
 
-      // Check array fields
-      const originalSpecialties = handleSliceToArrayString(original.specialties)
-      const updatedSpecialties = handleSliceToArrayString(updated.specialties)
-      if (JSON.stringify(originalSpecialties) !== JSON.stringify(updatedSpecialties)) {
-        changes.specialties = updatedSpecialties
+      // Check specialtyIds array (number[]) instead of specialties objects
+      if (JSON.stringify(original.specialtyIds) !== JSON.stringify(updated.specialtyIds)) {
+        changes.specialties = updated.specialtyIds
       }
 
       const originalLanguages = handleSliceToArrayString(original.languages)
@@ -160,15 +219,12 @@ const ConsultantManagement = () => {
         }
       })
 
-      // Handle specialties array
-      if (changes.specialties) {
-        const specialtiesArray = handleSliceToArrayString(changes.specialties)
-        specialtiesArray.forEach((specialty, index) => {
-          formData.append(`specialties[${index}]`, specialty)
+      if (changes.specialties && Array.isArray(changes.specialties)) {
+        changes.specialties.forEach((specialtyId, index) => {
+          formData.append(`specialties[${index}]`, String(specialtyId))
         })
       }
 
-      // Handle languages array
       if (changes.languages) {
         const languagesArray = handleSliceToArrayString(changes.languages)
         languagesArray.forEach((language, index) => {
@@ -202,9 +258,25 @@ const ConsultantManagement = () => {
         return
       }
 
+      // Debug changes before creating FormData
+      console.log('Changes detected:', changes)
+      console.log('Specialties array:', changes.specialties, 'Type:', typeof changes.specialties)
+      if (Array.isArray(changes.specialties)) {
+        console.log(
+          'Each specialty ID type:',
+          changes.specialties.map((id, index) => ({ index, id, type: typeof id }))
+        )
+      }
+
       const formData = createFormDataFromChanges(changes)
 
-      await consultantApi.updateConsultantProfile(selectedConsultant.id, formData as any)
+      // Debug FormData content
+      console.log('FormData entries:')
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value, typeof value)
+      }
+
+      await consultantApi.updateConsultantProfile(selectedConsultant.id, formData)
 
       fetchData()
 
