@@ -1,3 +1,11 @@
+export interface SpecialtyObject {
+  id: number
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ProfileConsultantManagementResponse {
   message: string
   result: ProfileConsultantData[]
@@ -30,7 +38,7 @@ export interface UpdateConsultantProfileReqBody {
   description?: string
   website?: string
   experience?: string
-  specialties?: string[]
+  specialties?: number[]
   languages?: string[]
   response_time?: string
   degree?: string
@@ -58,7 +66,7 @@ export interface ProfileConsultantData {
   rating: number
   total_reviews: number
   experience: string
-  specialties: string[]
+  specialties: number[] | SpecialtyObject[]
   languages: string[]
   response_time: string
   degree: string

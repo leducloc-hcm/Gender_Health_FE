@@ -83,6 +83,8 @@ export default function LoginPage() {
         position: 'top-right',
         autoClose: 500
       })
+      
+      // Give a little delay to ensure tokens are properly set before navigation
       setTimeout(() => {
         if (userRole && ROLE_ROUTES[userRole]) {
           navigate(ROLE_ROUTES[userRole])
@@ -90,7 +92,7 @@ export default function LoginPage() {
           console.warn('Unknown role:', userRole, 'Redirecting to customer dashboard')
           navigate(ROLE_ROUTES.CUSTOMER)
         }
-      }, 1000)
+      }, 1500) // Increased delay to 1.5s to avoid race conditions
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.errors?.email?.msg || error.response?.data?.message

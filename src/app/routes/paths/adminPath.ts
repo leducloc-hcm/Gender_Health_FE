@@ -8,7 +8,8 @@ const adminPath = {
   test: 'manage-test',
   customer: 'manage-customer',
   consultant: 'manage-consultant',
-  staff: 'manage-staff'
+  staff: 'manage-staff',
+  specialties: 'manage-specialties'
 }
 
 export default adminPath
