@@ -54,9 +54,10 @@ import EditTag from '../pages/Staff/TagStaff/EditTag'
 import TagStaff from '../pages/Staff/TagStaff/TagStaff'
 import adminPath from './paths/adminPath'
 import authPath from './paths/authPath'
-import ScrollToTop from '@/app/components/ui/autoScroll'
-import UpdateResultOfTest from '@/app/pages/Staff/ResultOfTest/UpdateResultOfTest'
+import ScrollToTop from '../components/ui/autoScroll'
+import UpdateResultOfTest from '../pages/Staff/ResultOfTest/UpdateResultOfTest'
 import SpecialtyManagement from '../pages/Admin/SpecialtyManagement/SpecialtyManagement'
+import StiTrackingAdmin from '../pages/Admin/StiTracking/StiTrackingAdmin'
 
 export default function MainRoutes() {
   return (
@@ -115,6 +116,7 @@ export default function MainRoutes() {
           <Route path={adminPath.consultant} element={<ConsultantManagement />} />
           <Route path={adminPath.staff} element={<StaffManagement />} />
           <Route path={adminPath.specialties} element={<SpecialtyManagement />} />
+          <Route path={adminPath.stiTracking} element={<StiTrackingAdmin />} />
         </Route>
 
         <Route path='/consultant' element={<Consultant />}>

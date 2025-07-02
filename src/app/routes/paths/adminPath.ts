@@ -9,7 +9,8 @@ const adminPath = {
   customer: 'manage-customer',
   consultant: 'manage-consultant',
   staff: 'manage-staff',
-  specialties: 'manage-specialties'
+  specialties: 'manage-specialties',
+  stiTracking: 'sti-tracking'
 }
 
 export default adminPath
