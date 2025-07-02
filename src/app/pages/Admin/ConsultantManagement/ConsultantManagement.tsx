@@ -156,7 +156,7 @@ const ConsultantManagement = () => {
     (original: ConsultantData, updated: ConsultantData) => {
       const changes: Record<string, string | number | string[] | number[] | File | null | undefined> = {}
 
-      const fieldsToCheck: (keyof Omit<ConsultantData, 'specialties'>)[] = [
+      const fieldsToCheck: (keyof Omit<ConsultantData, 'specialties' | 'workSchedule'>)[] = [
         'name',
         'username',
         'email',

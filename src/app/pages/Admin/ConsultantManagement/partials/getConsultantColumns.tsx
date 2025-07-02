@@ -1,9 +1,8 @@
-import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
+import type { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import type { ConsultantData } from '../ConsultantManagement'
-import DeleteDialog from '@/app/pages/Admin/Common/DeleteDialog'
 
 // Define the props for getScheduleColumns
 interface ColumnsProps {

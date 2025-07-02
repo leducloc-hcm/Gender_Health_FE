@@ -59,8 +59,8 @@ export default function ResultDataTable<TData>({ columns, data }: DataTableProps
           <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
           <Input
             placeholder='Search by test name, customer, or ID...'
-            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+            value={(table.getColumn('customerInfo')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('customerInfo')?.setFilterValue(event.target.value)}
             className='pl-10 border-gray-300'
           />
         </div>

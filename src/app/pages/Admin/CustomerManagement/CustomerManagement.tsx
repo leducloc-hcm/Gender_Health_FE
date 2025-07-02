@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import dayjs from 'dayjs'
+import Swal from 'sweetalert2'
 
 export default function CustomerManagement() {
   const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false)
@@ -27,6 +28,18 @@ export default function CustomerManagement() {
   }
 
   const handleBanAccount = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure to ban?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ban',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
     try {
       await userApi.banAccount(id)
       toast.success('Account banned successfully')
@@ -38,6 +51,18 @@ export default function CustomerManagement() {
   }
 
   const handleUnbanAccount = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure to unban?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Unban',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
     try {
       await userApi.unBanAccount(id)
       toast.success('Account unbanned successfully')
@@ -65,7 +90,7 @@ export default function CustomerManagement() {
       cell: ({ row }) => <div className='truncate text-sm text-gray-700 text-start'>{row.original.email}</div>
     },
     {
-      accessorKey: 'profile.name',
+      accessorKey: 'profilename',
       header: () => <p className='text-start'>Customer Name</p>,
       accessorFn: (row) => row.profile?.name || '',
       cell: ({ row }) => (
