@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import type { ProfileConsultantData, RegisterConsultantReqBody, SpecialtyObject } from './models/consultant.type'
 import DataTable from './partials/DataTable'
+import Swal from 'sweetalert2'
 
 export interface ConsultantData extends Omit<ProfileConsultantData, 'avatar' | 'coverPhoto' | 'specialties'> {
   avatar: string | File | null
@@ -32,7 +33,7 @@ const ConsultantManagement = () => {
     setIsLoading(true)
     try {
       const response = await consultantApi.getAllProfileConsultants()
-      const consultantData = response.result.map((consultant) => {
+      const consultantData: ConsultantData[] = response.result.map((consultant) => {
         let specialtiesArray: SpecialtyObject[] = []
         let specialtyIdsArray: number[] = []
 
@@ -49,9 +50,11 @@ const ConsultantManagement = () => {
 
         return {
           ...consultant,
+          avatar: consultant.avatar as string | File | null,
+          coverPhoto: consultant.coverPhoto as string | File | null,
           specialties: specialtiesArray,
           specialtyIds: specialtyIdsArray
-        }
+        } as ConsultantData
       })
       setConsultants(consultantData)
     } catch (error) {
@@ -79,6 +82,41 @@ const ConsultantManagement = () => {
 
   const handleDelete = useCallback(
     async (id: number) => {
+      const consultantToDelete = consultants.find((c) => c.id === id)
+
+      const hasWorkSchedule = consultantToDelete?.workSchedule && consultantToDelete.workSchedule.length > 0
+
+      let warningText = 'This action cannot be undone.'
+
+      if (hasWorkSchedule) {
+        warningText = `This consultant has ${consultantToDelete.workSchedule.length} active work schedule(s). Deleting this consultant will also remove all associated work schedules. This action cannot be undone.`
+      }
+
+      const result = await Swal.fire({
+        title: 'Are you sure to delete?',
+        text: warningText,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        ...(hasWorkSchedule && {
+          html: `
+          <div class="text-left">
+            <p class="mb-3">This consultant has <strong>${consultantToDelete.workSchedule.length} active work schedule(s)</strong>:</p>
+            <ul class="list-disc list-inside mb-3 text-sm">
+              ${consultantToDelete.workSchedule
+                .map((schedule) => `<li>From ${schedule.startTime} to ${schedule.endTime}</li>`)
+                .join('')}
+            </ul>
+            <p class="text-red-600 font-medium">Deleting this consultant will also remove all associated work schedules. This action cannot be undone.</p>
+          </div>
+        `
+        })
+      })
+
+      if (!result.isConfirmed) return
       setIsDeleting(true)
       try {
         await consultantApi.deleteConsultantAccount(id)

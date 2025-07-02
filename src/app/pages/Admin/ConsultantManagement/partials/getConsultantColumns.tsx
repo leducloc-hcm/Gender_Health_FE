@@ -90,7 +90,14 @@ export const getConsultantColumns = ({
             <Button onClick={() => onView(consultant)} className='bg-gray-500 hover:bg-gray-600 text-white' size='sm'>
               View
             </Button>
-            <DeleteDialog onConfirm={onDelete} itemId={consultant.id} isLoading={isDeleting} />
+            <Button
+              onClick={() => onDelete(consultant.id)}
+              className='bg-red-500 hover:bg-red-600 text-white'
+              size='sm'
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </Button>
           </div>
         )
       }
