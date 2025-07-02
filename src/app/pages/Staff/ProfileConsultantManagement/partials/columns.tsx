@@ -51,7 +51,7 @@ export const getScheduleColumns = ({ onEdit, onView }: ScheduleColumnsProps): Co
       accessorKey: 'specialties',
       header: 'Specialties',
       cell: ({ row }) => (
-        <div className='flex flex-wrap gap-1 justify-center max-w-xs'>
+        <div className='flex flex-wrap gap-1 justify-center items-center max-w-xs mx-auto'>
           {row.original.specialties?.length > 0 ? (
             row.original.specialties.map((specialty, index) => (
               <Badge key={index} variant='secondary' className='text-xs bg-green-100 text-green-800 hover:bg-green-200'>

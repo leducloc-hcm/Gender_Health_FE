@@ -23,7 +23,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
       {selectedConsultant && (
         <div className='overflow-y-auto max-h-[calc(90vh-120px)] pr-2'>
           <div className='space-y-6'>
-            {/* Basic Information */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Basic Information</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -42,8 +41,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
                 ))}
               </div>
             </div>
-
-            {/* Personal Information */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Personal Information</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -81,7 +78,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
               </div>
             </div>
 
-            {/* Professional Information */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Professional Information</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
