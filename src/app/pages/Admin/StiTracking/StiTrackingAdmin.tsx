@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { stiApi } from '@/app/apis/sti.api'
-import type { StiTrackingResponse, Data } from './models/sti.type'
 import { toast } from 'react-toastify'
-import StiDataTable from '@/app/pages/Staff/StiTracking/partials/StiDataTable'
-import { getStiColumns } from '@/app/pages/Staff/StiTracking/partials/getStiColumns'
 import { RefreshCw, Activity } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import Swal from 'sweetalert2'
+import type { Data, StiTrackingResponse } from '@/app/pages/Admin/StiTracking/models/sti.type'
+import StiDataTable from '@/app/pages/Admin/StiTracking/partials/StiDataTable'
+import { getStiColumns } from '@/app/pages/Admin/StiTracking/partials/getStiColumns'
 
-export default function StiTracking() {
+export default function StiTrackingAdmin() {
   const [stiData, setStiData] = useState<Data[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<{ [key: string]: boolean }>({})
@@ -130,6 +130,55 @@ export default function StiTracking() {
     }
   }
 
+  const handleRollback = async (id: number, currentStatus: string) => {
+    const getStatusText = (status: string) => {
+      switch (status) {
+        case 'PSC_VISITED':
+          return 'Waiting for PSC Visit'
+        case 'COLLECTED':
+          return 'PSC Visited'
+        case 'REPORT_READY':
+          return 'Collected'
+        case 'RESULT_AVAILABLE':
+          return 'Report Ready'
+        default:
+          return 'previous step'
+      }
+    }
+
+    const result = await Swal.fire({
+      title: 'Are you sure you want to rollback?',
+      text: `This will revert the status back to "${getStatusText(currentStatus)}".`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, rollback',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
+
+    const actionKey = `rollback-${id}`
+    try {
+      setActionLoading((prev) => ({ ...prev, [actionKey]: true }))
+
+      const data = {
+        id: id,
+        status: currentStatus
+      }
+
+      await stiApi.createRollBack(data)
+      await fetchStiData()
+      toast.success('Status rolled back successfully!')
+    } catch (error) {
+      console.error('Error rolling back status:', error)
+      toast.error('Failed to rollback status')
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [actionKey]: false }))
+    }
+  }
+
   return (
     <div className='space-y-6'>
       <div className='bg-white p-6 rounded-lg  border'>
@@ -162,6 +211,7 @@ export default function StiTracking() {
           onPscVisited: handlePscVisited,
           onSampleCollected: handleSampleCollected,
           onReportDate: handleReportDate,
+          onRollback: handleRollback,
           actionLoading
         })}
       />

@@ -5,12 +5,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Label } from '@/app/components/ui/label'
 import { format } from 'date-fns'
 import { memo } from 'react'
-import type { ConsultantData } from '../ConsultantManagement'
+import type { ProfileConsultantResult } from '../ProfileConsultantManagement'
 
 export interface ViewConsultantModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  selectedConsultant: ConsultantData | null
+  selectedConsultant: ProfileConsultantResult | null
 }
 
 const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: ViewConsultantModalProps) => (
@@ -23,7 +23,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
       {selectedConsultant && (
         <div className='overflow-y-auto max-h-[calc(90vh-120px)] pr-2'>
           <div className='space-y-6'>
-            {/* Basic Information */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Basic Information</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -42,8 +41,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
                 ))}
               </div>
             </div>
-
-            {/* Personal Information */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Personal Information</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -81,7 +78,6 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
               </div>
             </div>
 
-            {/* Professional Information */}
             <div className='space-y-4'>
               <h3 className='text-lg font-medium border-b pb-2'>Professional Information</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -118,10 +114,10 @@ const ViewConsultantModal = memo(({ isOpen, onOpenChange, selectedConsultant }: 
               <div className='space-y-1'>
                 <Label className='text-sm font-medium text-gray-600'>Specialties</Label>
                 <div className='flex flex-wrap gap-2'>
-                  {selectedConsultant.specialties?.length > 0 ? (
+                  {Array.isArray(selectedConsultant.specialties) && selectedConsultant.specialties.length > 0 ? (
                     selectedConsultant.specialties.map((specialty, index) => (
                       <Badge key={index} className='bg-blue-100 text-blue-800 hover:bg-blue-200 text-xs font-medium'>
-                        {specialty.name}
+                        {String(specialty)}
                       </Badge>
                     ))
                   ) : (

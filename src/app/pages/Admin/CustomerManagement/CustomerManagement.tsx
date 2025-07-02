@@ -1,22 +1,79 @@
 import { useEffect, useState } from 'react'
-import type { CustomerData, CustomerResponse } from './models/customerManagement.type'
-import { manageCustomerApi } from '@/app/apis/manageCustomer.api'
+import type { UserResponse, UserResponseData } from './models/customerManagement.type'
+import { userApi } from '@/app/apis/user.api'
 import { toast } from 'react-toastify'
-import { useOpenModal } from '@/app/hooks/useOpenModal'
 import DataTable from '@/app/pages/Admin/CustomerManagement/partials/DataTable'
-import ViewCustomerModal from '@/app/pages/Admin/CustomerManagement/partials/ViewCustomerModal'
 import type { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
+import dayjs from 'dayjs'
+import Swal from 'sweetalert2'
 
 export default function CustomerManagement() {
   const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false)
-  const [dataSource, setDataSource] = useState<CustomerData[]>([])
+  const [dataSource, setDataSource] = useState<UserResponseData[]>([])
 
-  const [viewItem, setViewItem] = useState<CustomerData>()
-  const { isOpen: isOpenViewModal, openModal: openViewModal, closeModal: closeViewModal } = useOpenModal()
+  const fetchData = async () => {
+    setIsLoadingTable(true)
+    try {
+      const response: UserResponse = await userApi.getAllUser()
+      const customers = response.result.filter((user) => user.role === 'CUSTOMER')
+      setDataSource(customers)
+    } catch (error) {
+      console.error('Failed to fetch data:', error)
+      toast.error('Failed to fetch customer data')
+    } finally {
+      setIsLoadingTable(false)
+    }
+  }
 
-  const columns: ColumnDef<CustomerData>[] = [
+  const handleBanAccount = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure to ban?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ban',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
+    try {
+      await userApi.banAccount(id)
+      toast.success('Account banned successfully')
+      fetchData() // Refresh data
+    } catch (error) {
+      console.error('Failed to ban account:', error)
+      toast.error('Failed to ban account')
+    }
+  }
+
+  const handleUnbanAccount = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure to unban?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Unban',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
+    try {
+      await userApi.unBanAccount(id)
+      toast.success('Account unbanned successfully')
+      fetchData() // Refresh data
+    } catch (error) {
+      console.error('Failed to unban account:', error)
+      toast.error('Failed to unban account')
+    }
+  }
+
+  const columns: ColumnDef<UserResponseData>[] = [
     {
       accessorKey: 'id',
       header: ({ column }) => (
@@ -28,28 +85,38 @@ export default function CustomerManagement() {
       cell: ({ row }) => <div className='truncate text-sm text-gray-700 text-start'>{row.original.id}</div>
     },
     {
-      id: 'customer_name',
+      accessorKey: 'email',
+      header: () => <p className='text-start'>Email</p>,
+      cell: ({ row }) => <div className='truncate text-sm text-gray-700 text-start'>{row.original.email}</div>
+    },
+    {
+      accessorKey: 'profilename',
       header: () => <p className='text-start'>Customer Name</p>,
-      accessorFn: (row) => row.name,
+      accessorFn: (row) => row.profile?.name || '',
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 text-start'>{row.original.name || 'No name'}</div>
+        <div className='truncate text-sm text-gray-700 text-start'>{row.original.profile?.name || 'No name'}</div>
       ),
       filterFn: 'includesString'
     },
     {
-      accessorKey: 'order.phone',
+      accessorKey: 'profile.dateOfBirth',
       header: () => <p className='text-start'>Date of Birth</p>,
       cell: ({ row }) => (
         <div className='truncate text-sm text-gray-700 text-start'>
-          {row.original.dateOfBirth || 'No Date of Birth'}
+          {row.original.profile?.dateOfBirth
+            ? dayjs(row.original.profile.dateOfBirth).format('DD/MM/YYYY')
+            : 'No Date of Birth'}
         </div>
       )
     },
+
     {
-      accessorKey: 'description',
-      header: () => <p className='text-start'>Description</p>,
+      accessorKey: 'created_at',
+      header: () => <p className='text-start'>Created Date</p>,
       cell: ({ row }) => (
-        <div className='truncate text-sm text-gray-700 text-start'>{row.original.description || 'No Description'}</div>
+        <div className='truncate text-sm text-gray-700 text-start'>
+          {dayjs(row.original.created_at).format('DD/MM/YYYY HH:mm')}
+        </div>
       )
     },
     {
@@ -57,36 +124,31 @@ export default function CustomerManagement() {
       header: () => <p className='text-start'>Actions</p>,
       cell: ({ row }) => {
         const item = row.original
+        const isActive = item.status === 'VERIFIED'
         return (
           <div className='flex items-center justify-start gap-2'>
-            <Button
-              onClick={() => {
-                setViewItem(item)
-                openViewModal()
-              }}
-              className='bg-blue-500 hover:bg-blue-600 text-white'
-              size='sm'
-            >
-              View
-            </Button>
+            {isActive ? (
+              <Button
+                onClick={() => handleBanAccount(item.id)}
+                className='bg-red-500 hover:bg-red-600 text-white'
+                size='sm'
+              >
+                Ban
+              </Button>
+            ) : (
+              <Button
+                onClick={() => handleUnbanAccount(item.id)}
+                className='bg-green-500 hover:bg-green-600 text-white'
+                size='sm'
+              >
+                Unban
+              </Button>
+            )}
           </div>
         )
       }
     }
   ]
-
-  const fetchData = async (): Promise<void> => {
-    setIsLoadingTable(true)
-    try {
-      const response: CustomerResponse = await manageCustomerApi.getAllProfileCustomer()
-      setDataSource(response.data)
-    } catch (error: any) {
-      console.error('Failed to fetch data:', error)
-      toast.error(error.message)
-    } finally {
-      setIsLoadingTable(false)
-    }
-  }
 
   useEffect(() => {
     fetchData()
@@ -97,12 +159,6 @@ export default function CustomerManagement() {
       <h1 className='text-2xl font-bold mb-4'>Manage Customers</h1>
       <div className='table-container'>
         <DataTable columns={columns} data={dataSource} isLoading={isLoadingTable} />
-        <ViewCustomerModal
-          viewItem={viewItem}
-          closeModal={closeViewModal}
-          isModalOpen={isOpenViewModal}
-          openModal={openViewModal}
-        />
       </div>
     </div>
   )

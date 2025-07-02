@@ -35,14 +35,10 @@ export const consultantApi = {
   },
   updateConsultantProfile: async (
     consultantId: number,
-    data: Partial<UpdateConsultantProfileReqBody>
+    data: Partial<UpdateConsultantProfileReqBody> | FormData
   ): Promise<any> => {
     try {
-      const response = await fetcher.put(`users/consultant/${consultantId}`, data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      const response = await fetcher.put(`users/consultant/${consultantId}`, data)
       return response.data
     } catch (error) {
       console.error('Failed to update consultant profile:', error)
