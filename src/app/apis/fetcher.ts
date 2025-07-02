@@ -30,7 +30,7 @@ fetcher.interceptors.response.use(
 
       if (accessToken && refreshToken) {
         try {
-          const refreshResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/refresh-token`, {
+          const refreshResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}users/refresh-token`, {
             refresh_token: refreshToken
           })
 

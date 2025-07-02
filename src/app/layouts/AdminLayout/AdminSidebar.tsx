@@ -23,7 +23,8 @@ import {
   UserCheck,
   UserCog,
   ChevronRight,
-  SquareDashedBottomCode
+  SquareDashedBottomCode,
+  Activity
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/app/components/ui/collapsible'
@@ -87,6 +88,11 @@ const navigationItems = [
     title: 'Tests',
     url: '/admin/manage-test',
     icon: FlaskConical
+  },
+  {
+    title: 'Sti Tracking',
+    url: '/admin/sti-tracking',
+    icon: Activity
   }
 ]
 

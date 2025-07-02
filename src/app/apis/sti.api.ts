@@ -74,6 +74,15 @@ export const stiApi = {
       throw axiosError
     }
   },
+  createRollBack: async (data: any): Promise<any> => {
+    try {
+      const response: AxiosResponse<any> = await fetcher.post(`/stis-tracking/rollback-stis-tracking`, data)
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      throw axiosError
+    }
+  },
   createTestResult: async (data: ResultOfTestReq): Promise<any> => {
     try {
       const response: AxiosResponse<any> = await fetcher.post(`/result-of-test`, data)
