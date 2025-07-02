@@ -71,4 +71,12 @@ export interface ProfileConsultantData {
   response_time: string
   degree: string
   hospital: string
+  workSchedule: WorkSchedule[]
+}
+
+interface WorkSchedule {
+  id: number
+  consultant_profile_id: number
+  startTime: string
+  endTime: string
 }
