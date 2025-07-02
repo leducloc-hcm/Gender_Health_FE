@@ -56,7 +56,7 @@ export const SpecialtySelector = ({ selectedSpecialtyIds, onSelectionChange, dis
         {selectedSpecialties.map((specialty) => (
           <Badge
             key={specialty.id}
-            className='flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 hover:bg-blue-200 font-medium'
+            className='flex items-center gap-1 px-2 py-1 bg-gray-900 text-white hover:bg-gray-800 font-medium'
           >
             {specialty.name}
             {!disabled && (
