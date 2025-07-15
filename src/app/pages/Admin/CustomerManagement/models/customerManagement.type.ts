@@ -1,33 +1,36 @@
-export interface CustomerResponse {
+export interface UserResponse {
   message: string
-  data: CustomerData[]
+  result: UserResponseData[]
 }
 
-export interface CustomerData {
-  avatar?: string
-  name: string
-  description: any
+export interface UserResponseData {
   id: number
-  coverPhoto?: string
-  dateOfBirth?: string
-  username: string
-  orders: Order[]
-}
-
-export interface Order {
-  id: number
-  created_at: string
+  email: string
+  role: string
   status: string
-  address: string
-  phone: string
-  note: string
-  total_amount: string
-  orderItems: OrderItem[]
+  created_at: string
+  updated_at: string
+  profile?: Profile
 }
 
-export interface OrderItem {
+export interface Profile {
   id: number
-  code: string
   name: string
-  final_price: string
+  bio?: string
+  location?: string
+  username: string
+  avatar?: string
+  coverPhoto?: string
+  description?: string
+  phoneNumber?: string
+  dateOfBirth?: string
+  website?: string
+  rating: any
+  totalReviews?: number
+  experience?: string
+  languages?: string[]
+  responseTime?: string
+  degree?: string
+  hospital?: string
+  userId: number
 }

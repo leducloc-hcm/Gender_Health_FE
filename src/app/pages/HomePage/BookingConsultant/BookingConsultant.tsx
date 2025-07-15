@@ -233,17 +233,16 @@ const BookingConsultant = () => {
                   <span>{consultant.consultantProfile.hospital}</span>
                 </div>
 
-                {/* Specialties */}
                 <div>
                   <h4 className='text-sm font-semibold text-gray-700 mb-2'>Specialties</h4>
                   <div className='flex flex-wrap gap-2'>
-                    {consultant.consultantProfile.specialties?.map((specialty) => (
+                    {consultant.consultantProfile.specialties?.map((specialty, index) => (
                       <Badge
-                        key={specialty}
+                        key={`${consultant.consultantProfile.id}-specialty-${index}`}
                         variant='secondary'
                         className='bg-rose-100 text-rose-700 hover:bg-rose-200'
                       >
-                        {specialty}
+                        {typeof specialty === 'string' ? specialty : specialty.name || 'Unknown'}
                       </Badge>
                     ))}
                   </div>
@@ -262,7 +261,14 @@ const BookingConsultant = () => {
 
                   <div className='flex items-center gap-2 text-gray-600'>
                     <Activity className='w-4 h-4 text-rose-500' />
-                    <span>Languages: {consultant.consultantProfile.languages?.join(', ')}</span>
+                    <span>
+                      Languages:{' '}
+                      {Array.isArray(consultant.consultantProfile.languages)
+                        ? consultant.consultantProfile.languages
+                            .map((lang) => (typeof lang === 'string' ? lang : lang.name || 'Unknown'))
+                            .join(', ')
+                        : 'N/A'}
+                    </span>
                   </div>
                 </div>
 

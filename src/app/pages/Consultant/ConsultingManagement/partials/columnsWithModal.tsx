@@ -2,10 +2,11 @@ import { useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/app/components/ui/badge'
 import { Button } from '@/app/components/ui/button'
-import { ArrowUpDown, ExternalLink, MessageSquare } from 'lucide-react'
+import { ArrowUpDown, ExternalLink, MessageSquare, Eye } from 'lucide-react'
 import type { ConsultantManagementResponse } from '../models/ConsultingManagement'
 import { AddMeetingLinkModal } from './AddMeetingLinkModal'
 import { ConsultantFeedbackModal } from './ConsultantFeedbackModal'
+import { ViewFeedbackModal } from './ViewFeedbackModal'
 
 interface ColumnsProps {
   onRefresh?: () => void
@@ -28,6 +29,14 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
     historyId: null
   })
 
+  const [viewFeedbackModalState, setViewFeedbackModalState] = useState<{
+    isOpen: boolean
+    data: ConsultantManagementResponse | null
+  }>({
+    isOpen: false,
+    data: null
+  })
+
   const handleOpenMeetingLinkModal = (historyId: number) => {
     setMeetingLinkModalState({ isOpen: true, historyId })
   }
@@ -44,10 +53,19 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
     setFeedbackModalState({ isOpen: false, historyId: null })
   }
 
+  const handleOpenViewFeedbackModal = (data: ConsultantManagementResponse) => {
+    setViewFeedbackModalState({ isOpen: true, data })
+  }
+
+  const handleCloseViewFeedbackModal = () => {
+    setViewFeedbackModalState({ isOpen: false, data: null })
+  }
+
   const handleSuccess = () => {
     onRefresh?.()
     handleCloseMeetingLinkModal()
     handleCloseFeedbackModal()
+    handleCloseViewFeedbackModal()
   }
 
   const columns: ColumnDef<ConsultantManagementResponse>[] = [
@@ -148,66 +166,6 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
       )
     },
     {
-      accessorKey: 'feedback',
-      header: 'Feedback',
-      cell: ({ row }) => (
-        <div className='flex items-center justify-center px-2'>
-          <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-2 max-w-40'>
-            <div className='flex items-center space-x-1 mb-1'>
-              <span className='text-yellow-600'>💬</span>
-              <span className='text-xs font-semibold text-yellow-700'>Feedback</span>
-            </div>
-            <p
-              className='text-xs text-gray-700 line-clamp-2 cursor-help'
-              title={row.original.feedback || 'No feedback'}
-            >
-              {row.original.feedback || 'No feedback available'}
-            </p>
-          </div>
-        </div>
-      )
-    },
-    {
-      accessorKey: 'consultantNote',
-      header: 'Consultant Note',
-      cell: ({ row }) => (
-        <div className='flex items-center justify-center px-2'>
-          <div className='bg-blue-50 border border-blue-200 rounded-lg p-2 max-w-40'>
-            <div className='flex items-center space-x-1 mb-1'>
-              <span className='text-blue-600'>👨‍⚕️</span>
-              <span className='text-xs font-semibold text-blue-700'>Doctor Note</span>
-            </div>
-            <p
-              className='text-xs text-gray-700 line-clamp-2 cursor-help'
-              title={row.original.consultantNote || 'No note'}
-            >
-              {row.original.consultantNote || 'No note available'}
-            </p>
-          </div>
-        </div>
-      )
-    },
-    {
-      accessorKey: 'customerNote',
-      header: 'Customer Note',
-      cell: ({ row }) => (
-        <div className='flex items-center justify-center px-2'>
-          <div className='bg-purple-50 border border-purple-200 rounded-lg p-2 max-w-40'>
-            <div className='flex items-center space-x-1 mb-1'>
-              <span className='text-purple-600'>👤</span>
-              <span className='text-xs font-semibold text-purple-700'>Patient Note</span>
-            </div>
-            <p
-              className='text-xs text-gray-700 line-clamp-2 cursor-help'
-              title={row.original.customerNote || 'No note'}
-            >
-              {row.original.customerNote || 'No note available'}
-            </p>
-          </div>
-        </div>
-      )
-    },
-    {
       accessorKey: 'meetingLink',
       header: 'Meeting Link',
       cell: ({ row }) => (
@@ -256,23 +214,32 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => (
-        <div className='flex justify-center px-2'>
+        <div className='flex justify-start px-2'>
           <div className='flex items-center space-x-2'>
             <Button
               variant='outline'
               size='sm'
               onClick={() => handleOpenMeetingLinkModal(row.original.id)}
-              className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
+              className='bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white hover:text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
             >
               <span className='mr-2'>🔗</span>
               <span className='font-medium text-xs'>Add Link</span>
+            </Button>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => handleOpenViewFeedbackModal(row.original)}
+              className='bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white hover:text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
+            >
+              <Eye className='w-3 h-3 mr-1' />
+              <span className='font-medium text-xs'>View Feedback</span>
             </Button>
             {new Date(row.original.scheduleAt) < new Date() && (
               <Button
                 variant='outline'
                 size='sm'
                 onClick={() => handleOpenFeedbackModal(row.original.id)}
-                className='bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
+                className='bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:text-white border-none shadow-md hover:shadow-lg transition-all duration-200 rounded-lg px-3 py-2'
               >
                 <MessageSquare className='w-3 h-3 mr-1' />
                 <span className='font-medium text-xs'>Note</span>
@@ -300,6 +267,13 @@ export const useConsultingColumns = ({ onRefresh }: ColumnsProps = {}) => {
           onClose={handleCloseFeedbackModal}
           historyId={feedbackModalState.historyId}
           onSuccess={handleSuccess}
+        />
+      )}
+      {viewFeedbackModalState.data && (
+        <ViewFeedbackModal
+          isOpen={viewFeedbackModalState.isOpen}
+          onClose={handleCloseViewFeedbackModal}
+          data={viewFeedbackModalState.data}
         />
       )}
     </>
